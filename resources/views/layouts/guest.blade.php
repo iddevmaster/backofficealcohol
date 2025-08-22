@@ -7,7 +7,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>เข้าสู่ระบบ - Admin Dashboard</title>
-    <link rel="stylesheet" href="../css/main.css" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fadmindash5340back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.6"></script>
@@ -21,7 +21,7 @@
 
 {{ $slot }}
     <!-- JavaScript -->
-    <script>
+    <!-- <script>
         // Mock user credentials
         const mockUsers = {
             'admin@company.com': { password: 'admin123', role: 'admin', name: 'ผู้ดูแลระบบ' },
@@ -190,7 +190,7 @@
         if (localStorage.getItem('currentUser')) {
             // window.location.href = 'dashboard_overview.html';
         }
-    </script>
-<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+    </script> -->
+<!-- <script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script> -->
 </body>
 </html>

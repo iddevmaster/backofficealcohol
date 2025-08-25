@@ -124,9 +124,9 @@
             <div class="mt-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <h3 class="text-sm font-medium text-slate-700 mb-2">ข้อมูลทดสอบ:</h3>
                 <div class="space-y-1 text-xs text-slate-600">
-                    <p><strong>ผู้ดูแลระบบ:</strong> admin@company.com / admin123</p>
-                    <p><strong>ผู้ใช้งาน:</strong> user@company.com / user123</p>
-                    <p><strong>ผู้จัดการ:</strong> manager@company.com / manager123</p>
+                    <p><strong>Admin:</strong> admin@gmail.com / 12345678</p>
+                    <p><strong>staff:</strong> editor@gmail.com / 12345678</p>
+                    <p><strong>User:</strong> user@mail.com / manager123</p>
                 </div>
             </div>
         </div>

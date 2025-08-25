@@ -13,8 +13,14 @@ class DepartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+
+
        public function index(Request $request): View
     {
+
+    
+
         $q = (string) $request->get('q', '');
         $departments = Department::query()
             ->when($q, fn($query) =>

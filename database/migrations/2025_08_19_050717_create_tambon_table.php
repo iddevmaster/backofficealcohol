@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('tambon', function (Blueprint $table) {
             $table->id();
+            $table->string('tambon_code');
             $table->string('name');
+            $table->integer('amphur_id');
+            $table->integer('province_id');
+            $table->string('tambon_status');
             $table->timestamps();
         });
     }

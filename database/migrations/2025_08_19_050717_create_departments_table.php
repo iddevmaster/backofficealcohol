@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
+     
+
+         Schema::create('departments', function (Blueprint $table) {
             $table->id();
-                    // The dpm_id field is a string.
             $table->string('dpm_id');
-
-            // The name field is a string.
             $table->string('name');
-
-            // The brn_id field is a string.
             $table->string('brn_id');
             $table->timestamps();
         });

@@ -4,7 +4,12 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BranchesController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\TambonController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\PrefixesController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -23,8 +28,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
-    Route::get('/department', [DepartmentController::class, 'index'])->name('department.index')->middleware(['permission:create department']);;
+    // Route::get('/department', [DepartmentController::class, 'index'])->name('department.index')->middleware(['permission:create department']);
+
     
+    Route::resource('/departments', DepartmentController::class);
+    Route::resource('/branches', BranchesController::class);
+    Route::resource('organizations', OrganizationController::class);
+    Route::resource('prefixes', PrefixesController::class);
 });
+
+Route::get('/locations/amphurs/{province}', [LocationController::class, 'amphurs']);
+Route::get('/locations/tambons/{amphur}',   [LocationController::class, 'tambons']);
+
+
 
 require __DIR__.'/auth.php';

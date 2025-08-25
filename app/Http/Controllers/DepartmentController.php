@@ -2,70 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DepartmentRequest;
+use App\Models\Department;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\View\View;
 
 class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-
-
-    public function index()
+       public function index(Request $request): View
     {
-        //
+        $q = (string) $request->get('q', '');
+        $departments = Department::query()
+            ->when($q, fn($query) =>
+                $query->where('dpm_id', 'like', "%{$q}%")
+                      ->orWhere('name', 'like', "%{$q}%")
+                      ->orWhere('brn_id', 'like', "%{$q}%")
+            )
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
 
-       
-
-
+        return view('departments.index', compact('departments', 'q'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
-        //
+        $department = new Department();
+        return view('departments.create', compact('department'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(DepartmentRequest $request): RedirectResponse
     {
-        //
+    
+        Department::create($request->validated());
+        return redirect()->route('departments.index')->with('success', 'บันทึกข้อมูลสำเร็จ');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Department $department): View
     {
-        //
+        return view('departments.show', compact('department'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Department $department): View
     {
-        //
+        return view('departments.edit', compact('department'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(DepartmentRequest $request, Department $department): RedirectResponse
     {
-        //
+        $department->update($request->validated());
+        return redirect()->route('departments.index')->with('success', 'อัปเดตข้อมูลสำเร็จ');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Department $department): RedirectResponse
     {
-        //
+        $department->delete();
+        return redirect()->route('departments.index')->with('success', 'ลบข้อมูลสำเร็จ');
     }
 }

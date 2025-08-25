@@ -24,12 +24,14 @@ class RolesAndPermissionsSeeder extends Seeder
         // Create permissions
         $ViewPostPermission = Permission::create(['name' => 'list department']);
         $createPostPermission = Permission::create(['name' => 'create department']);
+        $storePostPermission = Permission::create(['name' => 'store department']);
         $editPostPermission = Permission::create(['name' => 'edit department']);
         $deletePostPermission = Permission::create(['name' => 'delete department']);
 
         // Assign permissions to roles
         $adminRole->givePermissionTo($ViewPostPermission);
         $adminRole->givePermissionTo($createPostPermission);
+        $adminRole->givePermissionTo($storePostPermission);
         $adminRole->givePermissionTo($editPostPermission);
         $adminRole->givePermissionTo($deletePostPermission);
 
@@ -44,7 +46,7 @@ class RolesAndPermissionsSeeder extends Seeder
     'password' => bcrypt('12345678'),
 ]);
 
-$user->assignRole('editor'); 
+$user->assignRole('admin'); 
     
     }
 }

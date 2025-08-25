@@ -11,18 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organizations', function (Blueprint $table) {
+            Schema::create('organizations', function (Blueprint $table) {
             $table->id();
-                       // The org_id field is a universally unique identifier (UUID).
             $table->uuid('org_id');
-            
-            // The name field is a string.
             $table->string('name');
-            
-            // The logo field is a nullable string.
             $table->string('logo')->nullable();
-            
-            // The status field is a boolean (true/false).
             $table->boolean('status');
             $table->timestamps();
         });

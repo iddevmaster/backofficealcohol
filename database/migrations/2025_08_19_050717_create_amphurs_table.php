@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('amphurs', function (Blueprint $table) {
             $table->id();
+            $table->string('amphur_code');
             $table->string('name');
+            $table->integer('province_id');
+            $table->string('status');
             $table->timestamps();
         });
     }

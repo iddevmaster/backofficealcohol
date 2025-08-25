@@ -16,6 +16,8 @@
 </head>
 <body class="min-h-screen bg-background">
     <!-- Header -->
+         <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+@stack('scripts')
 @include('template.header')
     <!-- Sidebar -->
     @include('template.sidebar')
@@ -38,6 +40,7 @@
 
     <!-- JavaScript -->
     <script>
+
     // Check authentication
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
     if (!currentUser) {

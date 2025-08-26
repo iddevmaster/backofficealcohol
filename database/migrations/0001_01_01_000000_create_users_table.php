@@ -12,12 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->id();                                  // pk
+            $table->string('username')->unique();          // login name
+            $table->string('password');                    // hashed
+            $table->string('prefix');                      // เช่น Mr., คุณ ฯลฯ
+            $table->string('email');                      // เช่น Mr., คุณ ฯลฯ
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('role_id');                     // เก็บเป็น string ตามสเปค
+            $table->string('dpm_id')->nullable();          // department id
+            $table->string('brn_id')->nullable();          // branch id
+            $table->string('org_id')->nullable();          // organization id
+            $table->string('phone')->nullable();
+            $table->boolean('status')->default(true);      // active?
             $table->timestamps();
         });
 

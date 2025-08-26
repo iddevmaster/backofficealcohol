@@ -126,7 +126,7 @@
                 <div class="space-y-1 text-xs text-slate-600">
                     <p><strong>Admin:</strong> admin@gmail.com / 12345678</p>
                     <p><strong>staff:</strong> editor@gmail.com / 12345678</p>
-                    <p><strong>User:</strong> user@mail.com / manager123</p>
+                    <p><strong>User:</strong> user@gmail.com / 12345678</p>
                 </div>
             </div>
         </div>
@@ -139,6 +139,6 @@
    
 
 </x-guest-layout>
-
+ 
 
 

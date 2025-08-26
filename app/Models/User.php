@@ -10,6 +10,7 @@ use App\Enums\RoleName;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Permission\Traits\HasRoles; 
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -22,13 +23,30 @@ class User extends Authenticatable
      * @var list<string>
      */
 
-     
-    protected $guard_name = 'web'; // (แนะนำ ระบุ guard ให้ตรง)
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
+         protected $fillable = [
+        'username','password','prefix','first_name','last_name',
+        'role_id','dpm_id','brn_id','org_id','phone','status',
     ];
+
+
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
+    // แฮชรหัสผ่านอัตโนมัติเมื่อถูก set (กันกรณีส่งค่าเดิมมา)
+    public function setPasswordAttribute($value)
+    {
+        if (!$value) return; // อย่าทับถ้าเป็นค่าว่าง (เช่นตอน update ไม่เปลี่ยน)
+        $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
+    }
+
+    // ชื่อเต็ม (optional helper)
+    public function getFullNameAttribute(): string
+    {
+        return trim("{$this->prefix} {$this->first_name} {$this->last_name}");
+    }
+    protected $guard_name = 'web'; // (แนะนำ ระบุ guard ให้ตรง)
+
 
     /**
      * The attributes that should be hidden for serialization.

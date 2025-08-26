@@ -56,7 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
         foreach ($resources as $res => $actions) {
             foreach ($actions as $act) {
                 Permission::firstOrCreate(
-                    ['name' => "{$act} {$res}", 'guard_name' => $guard]
+                    ['name' => "{$act} {$res}",'guard_name' => $guard]
                 );
             }
         }
@@ -66,64 +66,42 @@ class RolesAndPermissionsSeeder extends Seeder
 
 
 
-        $user = User::create([
-    'name' => 'Super User',
-    'email' => 'rkknoob@gmail.com',
-    'password' => bcrypt('12345678'),
-]);
-$user->assignRole('super-admin'); 
 
 
-        $user2 = User::create([
-    'name' => 'Admin User',
-    'email' => 'admin@gmail.com',
-    'password' => bcrypt('12345678'),
-]);
-
-$user2->assignRole('admin'); 
+$user = User::find(1); // สมมติ user id=1
+$user->assignRole('super-admin');
+$superRole->givePermissionTo(Permission::all());
 
 
-        $user3 = User::create([
-    'name' => 'editor',
-    'email' => 'editor@gmail.com',
-    'password' => bcrypt('12345678'),
-]);
-
-$user3->assignRole('editor'); 
-
-
-        $user4 = User::create([
-    'name' => 'User',
-    'email' => 'user@mail.com',
-    'password' => bcrypt('12345678'),
-]);
-
-$user4->assignRole('user'); 
+$user2 = User::find(2); // สมมติ user id=1
+$user2->assignRole('admin');
 
 
 
- $superRole->givePermissionTo(Permission::all());
+$user3 = User::find(3); // สมมติ user id=1
+$user3->assignRole('editor');
 
-        // manager: list/show + create/edit ในบาง resource
-        $adminRole->givePermissionTo([
+
+
+$user4 = User::find(4); // สมมติ user id=1
+$user4->assignRole('user');
+
+
+
+ $adminRole->givePermissionTo([
             'list branches',
         ]);
 
         $editorRole->givePermissionTo([
             'list branches',
         ]);
-        // staff: ดูรายการ + รายการย่อยเท่านั้น
-        // $userRole->givePermissionTo([
-        //     'list branches',
-        // ]);
+   
 
 
            $userRole->givePermissionTo([
             'list departments', 'create departments'
         ]);
 
-
-        // $userRole->givePermissionTo(Permission::all());
     
     }
 }

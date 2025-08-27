@@ -32,9 +32,8 @@ class UserSeeder extends Seeder
 
             User::create([
             'username'   => 'rkknoob',
-            'password' => bcrypt('12345678'),
-            'email'  => 'rkknoob@gmail.com',
-            'prefix'     => 1,
+            'password' => Hash::make('12345678'),
+            'prefix_id'     => 1,
             'first_name' => 'บุญเขต',
             'last_name'  => 'เรืองเจริญธรรม',
             'role_id'    => 1,
@@ -49,8 +48,7 @@ class UserSeeder extends Seeder
         User::create([
             'username'   => 'admin',
             'password' => bcrypt('12345678'),
-            'email'  => 'admin@gmail.com',
-            'prefix'     => 1,
+            'prefix_id'     => 1,
             'first_name' => 'admin',
             'last_name'  => 'admin',
             'role_id'    => 2,
@@ -65,8 +63,7 @@ class UserSeeder extends Seeder
                User::create([
             'username'   => 'editor',
             'password' => bcrypt('12345678'),
-            'email'  => 'editor@gmail.com',
-            'prefix'     => 1,
+            'prefix_id'     => 1,
             'first_name' => 'editor',
             'last_name'  => 'admin',
             'role_id'    => 3,
@@ -81,8 +78,7 @@ class UserSeeder extends Seeder
         User::create([
             'username'   => 'user',
             'password' => bcrypt('12345678'),
-            'email'  => 'user@gmail.com',
-            'prefix'     => 1,
+            'prefix_id'     => 1,
             'first_name' => 'user',
             'last_name'  => 'user',
             'role_id'    => 4,

@@ -35,21 +35,22 @@
                @csrf
                 <!-- Email Field -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-slate-700 mb-2">
-                        อีเมล
+                    <label for="text" class="block text-sm font-medium text-slate-700 mb-2">
+                        Username
                     </label>
                     <div class="relative">
-                        <input type="email" id="email" name="email" class="input-field pl-10 pr-4" placeholder="กรอกอีเมลของคุณ" required autocomplete="email" />
+                        <input type="text" id="username" name="username" class="input-field pl-10 pr-4" placeholder="กรอกชื่อของคุณ" required autofocus />
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
                             </svg>
                         </div>
                     </div>
-                    <div id="emailError" class="hidden mt-1 text-sm text-error-600">
-                        กรุณากรอกอีเมลที่ถูกต้อง
-                    </div>
+               @error('username') <div class="text-red-600 text-sm">{{ $message }}</div> @enderror
                 </div>
+
+                <!-- <input id="username" name="username" type="text" required autofocus autocomplete="username">
+@error('username') <div class="text-red-600 text-sm">{{ $message }}</div> @enderror -->
 
                 <!-- Password Field -->
                 <div>

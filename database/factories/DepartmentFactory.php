@@ -21,7 +21,7 @@ class DepartmentFactory extends Factory
        return [
             'dpm_id' => strtoupper($this->faker->bothify('DPM-###')),
             'name'   => $this->faker->company(),
-            'brn_id' => strtoupper($this->faker->bothify('BRN-##')),
+            'brn_id' => 1,
         ];
     }
 }

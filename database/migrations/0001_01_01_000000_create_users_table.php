@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();                                  // pk
             $table->string('username')->unique();          // login name
             $table->string('password');                    // hashed
-            $table->string('prefix');                      // เช่น Mr., คุณ ฯลฯ
-            $table->string('email');                      // เช่น Mr., คุณ ฯลฯ
+            $table->string('prefix_id');                      // เช่น Mr., คุณ ฯลฯ
+            $table->timestamp('email_verified_at')->nullable();                   // เช่น Mr., คุณ ฯลฯ
             $table->string('first_name');
             $table->string('last_name');
             $table->string('role_id');                     // เก็บเป็น string ตามสเปค
@@ -26,10 +26,11 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->boolean('status')->default(true);      // active?
             $table->timestamps();
+             $table->rememberToken();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->string('username')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });

@@ -1,9 +1,3 @@
-
-@php
-  $editing = isset($user);
-  // ใช้ตัวแปร $roles, $orgs ที่ถูกส่งมาจาก controller ในหน้า create/edit
-@endphp
-
 @csrf
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -15,20 +9,14 @@
     @error('username') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
   </div>
 
-
-
-      <div>
-      <label class="block text-sm font-medium mb-1">คำนำหน้า (prefix)</label>
-      <select name="prefix_id" x-model="prefixs "
-              class="w-full rounded border-gray-300" :disabled="!org">
-        <option value="" disabled>-- เลือก --</option>
-            @foreach(($prefixs ?? []) as $t)
-      <option value="{{ $t->id }}" @selected(old('prefix_id', $user->prefix_id ?? '') == $t->id)>{{ $t->name }} ({{ $t->id }})</option>
-    @endforeach
-      </select>
-      @error('prefix') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
-    </div>
-
+  <div>
+    <label class="block text-sm font-medium mb-1">คำนำหน้า (prefix)</label>
+    <input type="text" name="prefix"
+           value="{{ old('prefix', $user->prefix ?? '') }}"
+           placeholder="เช่น Mr., Ms., คุณ"
+           class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 @error('prefix') border-red-500 @enderror">
+    @error('prefix') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+  </div>
 
   <div>
     <label class="block text-sm font-medium mb-1">ชื่อ (first_name)</label>
@@ -46,23 +34,11 @@
     @error('last_name') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
   </div>
 
-        <div class="md:col-span-1">
-    <label class="block text-sm font-medium mb-1">
-      รหัสผ่าน ({{ request()->routeIs('users.create') ? 'จำเป็น' : 'ไม่กรอก = ไม่เปลี่ยน' }})
-    </label>
-    <input type="password" name="password"
-           class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 @error('password') border-red-500 @enderror">
-    @error('password') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
-  </div>
-  <div class="md:col-span-1">
-    <label class="block text-sm font-medium mb-1">ยืนยันรหัสผ่าน</label>
-    <input type="password" name="password_confirmation"
-           class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-  </div>
+  
 
 </div>
 
-<div x-data="userOrgBrnDpm()" @backup-close.window="show = false">
+<div x-data="userOrgBrnDpm()" x-init="init()">
   <!-- 1) ORG -->
   <label class="block text-sm font-medium mb-1">องค์กร (org) *</label>
   <select name="org_id" x-model="org" @change="onOrgChange()" class="w-full rounded border-gray-300" required>
@@ -112,33 +88,34 @@
     </div>
 
 
-
+      <div class="md:col-span-1">
+    <label class="block text-sm font-medium mb-1">
+      รหัสผ่าน ({{ request()->routeIs('users.create') ? 'จำเป็น' : 'ไม่กรอก = ไม่เปลี่ยน' }})
+    </label>
+    <input type="password" name="password"
+           class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 @error('password') border-red-500 @enderror">
+    @error('password') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+  </div>
+  <div class="md:col-span-1">
+    <label class="block text-sm font-medium mb-1">ยืนยันรหัสผ่าน</label>
+    <input type="password" name="password_confirmation"
+           class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+  </div>
   </div>
 
   <!-- Alpine helper -->
   <script>
   function userOrgBrnDpm() {
     return {
-      
       org: @json(old('org_id', $user->org_id ?? '')),
       brn: @json(old('brn_id', $user->brn_id ?? '')),
       dpm: @json(old('dpm_id', $user->dpm_id ?? '')),
       brnList: [], dpmList: [],
       async init() {
-        
-       
-      const org = this.org ? Number(this.org) : null;
-      const brn = this.brn ? Number(this.brn) : null;
-      const dpm = this.dpm ? Number(this.dpm) : null;
-   
         if (this.org) {
-          await this.loadBranches(true);
-           this.brn = brn;
-          await this.$nextTick();
           
+          await this.loadBranches(true);
           if (this.brn) await this.loadDepartments(true);
-              this.dpm = dpm;
-          await this.$nextTick();
         }
       },
       async onOrgChange() {
@@ -148,25 +125,19 @@
       },
       async onBrnChange() {
         this.dpm = '';
-        
+        console.log(this.brn)
         await this.loadDepartments(false);
       },
       async loadBranches(preserve=false) {
         this.brnList = [];
-      
+         
         if (!this.org) return;
         const res = await fetch(`{{ route('api.org.branches', '_ORG_') }}`.replace('_ORG_', this.org));
         
         this.brnList = await res.json();
-        this.brn_x = this.brn
-      
        
         if (!preserve) this.brn = '';
-      
         if (this.brn && !this.brnList.find(x=>x.id===this.brn)) this.brn = '';
-        
-      
-    
       },
       async loadDepartments(preserve=false) {
         this.dpmList = [];
@@ -174,10 +145,9 @@
         if (!this.brn) return;
         const res = await fetch(`{{ route('api.branch.departments', '_BRN_') }}`.replace('_BRN_', this.brn));
         this.dpmList = await res.json();
-        
+        console.log(this.dpmList);
         if (!preserve) this.dpm = '';
         if (this.dpm && !this.dpmList.find(x=>x.id===this.dpm)) this.dpm = '';
-       
       }
     }
   }

@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
+use App\Models\Department;
+use App\Models\Organization;
+use App\Models\Prefixes;
+use App\Models\Role;
 
 class UsersController extends Controller
 {
@@ -32,7 +36,13 @@ class UsersController extends Controller
 
     public function create()
     {
-        return view('users.create');
+    
+         return view('users.create', [
+        'roles' => Role::orderBy('name')->get(),
+        'orgs'  => Organization::orderBy('id')->get(),
+        'departments'  => Department::orderBy('name')->get(),
+        'prefixs'  => Prefixes::orderBy('id')->get(),
+    ]);
     }
 
     public function store(UserRequest $request)
@@ -52,7 +62,14 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+       
+        return view('users.edit', [
+        'user'  => $user,
+        'roles' => Role::orderBy('name')->get(),
+        'orgs'  => Organization::orderBy('id')->get(),
+        'departments'  => Department::orderBy('name')->get(),
+        'prefixs'  => Prefixes::orderBy('id')->get(),
+    ]);
     }
 
     public function update(UserRequest $request, User $user)

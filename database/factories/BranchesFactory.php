@@ -23,7 +23,7 @@ class BranchesFactory extends Factory
             'tambon_id'   => fake()->numberBetween(1000,9999),
             'amphur_id'   => fake()->numberBetween(100,999),
             'province_id' => fake()->numberBetween(1,77),
-            'org_id'      => strtoupper(fake()->bothify('ORG-##')),
+            'org_id'      => 1,
         ];
     }
 }

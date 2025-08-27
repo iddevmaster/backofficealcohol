@@ -15,6 +15,8 @@ use App\Http\Controllers\OrganizationUserController;
 use App\Http\Controllers\PrefixesController;
 use App\Http\Controllers\PrefixesUserController;
 use App\Http\Controllers\UsersController;
+use App\Models\Branches;
+use App\Models\Department;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -123,6 +125,15 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/admin/users', UsersController::class);
 
+
+Route::get('/api/orgs/{org}/branches', fn($org) =>
+    Branches::where('org_id',$org)->orderBy('name')->get(['id','name'])
+)->middleware(['web','auth'])->name('api.org.branches');
+
+Route::get('/api/branches/{brn}/departments', function ($brn) {
+    // กรองให้ชัด: dept ต้องอยู่ใต้ branch นี้
+    return Department::where('brn_id',$brn)->orderBy('name')->get(['id','name']);
+})->middleware(['web','auth'])->name('api.branch.departments');
 
 });
 

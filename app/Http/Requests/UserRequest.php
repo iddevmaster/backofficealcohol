@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
                 $this->isMethod('post') ? 'required' : 'nullable',
                 'string','min:6','confirmed' // ต้องมี password_confirmation
             ],
-            'prefix'     => ['required','string','max:50'],
+            'prefix_id'     => ['required','string','max:50'],
             'first_name' => ['required','string','max:100'],
             'last_name'  => ['required','string','max:100'],
             'role_id'    => ['required','string','max:100'],
@@ -44,7 +44,7 @@ class UserRequest extends FormRequest
             'username'   => 'ชื่อผู้ใช้',
             'password'   => 'รหัสผ่าน',
             'password_confirmation' => 'ยืนยันรหัสผ่าน',
-            'prefix'     => 'คำนำหน้า',
+            'prefix_id'     => 'คำนำหน้า',
             'first_name' => 'ชื่อ',
             'last_name'  => 'นามสกุล',
             'role_id'    => 'บทบาท',

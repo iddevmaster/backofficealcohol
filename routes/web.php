@@ -15,6 +15,8 @@ use App\Http\Controllers\OrganizationUserController;
 use App\Http\Controllers\PrefixesController;
 use App\Http\Controllers\PrefixesUserController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\RoleController;
+
 use App\Models\Branches;
 use App\Models\Department;
 
@@ -124,6 +126,11 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::resource('/admin/users', UsersController::class);
+    // Route::resource('/admin/roles', RoleController::class);
+
+    Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard');
+    Route::resource('/admin/roles', RoleController::class);
+    Route::resource('/admin/permissions', PermissionController::class);
 
 
 Route::get('/api/orgs/{org}/branches', fn($org) =>

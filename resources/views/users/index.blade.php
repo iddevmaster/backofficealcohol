@@ -33,8 +33,8 @@
             <td class="px-4 py-2">{{ $u->id }}</td>
             <td class="px-4 py-2">{{ $u->username }}</td>
             <td class="px-4 py-2">{{ $u->full_name }}</td>
-            <td class="px-4 py-2">{{ $u->role_id }}</td>
-            <td class="px-4 py-2">{{ $u->org_id ?? '—' }}</td>
+            <td>{{ $u->role->name ?? '-' }}</td>
+            <td class="px-4 py-2">{{ $u->organize->name ?? '—' }}</td>
             <td class="px-4 py-2">
               <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs
                 {{ $u->status ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">

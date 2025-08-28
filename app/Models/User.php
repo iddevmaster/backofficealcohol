@@ -11,6 +11,7 @@ use App\Models\Role;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Permission\Traits\HasRoles; 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;   // ✅ ต้อง use ของ Laravel
 
 class User extends Authenticatable
 {
@@ -69,6 +70,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+     public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
+         public function organize(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class, 'org_id', 'id');
     }
 
 

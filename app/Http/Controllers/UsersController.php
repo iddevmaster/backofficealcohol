@@ -17,19 +17,31 @@ class UsersController extends Controller
      */
         public function index(Request $request)
     {
-        $q = (string) $request->get('q', '');
+      
 
-        $users = User::query()
-            ->when($q, fn($qr) => $qr->where(function($w) use ($q) {
-                $w->where('username','like',"%{$q}%")
-                  ->orWhere('first_name','like',"%{$q}%")
-                  ->orWhere('last_name','like',"%{$q}%")
-                  ->orWhere('role_id','like',"%{$q}%")
-                  ->orWhere('org_id','like',"%{$q}%");
-            }))
-            ->latest('id')
-            ->paginate(10)
-            ->withQueryString();
+    $q = (string) $request->get('q', '');
+
+$users = User::query()
+    ->with('role','organize') // ผูก role มาพร้อมกัน ป้องกัน N+1
+    ->when($q, function ($qr) use ($q) {
+        $qr->where(function ($w) use ($q) {
+            $w->where('username', 'like', "%{$q}%")
+              ->orWhere('first_name', 'like', "%{$q}%")
+              ->orWhere('last_name', 'like', "%{$q}%")
+              ->orWhere('role_id', 'like', "%{$q}%")
+              ->orWhere('org_id', 'like', "%{$q}%");
+        })
+        // ค้นหาจากชื่่อ role ด้วย
+        ->orWhereHas('role', function ($r) use ($q) {
+            $r->where('name', 'like', "%{$q}%");
+        })
+        ->orWhereHas('organize', function ($s) use ($q) {
+            $s->where('name', 'like', "%{$q}%");
+        });
+    })
+    ->latest('id')
+    ->paginate(10)
+    ->withQueryString();
 
         return view('users.index', compact('users','q'));
     }

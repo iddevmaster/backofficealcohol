@@ -21,9 +21,10 @@
       <thead class="bg-gray-100 text-gray-700">
         <tr>
           <th class="px-4 py-2 text-left">#</th>
-          <th class="px-4 py-2 text-left">dpm_id</th>
-          <th class="px-4 py-2 text-left">name</th>
-          <th class="px-4 py-2 text-left">brn_id</th>
+          <th class="px-4 py-2 text-left">รหัสแผนก</th>
+          <th class="px-4 py-2 text-left">ชื่อแผนก</th>
+          <th class="px-4 py-2 text-left">รหัสสาขา</th>
+           <th class="px-4 py-2 text-left">ชื่อสาขา</th>
           <th class="px-4 py-2 text-left">อัปเดตล่าสุด</th>
           <th class="px-4 py-2 text-right">การทำงาน</th>
         </tr>
@@ -38,7 +39,8 @@
               </a>
             </td>
             <td class="px-4 py-2">{{ $dep->name }}</td>
-            <td class="px-4 py-2">{{ $dep->brn_id }}</td>
+             <td class="px-4 py-2">{{ $dep->branches->brn_id }}</td>
+            <td class="px-4 py-2">{{ $dep->branches->name }}</td>
             <td class="px-4 py-2">{{ $dep->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">
               <a href="{{ route('departments.edit', $dep) }}"

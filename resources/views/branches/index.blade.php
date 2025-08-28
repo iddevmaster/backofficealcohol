@@ -6,7 +6,7 @@
 
 <form method="get" class="mb-4">
   <div class="flex gap-2">
-    <input type="text" name="q" value="{{ $q }}" placeholder="ค้นหา brn_id / name / org_id / address"
+    <input type="text" name="q" value="{{ $q }}" placeholder="ค้นหา ชื่อสาขา/ชื่อองค์กร/รหัสสาขา/จังหวัด/อำเภอ/ตำบล"
            class="flex-1 rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
     <button class="rounded-md border px-4 py-2 hover:bg-gray-50">ค้นหา</button>
   </div>
@@ -18,20 +18,23 @@
       <thead class="bg-gray-100 text-gray-700">
         <tr>
           <th class="px-4 py-2 text-left">#</th>
-          <th class="px-4 py-2 text-left">brn_id</th>
+          <th class="px-4 py-2 text-left">รหัสสาขา</th>
           <th class="px-4 py-2 text-left">ชื่อ</th>
-          <th class="px-4 py-2 text-left">จังหวัด</th>
+          <th class="px-4 py-2 text-left">องค์กร</th>
+          <th class="px-4 py-2 text-left">ที่อยู่</th>
           <th class="px-4 py-2 text-left">อัปเดตล่าสุด</th>
           <th class="px-4 py-2 text-right">การทำงาน</th>
         </tr>
       </thead>
       <tbody class="divide-y">
         @foreach($branches as $b)
+  
           <tr>
             <td class="px-4 py-2">{{ $b->id }}</td>
             <td class="px-4 py-2"><a class="text-indigo-600 hover:underline" href="{{ route('branches.show', $b) }}">{{ $b->brn_id }}</a></td>
             <td class="px-4 py-2">{{ $b->name }}</td>
-            <td class="px-4 py-2">{{ $b->province->name ?? '—' }}</td>
+             <td class="px-4 py-2">{{ $b->organize->name }}</td>
+            <td class="px-4 py-2">ตำบล {{ $b->tambon->name ?? '—' }} อำเภอ {{ $b->amphur->name ?? '—' }} จังหวัด {{ $b->province->name ?? '—' }}</td>
             <td class="px-4 py-2">{{ $b->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">
               <a href="{{ route('branches.edit', $b) }}" class="inline-flex rounded-md border px-3 py-1.5 hover:bg-gray-50">แก้ไข</a>

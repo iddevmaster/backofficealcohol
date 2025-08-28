@@ -49,12 +49,19 @@
     @error('province_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
   </div> -->
 
-  <div>
-    <label class="block text-sm font-medium mb-1">รหัสองค์กร (org_id)</label>
-    <input type="text" name="org_id"
-      class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('org_id') border-red-500 @enderror"
-      value="{{ old('org_id', $branch->org_id) }}">
-    @error('org_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+
+
+    <div>
+    <label class="block text-sm font-medium mb-1">รหัสองค์กร (org_id) *</label>
+    <select name="org_id" class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" required>
+      <option value="">-- องค์กร --</option>
+      @foreach(($organization ?? []) as $b)
+        <option value="{{ $b->id }}" @selected(old('org_id', $branch->org_id ?? '') == $b->id)>
+          {{ $b->name }} ({{ $b->id }})
+        </option>
+      @endforeach
+    </select>
+    @error('org_id')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
   </div>
 </div>
 

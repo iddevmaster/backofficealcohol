@@ -16,20 +16,20 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
 
-     $this->call(UserSeeder::class);
-      $this->call([
-        RolesAndPermissionsSeeder::class,
+    //  $this->call(UserSeeder::class);
+    //   $this->call([
+    //     RolesAndPermissionsSeeder::class,
         
         
-        // RoleSeeder::class,
-        // CreateAdminUserSeeder::class,
-    ]);
-      $this->call(\Database\Seeders\OrganizeSeeder::class);
-      $this->call(\Database\Seeders\DepartmentSeeder::class);
-    $this->call(\Database\Seeders\BranchesSeeder::class);
-    //   $this->call(\Database\Seeders\ProvinceSeeder::class);
-    //   $this->call(\Database\Seeders\TambonSeeder::class);
-    //   $this->call(\Database\Seeders\AmphursSeeder::class);
-         $this->call(\Database\Seeders\PrefixesSeeder::class);
+    //     // RoleSeeder::class,
+    //     // CreateAdminUserSeeder::class,
+    // ]);
+      // $this->call(\Database\Seeders\OrganizeSeeder::class);
+      // $this->call(\Database\Seeders\DepartmentSeeder::class);
+    // $this->call(\Database\Seeders\BranchesSeeder::class);
+      $this->call(\Database\Seeders\ProvinceSeeder::class);
+      $this->call(\Database\Seeders\TambonSeeder::class);
+      $this->call(\Database\Seeders\AmphursSeeder::class);
+        //  $this->call(\Database\Seeders\PrefixesSeeder::class);
     }
 }

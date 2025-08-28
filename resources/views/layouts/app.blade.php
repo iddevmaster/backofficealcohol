@@ -34,3 +34,12 @@
         </div>
     </body>
 </html>
+<style>
+
+    @layer utilities {
+  .hide-activity ul,
+  .hide-activity ol {
+    @apply hidden; /* ซ่อน list ทั้งหมดที่อยู่ข้างใน */
+  }
+}
+</style>

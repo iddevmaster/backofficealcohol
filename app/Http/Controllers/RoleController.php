@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\{Role, Permission, User};
+use App\Http\Requests\RoleRequest;
 
 class RoleController extends Controller
 {
@@ -11,11 +12,21 @@ class RoleController extends Controller
      * Display a listing of the resource.
      */
  public function dashboard(Request $request) {
-        $roles = Role::withCount('permissions')
-          ->when($request->q, fn($q)=>$q->where('name','like',"%{$request->q}%"))
-          ->when($request->guard_name, fn($q)=>$q->where('guard_name',$request->guard_name))
-          ->when($request->org_id, fn($q)=>$q->where('org_id',$request->org_id))
-          ->orderByDesc('id')->paginate(10)->withQueryString();
+   
+
+$q = (string) $request->get('q', '');
+
+$roles = Role::withCount('permissions','organize')
+    ->when($q, function($query) use ($q) {
+        $query->where('name','like',"%{$q}%")
+              ->orWhere('guard_name','like',"%{$q}%")
+              ->orWhereHas('organize', function($q2) use ($q) {
+                  $q2->where('name','like',"%{$q}%");
+              });
+    })
+    ->orderByDesc('id')
+    ->paginate(10)
+    ->withQueryString();
         $permissions = Permission::orderBy('name')->get();
         return view('access.index', [
           'roles'=>$roles, 'permissions'=>$permissions,
@@ -43,7 +54,7 @@ class RoleController extends Controller
         unset($data['permissions']);
         $role = Role::create($data);
         if ($perms) $role->permissions()->sync($perms);
-        return redirect()->route('roles.show',$role)->with('success','สร้าง Role สำเร็จ');
+        return redirect()->route('admin.roles.show',$role)->with('success','สร้าง Role สำเร็จ');
     }
 
     public function show(Role $role) {
@@ -61,12 +72,16 @@ class RoleController extends Controller
     }
 
     public function update(RoleRequest $request, Role $role) {
+    
         $data = $request->validated();
         $perms = $data['permissions'] ?? [];
         unset($data['permissions']);
+      
         $role->update($data);
         $role->permissions()->sync($perms);
-        return redirect()->route('roles.show',$role)->with('success','บันทึกการแก้ไขแล้ว');
+  
+        return redirect()->route('access.dashboard')
+       ->with('success', 'บันทึกการแก้ไขแล้ว');
     }
 
     public function destroy(Role $role) {

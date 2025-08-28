@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\{Role, Permission, User};
+use App\Http\Requests\PermissionRequest;
 
 class PermissionController extends Controller
 {

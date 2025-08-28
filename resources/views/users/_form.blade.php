@@ -62,10 +62,10 @@
 
 </div>
 
-<div x-data="userOrgBrnDpm()" @backup-close.window="show = false">
+<div x-data="userOrgBrnDpm()" @backup-close.window="show = true">
   <!-- 1) ORG -->
   <label class="block text-sm font-medium mb-1">องค์กร (org) *</label>
-  <select name="org_id" x-model="org" @change="onOrgChange()" class="w-full rounded border-gray-300" required>
+  <select name="org_id" x-model="org" @change="onOrgChange()" class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('org_id') border-red-500 @enderror" required>
     <option value="">-- เลือกองค์กร --</option>
     @foreach(($orgs ?? []) as $o)
       <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->id }})</option>
@@ -73,11 +73,11 @@
   </select>
   @error('org_id')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
 
-  <div class="mt-4 space-y-4">
+ 
     <!-- 2) BRANCH (disable จนกว่าเลือก org) -->
     <div>
       <label class="block text-sm font-medium mb-1">สาขา (branch)</label>
-      <select name="brn_id" x-model="brn" @change="onBrnChange()"
+      <select name="brn_id" x-model="brn" @change="onBrnChange()" 
               class="w-full rounded border-gray-300" :disabled="!org">
         <option value="">-- เลือกสาขา --</option>
         <template x-for="b in brnList" :key="b.id">
@@ -113,7 +113,7 @@
 
 
 
-  </div>
+  
 
   <!-- Alpine helper -->
   <script>

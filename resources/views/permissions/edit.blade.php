@@ -1,6 +1,6 @@
 <x-app-layout>
 <h1 class="text-2xl font-semibold mb-4">แก้ไข Permission #{{ $permission->id }}</h1>
-<form method="post" action="{{ route('permissions.update',$permission) }}" class="bg-white rounded-xl shadow p-4 space-y-4">
+<form method="post" action="{{ route('permissions.update',$permission) }}" class="bg-white rounded-xl shadow space-y-4" style="padding: 10px;">
   @csrf @method('PUT')
   @include('permissions._form', ['permission'=>$permission,'guards'=>['web','api']])
   <div class="flex gap-2">

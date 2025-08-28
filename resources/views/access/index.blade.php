@@ -18,13 +18,13 @@
         <h2 class="font-semibold">Roles</h2>
         <form method="get" class="ml-auto flex items-center gap-2">
           <input name="q" value="{{ request('q') }}" placeholder="ค้นหา role" class="rounded border-gray-300 px-2 py-1">
-          <select name="guard_name" class="rounded border-gray-300 px-2 py-1">
+          <!-- <select name="guard_name" class="rounded border-gray-300 px-2 py-1">
             <option value="">Guard</option>
             @foreach(($guards ?? ['web','api']) as $g)
               <option value="{{ $g }}" @selected(request('guard_name')===$g)>{{ $g }}</option>
             @endforeach
-          </select>
-          <input name="org_id" value="{{ request('org_id') }}" placeholder="Org" class="w-24 rounded border-gray-300 px-2 py-1">
+          </select> -->
+          <!-- <input name="org_id" value="{{ request('org_id') }}" placeholder="Org" class="w-24 rounded border-gray-300 px-2 py-1"> -->
           <button class="rounded bg-slate-900 text-white px-3 py-1.5">Search</button>
         </form>
       </div>
@@ -35,8 +35,8 @@
               <th class="px-4 py-2 text-left text-xs font-semibold">ID</th>
               <th class="px-4 py-2 text-left text-xs font-semibold">Name</th>
               <th class="px-4 py-2 text-left text-xs font-semibold">Guard</th>
-              <th class="px-4 py-2 text-left text-xs font-semibold">Org</th>
-              <th class="px-4 py-2 text-left text-xs font-semibold">#Perms</th>
+              <th class="px-4 py-2 text-left text-xs font-semibold">Organize</th>
+              <!-- <th class="px-4 py-2 text-left text-xs font-semibold">#Perms</th> -->
               <th class="px-4 py-2"></th>
             </tr>
           </thead>
@@ -46,12 +46,12 @@
               <td class="px-4 py-2">{{ $r->id }}</td>
               <td class="px-4 py-2">{{ $r->name }}</td>
               <td class="px-4 py-2">{{ $r->guard_name }}</td>
-              <td class="px-4 py-2">{{ $r->org_id }}</td>
-              <td class="px-4 py-2">{{ $r->permissions_count ?? $r->permissions()->count() }}</td>
+              <td class="px-4 py-2">{{ $r->organize->name }}</td>
+              <!-- <td class="px-4 py-2">{{ $r->permissions_count ?? $r->permissions()->count() }}</td> -->
               <td class="px-4 py-2 text-right">
-                <a href="{{ route('roles.show',$r) }}" class="text-blue-600">ดู</a>
-                <a href="{{ route('roles.edit',$r) }}" class="ml-3 text-amber-600">แก้ไข</a>
-                <form action="{{ route('roles.destroy',$r) }}" method="post" class="inline" onsubmit="return confirm('ลบ role นี้?')">
+                <a href="{{ route('admin.roles.show',$r) }}" class="text-blue-600">ดู</a>
+                <a href="{{ route('admin.roles.edit',$r) }}" class="ml-3 text-amber-600">แก้ไข</a>
+                <form action="{{ route('admin.roles.destroy',$r) }}" method="post" class="inline" onsubmit="return confirm('ลบ role นี้?')">
                   @csrf @method('DELETE')
                   <button class="ml-3 text-red-600">ลบ</button>
                 </form>
@@ -85,7 +85,7 @@
             <tr>
               <th class="px-4 py-2 text-left text-xs font-semibold">ID</th>
               <th class="px-4 py-2 text-left text-xs font-semibold">Name</th>
-              <th class="px-4 py-2 text-left text-xs font-semibold">Guard</th>
+              <!-- <th class="px-4 py-2 text-left text-xs font-semibold">Guard</th> -->
               <th class="px-4 py-2"></th>
             </tr>
           </thead>
@@ -94,7 +94,7 @@
             <tr>
               <td class="px-4 py-2">{{ $p->id }}</td>
               <td class="px-4 py-2">{{ $p->name }}</td>
-              <td class="px-4 py-2">{{ $p->guard_name }}</td>
+              <!-- <td class="px-4 py-2">{{ $p->guard_name }}</td> -->
               <td class="px-4 py-2 text-right">
                 <a href="{{ route('permissions.edit',$p) }}" class="text-amber-600">แก้ไข</a>
                 <form action="{{ route('permissions.destroy',$p) }}" method="post" class="inline" onsubmit="return confirm('ลบ permission นี้?')">
@@ -118,7 +118,7 @@
         <h3 class="font-semibold">Add Role</h3>
         <button class="ml-auto text-slate-500 hover:text-slate-800" @click="showRole=false">✕</button>
       </div>
-      <form method="post" action="{{ route('roles.store') }}">
+      <form method="post" action="{{ route('admin.roles.store') }}">
         @csrf
         <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="space-y-3">
@@ -128,7 +128,7 @@
                 @foreach(($guards ?? ['web','api']) as $g)<option value="{{ $g }}">{{ $g }}</option>@endforeach
               </select>
             </div>
-            <div><label class="block text-sm mb-1">Org *</label><input type="number" name="org_id" value="1" class="w-full rounded border-gray-300"/></div>
+            <div><label class="block text-sm mb-1">Organize *</label><input type="number" name="org_id" value="1" class="w-full rounded border-gray-300"/></div>
             <div class="pt-2">
               <button type="button" @click="toggleAllPerms(true)" class="text-blue-700 text-sm underline">Check all</button>
               <span class="mx-2 text-slate-400">·</span>

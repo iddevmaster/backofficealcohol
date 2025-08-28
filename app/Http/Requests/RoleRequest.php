@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RoleRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class RoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -20,12 +21,10 @@ class RoleRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
  public function rules(): array {
-    $id = $this->route('role')?->id;
+    $id = $this->route('roles')?->id;
     $guard = $this->input('guard_name','web');
     return [
-      'name' => ['required','string','max:191',
-        Rule::unique('roles')->ignore($id)->where(fn($q)=>$q->where('guard_name',$guard))
-      ],
+      'name' => ['required','string','max:191'],
       'guard_name' => ['required','string','max:50'],
       'org_id' => ['required','integer','min:1'],
       'permissions' => ['sometimes','array'],

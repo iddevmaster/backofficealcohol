@@ -12,6 +12,7 @@ use App\Http\Controllers\TambonController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationUserController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrefixesController;
 use App\Http\Controllers\PrefixesUserController;
 use App\Http\Controllers\UsersController;
@@ -129,7 +130,7 @@ Route::middleware('auth')->group(function () {
     // Route::resource('/admin/roles', RoleController::class);
 
     Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard');
-    Route::resource('/admin/roles', RoleController::class);
+    Route::resource('/admin/roles', RoleController::class)->names('admin.roles');
     Route::resource('/admin/permissions', PermissionController::class);
 
 

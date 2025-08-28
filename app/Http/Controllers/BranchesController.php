@@ -8,6 +8,7 @@ use App\Http\Requests\BranchRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Models\Amphurs;
+use App\Models\Organization;
 use App\Models\Tambon;
 
 class BranchesController extends Controller
@@ -19,15 +20,26 @@ class BranchesController extends Controller
     {
         $q = (string) $request->get('q', '');
         $branches = Branches::query()
+            ->with('organize','province','tambon','amphur')
             ->when($q, fn($query) =>
                 $query->where('brn_id','like',"%{$q}%")
                       ->orWhere('name','like',"%{$q}%")
                       ->orWhere('org_id','like',"%{$q}%")
                       ->orWhere('address','like',"%{$q}%")
             )
+            ->orWhereHas('province', function ($q2) use ($q) {
+                        $q2->where('name', 'like', "%{$q}%");
+                    })
+                    ->orWhereHas('amphur', function ($q3) use ($q) {
+                        $q3->where('name', 'like', "%{$q}%");
+                    })
+                    ->orWhereHas('tambon', function ($q4) use ($q) {
+                        $q4->where('name', 'like', "%{$q}%");
+                    })
             ->latest('id')
             ->paginate(10)
             ->withQueryString();
+
 
         return view('branches.index', compact('branches','q'));
     }
@@ -35,9 +47,9 @@ class BranchesController extends Controller
     public function create(): View
     {
         $branch = new Branches();
-
+         $organization = Organization::orderBy('name')->get();
              $provinces = \App\Http\Controllers\LocationController::provincesForForm();
-        return view('branches.create', compact('provinces','branch'));
+        return view('branches.create', compact('provinces','branch','organization'));
  
     }
 
@@ -54,7 +66,7 @@ class BranchesController extends Controller
 
     public function edit(Branches $branch): View
     {
-
+        $organization = Organization::orderBy('name')->get();
          $provinces = \App\Http\Controllers\LocationController::provincesForForm();
         $values = [
             'province_id' => $branch->province_id,
@@ -80,7 +92,7 @@ class BranchesController extends Controller
     // ]);
           
 
-  return view('branches.edit', compact('branch','provinces','values'));
+  return view('branches.edit', compact('branch','provinces','values','organization'));
 
     
     }

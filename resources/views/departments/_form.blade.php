@@ -15,21 +15,18 @@
   @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
 </div>
 
-<div class="mb-6">
-  <label class="block text-sm font-medium mb-1">รหัสสาขา (brn_id)</label>
-  <input type="text" name="brn_id"
-         class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('brn_id') border-red-500 @enderror"
-         value="{{ old('brn_id', $department->brn_id) }}" required>
-  @error('brn_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-</div>
 
-<div class="flex items-center gap-3">
-  <button type="submit"
-          class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
-    บันทึก
-  </button>
-  <a href="{{ route('departments.index') }}"
-     class="inline-flex items-center rounded-md border px-4 py-2 hover:bg-gray-50">
-    ยกเลิก
-  </a>
-</div>
+  <div>
+    <label class="block text-sm font-medium mb-1">รหัสสาขา (brn_id) *</label>
+    <select name="brn_id" class="w-full rounded border-gray-300" required>
+      <option value="">-- เลือกสาขา --</option>
+      @foreach(($branches ?? []) as $b)
+        <option value="{{ $b->id }}" @selected(old('brn_id', $department->brn_id ?? '') == $b->id)>
+          {{ $b->name }} ({{ $b->id }})
+        </option>
+      @endforeach
+    </select>
+    @error('brn_id')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
+  </div>
+
+

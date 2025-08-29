@@ -3,7 +3,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="text-2xl font-semibold">การควบคุมสิทธิ์</h1>
-      <p class="text-slate-500">Role & Permissions CRUD · spatie/laravel-permission</p>
+      <p class="text-slate-500">Role & Permissions</p>
     </div>
     <div class="flex items-center gap-2">
       <button @click="openAddRole()" class="rounded bg-blue-600 text-white px-3 py-2">+ New Role</button>

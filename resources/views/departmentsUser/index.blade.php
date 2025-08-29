@@ -1,7 +1,7 @@
 <x-app-layout>
 <div class="flex items-center justify-between mb-4">
   <h1 class="text-xl font-semibold">แผนก</h1>
-  <a href="{{ route('departments.create') }}"
+  <a href="{{ route('departmentsUser.create') }}"
      class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
     + เพิ่มแผนก
   </a>
@@ -34,7 +34,7 @@
           <tr>
             <td class="px-4 py-2">{{ $dep->id }}</td>
             <td class="px-4 py-2">
-              <a href="{{ route('departments.show', $dep) }}" class="text-indigo-600 hover:underline">
+              <a href="{{ route('departmentsUser.show', $dep) }}" class="text-indigo-600 hover:underline">
                 {{ $dep->dpm_id }}
               </a>
             </td>
@@ -43,9 +43,9 @@
             <td class="px-4 py-2">{{ $dep->branches->name }}</td>
             <td class="px-4 py-2">{{ $dep->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">
-              <a href="{{ route('departments.edit', $dep) }}"
+              <a href="{{ route('departmentsUser.edit', $dep) }}"
                  class="inline-flex items-center rounded-md border px-3 py-1.5 hover:bg-gray-50">แก้ไข</a>
-              <form action="{{ route('departments.destroy', $dep) }}" method="post" class="inline"
+              <form action="{{ route('departmentsUser.destroy', $dep) }}" method="post" class="inline"
                     onsubmit="return confirm('ลบรายการนี้หรือไม่?');">
                 @csrf @method('DELETE')
                 <button class="inline-flex items-center rounded-md bg-red-600 px-3 py-1.5 text-white hover:bg-red-700">

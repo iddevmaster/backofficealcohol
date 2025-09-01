@@ -22,9 +22,9 @@
       @endforeach
     </select>
   </div>
-  <div>
+  <div hidden>
     <label class="block text-sm mb-1">Org *</label>
-    <input type="number" name="org_id" class="w-full rounded border-gray-300" required value="{{ old('org_id',$role->org_id ?? 1) }}">
+    <input type="text" name="org_id" class="w-full rounded border-gray-300" required value="{{ old('org_id',$org_id ?? 1) }}">
   </div>
 </div>
 <div class="mt-4">

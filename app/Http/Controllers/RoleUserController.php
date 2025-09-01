@@ -12,16 +12,25 @@ class RoleUserController extends Controller
      * Display a listing of the resource.
      */
       public function index(Request $request) {
+
+        $q = (string) $request->get('q', '');
+        $orgId = auth()->user()->org_id ?? null;
         $roles = Role::withCount('permissions')
+        ->when($orgId, fn($qq) => $qq->where('org_id', $orgId))
           ->when($request->q, fn($q)=>$q->where('name','like',"%{$request->q}%"))
+          
           ->orderByDesc('id')->paginate(10)->withQueryString();
-        return view('rolesUser.index', compact('roles'));
+        return view('rolesUser.index', compact('roles','q'));
+
+
+
+
     }
 
     public function create() {
         $permissions = Permission::orderBy('name')->get();
-       
-        return view('rolesUser.create', ['permissions'=>$permissions, 'guards'=>['web','api']]);
+        $orgId = auth()->user()->org_id ?? null;
+        return view('rolesUser.create', ['permissions'=>$permissions, 'guards'=>['web','api'],'org_id' =>$orgId]);
     }
 
     public function store(RoleRequest $request) {
@@ -30,7 +39,7 @@ class RoleUserController extends Controller
         unset($data['permissions']);
         $role = Role::create($data);
         if ($perms) $role->permissions()->sync($perms);
-        return redirect()->route('rolesUser.show',$role)->with('success','สร้าง Role สำเร็จ');
+        return redirect()->route('rolesUser.index')->with('success','สร้าง Role สำเร็จ');
     }
 
     public function show(Role $role) {

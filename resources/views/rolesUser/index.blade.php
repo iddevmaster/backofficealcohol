@@ -7,7 +7,7 @@
   <th class="px-4 py-2 text-left text-xs font-semibold">ID</th>
   <th class="px-4 py-2 text-left text-xs font-semibold">Name</th>
   <th class="px-4 py-2 text-left text-xs font-semibold">Guard</th>
-  <th class="px-4 py-2 text-left text-xs font-semibold">Org</th>
+
   <th class="px-4 py-2 text-left text-xs font-semibold">#Perms</th>
   <th class="px-4 py-2"></th></tr></thead>
 <tbody class="divide-y divide-gray-100">
@@ -16,7 +16,6 @@
   <td class="px-4 py-2">{{ $r->id }}</td>
   <td class="px-4 py-2">{{ $r->name }}</td>
   <td class="px-4 py-2">{{ $r->guard_name }}</td>
-  <td class="px-4 py-2">{{ $r->org_id }}</td>
   <td class="px-4 py-2">{{ $r->permissions_count ?? $r->permissions()->count() }}</td>
   <td class="px-4 py-2 text-right">
     <a href="{{ route('rolesUser.show',$r) }}" class="text-blue-600">ดู</a>

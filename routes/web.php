@@ -111,7 +111,7 @@ Route::middleware('auth')->group(function () {
     ->middleware(['auth','permission:store branches'])
     ->name('rolesUser.store');
 
-    Route::get('/roles/show', [RoleUserController::class,'show'])
+    Route::get('/roles/show/{role}', [RoleUserController::class,'show'])
     ->middleware(['auth','permission:show branches'])
     ->name('rolesUser.show');
 

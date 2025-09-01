@@ -44,10 +44,18 @@ class RoleUserController extends Controller
 
     public function show(Role $role) {
         $role->load('permissions');
+       
         return view('rolesUser.show', compact('role'));
     }
 
     public function edit(Role $role) {
+
+
+        $orgId = auth()->user()->org_id ?? null;
+        $checkorg = Role::where('id',$role->id)->first();
+        if($orgId != $checkorg->org_id){
+           return redirect()->route('rolesUser.index')->with('error','ไม่อนุญาต');
+        }
         $permissions = Permission::orderBy('name')->get();
         $role->load('permissions');
         $selected = $role->permissions->pluck('id')->toArray();

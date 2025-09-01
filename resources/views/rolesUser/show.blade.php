@@ -13,8 +13,7 @@
     </ul>
   </div>
   <div class="pt-3">
-    <a href="{{ route('roles.edit',$role) }}" class="rounded bg-amber-500 text-white px-4 py-2">แก้ไข</a>
-    <a href="{{ route('roles.index') }}" class="rounded bg-gray-200 px-4 py-2">กลับ</a>
+    <a href="{{ route('rolesUser.index') }}" class="rounded bg-gray-200 px-4 py-2">กลับ</a>
   </div>
 </div>
 </x-app-layout>

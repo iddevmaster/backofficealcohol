@@ -42,15 +42,11 @@
   <a href="{{ route('devices.show',$d) }}" class="text-blue-600">ดู</a>
   <a href="{{ route('devices.edit',$d) }}" class="ml-3 text-amber-600">แก้ไข</a>
 
-  {{-- ปุ่มเปิดโมดัลยืนยันลบ --}}
-  <button type="button"
-          class="ml-3 text-red-600 hover:underline"
-          @click="$dispatch('open-delete', {
-              url: @js(route('devices.destroy',$d)),
-              label: @js($d->serial_num) 
-          })">
-    ลบ
-  </button>
+
+ <form action="{{ route('devices.destroy',$d) }}" method="post" class="inline" onsubmit="return confirm('ลบอุปกรณ์นี้?')">
+            @csrf @method('DELETE')
+            <button class="ml-3 text-red-600">ลบ</button>
+          </form>
 </td>
         </tr>
       @endforeach
@@ -66,42 +62,5 @@
     ไม่พบข้อมูล
   </div>
 @endif
-
-<div
-  x-data="{
-    show:false, url:'', label:'',
-    open(detail){ this.url = detail.url; this.label = detail.label ?? ''; this.show = true },
-    close(){ this.show = false; this.url=''; this.label='' }
-  }"
-  x-on:open-delete.window="open($event.detail)"
-  x-cloak
->
-  <div x-show="show" class="fixed inset-0 z-50" x-on:keydown.escape.window="close()">
-    <div class="absolute inset-0 bg-black/50" @click="close()" x-transition.opacity></div>
-
-    <div class="relative mx-auto mt-40 w-full max-w-md">
-      <div class="bg-white rounded-xl shadow-xl overflow-hidden" role="dialog" aria-modal="true"
-           x-transition.scale.origin.top>
-        <div class="p-4 border-b">
-          <h3 class="text-lg font-semibold">ยืนยันการลบ</h3>
-        </div>
-
-        <form :action="url" method="POST" class="p-4 space-y-4">
-          @csrf
-          @method('DELETE')
-
-          <p class="text-slate-700">
-            ต้องการลบอุปกรณ์ <span class="font-medium" x-text="label"></span> ใช่ไหม?
-          </p>
-
-          <div class="flex justify-end gap-2 pt-2">
-            <button type="button" class="rounded bg-gray-200 px-4 py-2" @click="close()">ยกเลิก</button>
-            <button type="submit" class="rounded bg-red-600 text-white px-4 py-2">ลบ</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
 </x-app-layout>

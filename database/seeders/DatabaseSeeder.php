@@ -27,9 +27,11 @@ class DatabaseSeeder extends Seeder
       // $this->call(\Database\Seeders\OrganizeSeeder::class);
       // $this->call(\Database\Seeders\DepartmentSeeder::class);
     // $this->call(\Database\Seeders\BranchesSeeder::class);
-      $this->call(\Database\Seeders\ProvinceSeeder::class);
-      $this->call(\Database\Seeders\TambonSeeder::class);
-      $this->call(\Database\Seeders\AmphursSeeder::class);
+      // $this->call(\Database\Seeders\ProvinceSeeder::class);
+      // $this->call(\Database\Seeders\TambonSeeder::class);
+      // $this->call(\Database\Seeders\AmphursSeeder::class);
         //  $this->call(\Database\Seeders\PrefixesSeeder::class);
+ $this->call(\Database\Seeders\DevicesSeeder::class);
+  
     }
 }

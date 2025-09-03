@@ -23,7 +23,7 @@
                 <span>Branches</span>
             </a>
 
-            <a href="{{ url('/users') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+            <a href="{{ url('/usersUser') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
@@ -72,11 +72,18 @@ super-admin
                 <span>Users</span>
             </a>
 
-                     <a href="{{ url('admin/access') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+            <a href="{{ url('admin/access') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
                 <span>Role</span>
+            </a>
+
+            <a href="{{ url('admin/devices') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Devices</span>
             </a>
           <!-- 
             <a href="data_tables_management.html" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">

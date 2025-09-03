@@ -8,6 +8,7 @@ use App\Http\Controllers\BranchesController;
 use App\Http\Controllers\BranchesUserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DepartmentUserController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\TambonController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\PrefixesUserController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
+use App\Http\Controllers\UsersByUsersController;
 use App\Models\Branches;
 use App\Models\Department;
 
@@ -127,6 +129,35 @@ Route::middleware('auth')->group(function () {
     ->middleware(['auth','permission:destroy branches'])
     ->name('rolesUser.destroy');
 
+
+
+        Route::get('/usersUser', [UsersByUsersController::class,'index'])
+    ->middleware(['auth','permission:list branches'])
+    ->name('usersUser.index');
+    Route::get('/usersUser/create', [UsersByUsersController::class,'create'])
+    ->middleware(['auth','permission:create branches'])
+    ->name('usersUser.create');
+
+    Route::POST('/usersUser', [UsersByUsersController::class,'store'])
+    ->middleware(['auth','permission:store branches'])
+    ->name('usersUser.store');
+
+    Route::get('/usersUser/show', [UsersByUsersController::class,'show'])
+    ->middleware(['auth','permission:show branches'])
+    ->name('usersUser.show');
+
+   Route::get('/usersUser/{user}/edit', [UsersByUsersController::class,'edit'])
+    ->middleware(['auth','permission:edit branches'])
+    ->name('usersUser.edit');
+
+   Route::put('usersUser/{user}', [UsersByUsersController::class, 'update'])
+    ->middleware(['auth','permission:update branches'])
+    ->name('usersUser.update');
+
+    Route::DELETE('/usersUser/{id}', [UsersByUsersController::class,'destroy'])
+    ->middleware(['auth','permission:destroy branches'])
+    ->name('usersUser.destroy');
+
     // Route::resource('/branches', BranchesUserController::class);
     // Route::resource('/organizations', OrganizationUserController::class);
     // Route::resource('/prefixes', PrefixesUserController::class);
@@ -182,6 +213,7 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::resource('/admin/users', UsersController::class);
+    Route::resource('/admin/devices', DeviceController::class)->names('devices');
     // Route::resource('/admin/roles', RoleController::class);
 
     Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard');

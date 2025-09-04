@@ -20,6 +20,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\UsersByUsersController;
+use App\Http\Controllers\EmployeesController;
 use App\Models\Branches;
 use App\Models\Department;
 
@@ -219,6 +220,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard');
     Route::resource('/admin/roles', RoleController::class)->names('admin.roles');
     Route::resource('/admin/permissions', PermissionController::class);
+    Route::resource('/admin/employees', EmployeesController::class);
 
 
 Route::get('/api/orgs/{org}/branches', fn($org) =>

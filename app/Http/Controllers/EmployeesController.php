@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\{Employee, Branches, Department, Organization};
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -20,7 +21,7 @@ class EmployeesController extends Controller
         $orgId = $request->get('org_id');
 
         $employees = Employee::query()
-            ->with(['organization','branch','department'])
+            ->with(['organization','branches','department'])
             ->when($orgId, fn($qq) => $qq->where('org_id', $orgId))
             ->when($q, function ($query) use ($q) {
                 $query->where(function ($w) use ($q) {
@@ -28,7 +29,7 @@ class EmployeesController extends Controller
                       ->orWhere('first_name','like',"%{$q}%")
                       ->orWhere('last_name','like',"%{$q}%")
                       ->orWhere('phone','like',"%{$q}%")
-                      ->orWhereHas('branch', fn($b)=>$b->where('name','like',"%{$q}%"))
+                      ->orWhereHas('branches', fn($b)=>$b->where('name','like',"%{$q}%"))
                       ->orWhereHas('department', fn($d)=>$d->where('name','like',"%{$q}%"));
                 });
             })
@@ -66,14 +67,14 @@ class EmployeesController extends Controller
 
     public function show(Employee $employee): View
     {
-        $employee->load(['organization','branch','department']);
+        $employee->load(['organization','branches','department']);
         return view('employees.show', compact('employee'));
     }
 
     public function edit(Employee $employee): View
     {
         $organizations = Organization::orderBy('name')->get(['id','name']);
-        $branches      = Branch::orderBy('name')->get(['id','name','org_id']);
+        $branches      = Branches::orderBy('name')->get(['id','name','org_id']);
         $departments   = Department::orderBy('name')->get(['id','name','brn_id']);
 
         return view('employees.edit', compact('employee','organizations','branches','departments'));
@@ -92,6 +93,7 @@ class EmployeesController extends Controller
         }
 
         $employee->update($data);
+
 
         return redirect()->route('employees.show', $employee)->with('success','บันทึกการแก้ไขแล้ว');
     }

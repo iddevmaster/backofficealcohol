@@ -59,13 +59,10 @@
         <td class="px-4 py-2 text-right">
           <a href="{{ route('employees.show',$e) }}" class="text-blue-600">ดู</a>
           <a href="{{ route('employees.edit',$e) }}" class="ml-3 text-amber-600">แก้ไข</a>
-          <button type="button" class="ml-3 text-red-600 hover:underline"
-                  @click="$dispatch('open-delete', {
-                    url: @js(route('employees.destroy',$e)),
-                    label: @js($e->emp_id.' - '.$e->full_name)
-                  })">
-            ลบ
-          </button>
+                  <form action="{{ route('employees.destroy',$e) }}" method="post" class="inline" onsubmit="return confirm('ลบอุปกรณ์นี้?')">
+            @csrf @method('DELETE')
+            <button class="ml-3 text-red-600">ลบ</button>
+          </form>
         </td>
       </tr>
       @endforeach
@@ -78,7 +75,7 @@
   <div class="rounded-md border bg-white p-6 text-center text-gray-600">ไม่พบข้อมูล</div>
 @endif
 
-{{-- Delete Modal (teleport เพื่อไม่โดนครอป) --}}
+<!-- {{-- Delete Modal (teleport เพื่อไม่โดนครอป) --}}
 <div x-data="{show:false,url:'',label:'',
               open(d){this.url=d.url;this.label=d.label||'';this.show=true},
               close(){this.show=false;this.url='';this.label=''} }"
@@ -101,7 +98,7 @@
       </div>
     </div>
   </template>
-</div>
+</div> -->
 
 
 </x-app-layout>

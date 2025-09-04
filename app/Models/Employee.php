@@ -24,7 +24,7 @@ class Employee extends Model
 
     // Relations
     public function department() { return $this->belongsTo(\App\Models\Department::class, 'dpm_id'); }
-    public function branch()     { return $this->belongsTo(\App\Models\Branch::class, 'brn_id'); }
+    public function Branches()     { return $this->belongsTo(\App\Models\Branches::class, 'brn_id'); }
     public function organization(){ return $this->belongsTo(\App\Models\Organization::class, 'org_id'); }
 
     // Helpers

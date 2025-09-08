@@ -26,6 +26,7 @@ class PrefixesUserController extends Controller
 
     public function create()
     {
+        
         return view('prefixes.create');
     }
 

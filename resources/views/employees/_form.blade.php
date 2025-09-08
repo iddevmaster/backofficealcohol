@@ -3,12 +3,15 @@
   $oldOrg = old('org_id', $employee->org_id ?? '');
   $oldBrn = old('brn_id', $employee->brn_id ?? '');
   $oldDpm = old('dpm_id', $employee->dpm_id ?? '');
+  $oldPre = old('dpm_id', $employee->prefix_id ?? '');
+  
 @endphp
 
 <div x-data="{
       org: '{{ $oldOrg }}',
       brn: '{{ $oldBrn }}',
       dpm: '{{ $oldDpm }}',
+      prefix: '{{ $oldPre }}',
       branches: @js($branches),        // [{id,name,org_id}]
       departments: @js($departments),  // [{id,name,brn_id}]
       brnList(){ return this.branches.filter(b=> String(b.org_id)===String(this.org)); },
@@ -24,12 +27,20 @@
     @error('emp_id')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
   </div>
 
-  <div>
-    <label class="block text-sm font-medium mb-1">คำนำหน้า *</label>
-    <input name="prefix" required class="w-full rounded border-gray-300"
-           value="{{ old('prefix', $employee->prefix ?? '') }}">
-    @error('prefix')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-  </div>
+
+
+
+        <div>
+      <label class="block text-sm font-medium mb-1">คำนำหน้า (prefix)</label>
+      <select name="prefix_id" x-model="prefixs"
+              class="w-full rounded border-gray-300">
+        <option value="" disabled>-- เลือก --</option>
+            @foreach(($prefixs ?? []) as $t)
+      <option value="{{ $t->id }}" @selected(old('prefix_id', $user->prefix_id ?? '') == $t->id)>{{ $t->name }} ({{ $t->id }})</option>
+    @endforeach
+      </select>
+      @error('prefix') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+    </div>
 
   <div>
     <label class="block text-sm font-medium mb-1">ชื่อ *</label>
@@ -37,6 +48,9 @@
            value="{{ old('first_name', $employee->first_name ?? '') }}">
     @error('first_name')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
   </div>
+
+
+  
 
   <div>
     <label class="block text-sm font-medium mb-1">สกุล *</label>

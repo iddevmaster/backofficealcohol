@@ -26,7 +26,7 @@ class EmployeeRequest extends FormRequest
 
         return [
             'emp_id'   => ['required','string','max:191', Rule::unique('employees','emp_id')->ignore($id)],
-            'prefix'   => ['required','string','max:50'],
+            'prefix_id'   => ['required','string','max:50'],
             'first_name' => ['required','string','max:191'],
             'last_name'  => ['required','string','max:191'],
             'phone'    => ['nullable','string','max:50'],

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('emp_id')->unique();
 
             // Fields for the employee's name.
-            $table->string('prefix');
+            $table->string('prefix_id');
             $table->string('first_name');
             $table->string('last_name');
 

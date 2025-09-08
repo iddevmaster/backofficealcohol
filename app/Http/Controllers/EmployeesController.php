@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Employee, Branches, Department, Organization};
+use App\Models\{Employee, Branches, Department, Organization,Prefixes};
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -47,8 +47,10 @@ class EmployeesController extends Controller
         $organizations = Organization::orderBy('name')->get(['id','name']);
         $branches      = Branches::orderBy('name')->get(['id','name','org_id']);
         $departments   = Department::orderBy('name')->get(['id','name','brn_id']);
+        $prefixs  =  Prefixes::orderBy('id')->get();
 
-        return view('employees.create', compact('organizations','branches','departments'));
+
+        return view('employees.create', compact('organizations','branches','departments','prefixs'));
     }
 
     public function store(EmployeeRequest $request): RedirectResponse
@@ -76,8 +78,9 @@ class EmployeesController extends Controller
         $organizations = Organization::orderBy('name')->get(['id','name']);
         $branches      = Branches::orderBy('name')->get(['id','name','org_id']);
         $departments   = Department::orderBy('name')->get(['id','name','brn_id']);
+         $prefixs  =  Prefixes::orderBy('id')->get();
 
-        return view('employees.edit', compact('employee','organizations','branches','departments'));
+        return view('employees.edit', compact('employee','organizations','branches','departments','prefixs'));
     }
 
     public function update(EmployeeRequest $request, Employee $employee): RedirectResponse

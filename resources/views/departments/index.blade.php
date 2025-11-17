@@ -1,9 +1,9 @@
 <x-app-layout>
 <div class="flex items-center justify-between mb-4">
-  <h1 class="text-xl font-semibold">แผนก</h1>
+  <h1 class="text-xl font-semibold">ฝ่าย</h1>
   <a href="{{ route('departments.create') }}"
      class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
-    + เพิ่มแผนก
+    + เพิ่มฝ่าย
   </a>
 </div>
 

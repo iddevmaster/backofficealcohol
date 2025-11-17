@@ -18,7 +18,7 @@
       <thead class="bg-gray-100 text-gray-700">
         <tr>
           <th class="px-4 py-2 text-left">#</th>
-          <th class="px-4 py-2 text-left">org_id</th>
+          <th class="px-4 py-2 text-left">รหัสอง์กร</th>
           <th class="px-4 py-2 text-left">ชื่อ</th>
           <th class="px-4 py-2 text-left">สถานะ</th>
           <th class="px-4 py-2 text-left">อัปเดตล่าสุด</th>

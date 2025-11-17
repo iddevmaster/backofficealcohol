@@ -1,5 +1,5 @@
 <x-app-layout>
-<h1 class="text-2xl font-semibold mb-4">แก้ไขแผนก #{{ $department->id }}</h1>
+<h1 class="text-2xl font-semibold mb-4">แก้ไขฝ่าย #{{ $department->id }}</h1>
 <form method="post" action="{{ route('departments.update',$department) }}" class="bg-white rounded-xl shadow p-4 space-y-4">
   @csrf @method('PUT')
   @include('departments._form', ['department'=>$department, 'branches'=>$branches])

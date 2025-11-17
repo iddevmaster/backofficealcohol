@@ -1,7 +1,7 @@
 @csrf
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
   <div>
-    <label class="block text-sm font-medium mb-1">org_id (UUID)</label>
+    <label class="block text-sm font-medium mb-1">รหัส (UUID)</label>
     <input type="text" name="org_id"
            value="{{ old('org_id', $organization->org_id ?? '') }}"
            placeholder="เว้นว่างเพื่อให้ระบบ gen ให้อัตโนมัติ"

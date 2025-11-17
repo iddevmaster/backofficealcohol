@@ -11,6 +11,12 @@
     </div>
   </div>
 
+  @if (session('success'))
+    <div class="mb-4 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
+      {{ session('success') }}
+    </div>
+@endif
+
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     {{-- Roles --}}
     <section class="bg-white rounded-xl shadow">

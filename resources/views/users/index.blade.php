@@ -12,6 +12,12 @@
   </div>
 </form>
 
+@if (session('success'))
+    <div class="mb-4 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
+      {{ session('success') }}
+    </div>
+@endif
+
 @if($users->count())
   <div class="overflow-x-auto rounded-lg border bg-white">
     <table class="min-w-full text-sm">

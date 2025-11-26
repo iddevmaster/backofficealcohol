@@ -38,7 +38,6 @@ class DepartmentController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-            dd($departments);
 
         return view('departments.index', compact('departments', 'q'));
     }

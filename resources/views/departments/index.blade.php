@@ -55,7 +55,15 @@
  - 
 @endif
             </td>
-            <td class="px-4 py-2">{{ $dep->branches->name }}</td>
+            <td class="px-4 py-2">
+
+              @if($dep->branches)   
+                 {{ $dep->branches->name }}      
+@else
+ - 
+@endif
+
+            </td>
             <td class="px-4 py-2">{{ $dep->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">
               <a href="{{ route('departments.edit', $dep) }}"

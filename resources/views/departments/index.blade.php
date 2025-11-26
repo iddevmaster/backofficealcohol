@@ -49,7 +49,7 @@
              <td class="px-4 py-2" >
            
 
-              @if($dep->branches->brn_id)   
+              @if($dep->branches)   
                  {{ $dep->branches->brn_id }}      
 @else
  - 

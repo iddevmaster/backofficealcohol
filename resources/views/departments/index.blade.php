@@ -20,7 +20,7 @@
     <div class="mb-4 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
       {{ session('success') }}
     </div>
-  @endif
+@endif
 
 @if($departments->count())
   <div class="overflow-x-auto rounded-lg border bg-white">
@@ -46,7 +46,15 @@
               </a>
             </td>
             <td class="px-4 py-2">{{ $dep->name }}</td>
-             <td class="px-4 py-2">{{ $dep->branches->brn_id }}</td>
+             <td class="px-4 py-2" >
+           
+
+              @if($dep->branches->brn_id)   
+                 {{ $dep->branches->brn_id }}      
+@else
+ - 
+@endif
+            </td>
             <td class="px-4 py-2">{{ $dep->branches->name }}</td>
             <td class="px-4 py-2">{{ $dep->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">

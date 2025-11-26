@@ -39,7 +39,14 @@
             <td class="px-4 py-2">{{ $b->id }}</td>
             <td class="px-4 py-2"><a class="text-indigo-600 hover:underline" href="{{ route('branches.show', $b) }}">{{ $b->brn_id }}</a></td>
             <td class="px-4 py-2">{{ $b->name }}</td>
-             <td class="px-4 py-2">{{ $b->organize->name }}</td>
+             <td class="px-4 py-2">
+
+             @if($b->organize)   
+                 {{ $b->organize->name }}      
+@else
+ - 
+@endif
+</td>
             <td class="px-4 py-2">ตำบล {{ $b->tambon->name ?? '—' }} อำเภอ {{ $b->amphur->name ?? '—' }} จังหวัด {{ $b->province->name ?? '—' }}</td>
             <td class="px-4 py-2">{{ $b->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">

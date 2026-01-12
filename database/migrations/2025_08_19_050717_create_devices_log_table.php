@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('devices_log', function (Blueprint $table) {
+        Schema::create('deviceslog', function (Blueprint $table) {
             $table->id();
             $table->string('serial_num')->unique(); // string unique
             $table->string('ip_address')->nullable(); // string nullable
             $table->float('latitude')->nullable(); // float nullable
             $table->float('longitude')->nullable(); // float nullable
             $table->integer('tested_count')->default(0); // int default=0
-            $table->dateTime('timestamp'); // datetime
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('devices_log');
+        Schema::dropIfExists('deviceslog');
     }
 };

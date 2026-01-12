@@ -223,6 +223,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/permissions', PermissionController::class);
     Route::resource('/admin/employees', EmployeesController::class);
     Route::resource('/admin/deviceslog', DeviceslogController::class);
+    Route::resource('/admin/histories', HistoriesController::class);
 
 
 Route::get('/api/orgs/{org}/branches', fn($org) =>

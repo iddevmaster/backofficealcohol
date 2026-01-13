@@ -22,6 +22,7 @@ use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\UsersByUsersController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\DeviceslogController;
+use App\Http\Controllers\HistoriesController;
 use App\Models\Branches;
 use App\Models\Department;
 

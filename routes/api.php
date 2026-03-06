@@ -10,3 +10,6 @@ Route::get('/amphoes', [TambonController::class , 'getAmphoes' ]);
 Route::get('/tambons', [TambonController::class , 'getTambons' ]);
 
 Route::get('/filteremploy', [FingerController::class , 'filteredUsers' ]);
+
+Route::get('/filteremphm', [FingerController::class , 'filteredUsersFromHm' ]);
+Route::post('/savefinger', [FingerController::class , 'saveFinger' ]);

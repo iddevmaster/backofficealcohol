@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\{Employee, Branches, Department, Fingerprints, Organization,Prefixes};
-use Illuminate\Http\JsonResponse;  // ← เพิ่มบรรทัดนี้
+use Illuminate\Http\JsonResponse;
+use Log;
+use Carbon\Carbon;
+
 
 class FingerController extends Controller
 {
@@ -107,13 +110,13 @@ class FingerController extends Controller
 
             $datas = [];
             foreach ($employees as $index => $employs ) {
-  
-
 
             $fingerNos = Fingerprints::where('emp_id', $employs->emp_id)
                 ->orderBy('finger_no', 'asc')
                 ->pluck('finger_no')
                 ->toArray();
+
+            $x = Fingerprints::where('emp_id', $employs->emp_id)->count();    
 
 
             $datas['data'][$index]['id'] = $employs->id;
@@ -121,11 +124,11 @@ class FingerController extends Controller
             $datas['data'][$index]['prefix_id'] = $employs->prefix_id;
             $datas['data'][$index]['first_name'] = $employs->first_name;
             $datas['data'][$index]['last_name'] = $employs->last_name;
+            $datas['data'][$index]['name'] = $employs->first_name.' '.$employs->last_name;
             $datas['data'][$index]['phone'] = $employs->phone;
-            $datas['data'][$index]['enrolled'] = 3;
+            $datas['data'][$index]['enrolled'] = $x;
             $datas['data'][$index]['fingers'] = $fingerNos;
-
-            
+            $datas['data'][$index]['color'] = '';
             }
 
 
@@ -135,6 +138,75 @@ class FingerController extends Controller
                 return response()->json([
             'success' => true,
             'data'    => $datas,
+        ]);
+    }
+
+
+
+        public function filteredUsersFromHm(Request $request): JsonResponse
+    {
+        //
+
+          $filters = $request->validate([
+            'search'        => 'nullable|string|max:100'
+        ]);
+
+            $employees = Employee::all();
+      
+
+            $datas = [];
+            foreach ($employees as $index => $employs ) {
+  
+
+
+            $fingerNos = Fingerprints::where('emp_id', $employs->emp_id)
+                ->orderBy('finger_no', 'asc')->get();
+
+
+                
+
+
+            $datas[$index]['id'] = $employs->id;
+             $datas[$index]['user_code'] = $employs->user_code;
+            $datas[$index]['emp_id'] = $employs->emp_id;
+            $datas[$index]['prefix_id'] = $employs->prefix_id;
+            $datas[$index]['first_name'] = $employs->first_name;
+            $datas[$index]['last_name'] = $employs->last_name;
+            $datas[$index]['phone'] = $employs->phone;
+            $datas[$index]['enrolled'] = 3;
+            $datas[$index]['fingers'] = $fingerNos;
+
+            }
+
+
+        
+  
+
+                return response()->json([
+            'success' => true,
+            'data'    => $datas,
+        ]);
+    }
+
+
+      public function saveFinger(Request $request): JsonResponse
+    {
+        //
+
+      
+      $current = Carbon::now();
+          $formpdpa = Fingerprints::create([
+            'emp_id' => $request->id,
+            'finger_no' => $request->finger_index,
+            'fingerprint_code' => 'xxx',
+            'note' => 'xxx',
+            'timestamp' => $current,
+        ]);
+  
+
+                return response()->json([
+            'success' => true,
+            'data'    => [],
         ]);
     }
     

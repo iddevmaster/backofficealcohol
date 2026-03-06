@@ -752,8 +752,8 @@
               <div class="user-row" :class="{selected: selectedUser && selectedUser.id===u.emp_id}" @click="selectUser(u)">
                 <div class="avatar" :class="u.color" x-text="u.first_name[0]"></div>
                 <div class="user-info">
-                  <div class="user-name" x-text="u.first_name"></div>
-                  <div class="user-dept" x-text="u.first_name + ' · ' + u.emp_id">xx</div>
+                  <div class="user-name" x-text="u.name"></div> 
+                  <div class="user-dept" x-text="u.first_name + ' · ' + u.emp_id"></div>
                 </div>
                 <div class="fp-count">
                   <div class="fp-dots">
@@ -787,7 +787,7 @@
             <!-- User card -->
             <div class="user-card">
               <div class="card-user-header">
-                <div class="card-avatar" :class="selectedUser.color" x-text="selectedUser.f[0]"></div>
+                <div class="card-avatar" :class="selectedUser.color" x-text="selectedUser.first_name[0]"></div>
                 <div>
                   <div class="card-name" x-text="selectedUser.first_name"></div>
                   <div class="card-id" x-text="selectedUser.emp_id"></div>
@@ -901,9 +901,9 @@
         <div class="progress-text" x-text="scanMsg"></div>
       </div>
 
-      <div class="scan-actions">
+      <!-- <div class="scan-actions">
         <button class="btn btn-ghost" style="flex:1" @click="cancelScan()">ยกเลิก</button>
-      </div>
+      </div> -->
     </div>
   </div>
 
@@ -938,6 +938,7 @@
 
 </x-app-layout>
 <script>
+
 
  function fpModule() {
 
@@ -1051,6 +1052,7 @@ try {
     },
 
     handleFingerClick(idx) {
+  
       if (this.scanning) return;
       const finger = this.selectedUser.fingers[idx];
       if (finger.enrolled) {
@@ -1061,6 +1063,7 @@ try {
     },
 
     startScan(idx) {
+     console.log(this.selectedUser.id);
       this.scanning = true;
       this.scanningIdx = idx;
       this.scanProgress = 0;
@@ -1069,6 +1072,8 @@ try {
       let prog = 0;
       const msgs = ['อ่านลายนิ้วมือ...', 'วิเคราะห์ข้อมูล...', 'ตรวจสอบคุณภาพ...', 'บันทึกลงฐานข้อมูล...'];
       let phase = 0;
+
+      
       this.scanTimer = setInterval(() => {
         prog += Math.random() * 18 + 6;
         if (prog > 100) prog = 100;
@@ -1081,11 +1086,42 @@ try {
         if (prog >= 100) {
           clearInterval(this.scanTimer);
           setTimeout(() => {
-            this.completeScan(idx);
+
+
+            try {
+        this.scanMsg = 'กำลังส่งข้อมูลไปยังเซิร์ฟเวอร์...'; // เปลี่ยนข้อความรอระหว่างยิง API
+
+        const response = fetch('/api/savefinger', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content 
+            },
+            body: JSON.stringify({
+                id: this.selectedUser.id, // ส่ง ID ของ User ที่เลือกอยู่
+                finger_index: idx,             // ส่งตำแหน่งนิ้ว (0-9)
+                // fingerprint_data: "..."      // ถ้ามี Data จากเครื่องสแกนจริงให้ส่งไปด้วย
+            })
+        });
+
+    
+
+
+    } catch (error) {
+  
+    } finally {
+       this.completeScan(idx);
+    }
+
           }, 400);
         }
       }, 200);
     },
+
+
+
 
     completeScan(idx) {
       this.scanning = false;
@@ -1151,5 +1187,7 @@ try {
       this.confirmClearAll = false;
     }
   }
+
+
 }
 </script>

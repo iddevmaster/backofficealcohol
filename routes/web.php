@@ -23,8 +23,10 @@ use App\Http\Controllers\UsersByUsersController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\DeviceslogController;
 use App\Http\Controllers\HistoriesController;
+use App\Http\Controllers\FingerController;
 use App\Models\Branches;
 use App\Models\Department;
+use App\Models\Employee;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -225,6 +227,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/employees', EmployeesController::class);
     Route::resource('/admin/deviceslog', DeviceslogController::class);
     Route::resource('/admin/histories', HistoriesController::class);
+    Route::resource('/admin/finger', FingerController::class);
 
 
 Route::get('/api/orgs/{org}/branches', fn($org) =>
@@ -235,6 +238,12 @@ Route::get('/api/branches/{brn}/departments', function ($brn) {
     // กรองให้ชัด: dept ต้องอยู่ใต้ branch นี้
     return Department::where('brn_id',$brn)->orderBy('name')->get(['id','name']);
 })->middleware(['web','auth'])->name('api.branch.departments');
+
+Route::get('/api/orgs/{org}/employee', fn($org) =>
+    Employee::where('org_id',$org)->orderBy('first_name')->get(['id','first_name','last_name'])
+)->middleware(['web','auth'])->name('api.org.employee');
+
+
 
 });
 

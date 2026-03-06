@@ -17,6 +17,9 @@ class EmployeesController extends Controller
      */
   public function index(Request $request): View
     {
+
+       $employees = Employee::with('fingerprints')->paginate(20);
+       dd($employees);
         $q     = $request->get('q');
         $orgId = $request->get('org_id');
 

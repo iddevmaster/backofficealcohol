@@ -63,9 +63,10 @@
           @endif
         </td>
         <td class="px-4 py-2 text-right">
+          <a href="{{ route('finger.show',$e) }}" class="ml-3 text-amber-600">ลายนิ้วมือ</a>
           <a href="{{ route('employees.show',$e) }}" class="text-blue-600">ดู</a>
           <a href="{{ route('employees.edit',$e) }}" class="ml-3 text-amber-600">แก้ไข</a>
-                  <form action="{{ route('employees.destroy',$e) }}" method="post" class="inline" onsubmit="return confirm('ลบอุปกรณ์นี้?')">
+                  <form action="{{ route('employees.destroy',$e) }}" method="post" class="inline" onsubmit="return confirm('ลบพนักงาน?')">
             @csrf @method('DELETE')
             <button class="ml-3 text-red-600">ลบ</button>
           </form>

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('fingerprints', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('emp_id');
+            $table->foreign('emp_id')->references('id')->on('employees')->onDelete('cascade');
 
             // The finger_no field is an integer.
             $table->integer('finger_no');

@@ -12,7 +12,8 @@ use App\Http\Requests\UserRequest;
 use App\Models\Department;
 use App\Models\Organization;
 use App\Models\Prefixes;
-use App\Models\Role;
+use App\Models\Employee;
+use Illuminate\Http\RedirectResponse;
 
 
 class HistoriesController extends Controller
@@ -51,20 +52,34 @@ class HistoriesController extends Controller
     {
         //
 
-                return view('users.create', [
-        'roles' => Role::orderBy('name')->get(),
-        'orgs'  => Organization::orderBy('id')->get(),
-        'departments'  => Department::orderBy('name')->get(),
-        'prefixs'  => Prefixes::orderBy('id')->get(),
+                return view('testhistorys.create', [
+        'employee' => Employee::orderBy('org_id')->get(),
+        'orgs'  => Organization::orderBy('id')->get()
     ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+        public function store(TeshistoriesRequest $request): RedirectResponse
     {
         //
+
+            $data = $request->validated();
+        
+
+        // รองรับค่า datetime-local "YYYY-MM-DDTHH:MM"
+        // if (is_string($data['created_date'])) {
+        //     $data['created_date'] = Carbon::parse($data['created_date']);
+        // }
+
+        $data['testing_date'] = Carbon::now();
+       
+
+        $device = TestHistory::create($data);
+
+        return redirect()->route('histories.show', $device)
+            ->with('success', 'สร้างอุปกรณ์สำเร็จ');
     }
 
     /**

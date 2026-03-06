@@ -11,7 +11,7 @@ class TeshistoriesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class TeshistoriesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'tester_id'       => ['required','string','max:191'],
+            'device_sn'       => ['nullable','string','max:191'],
+            'testing_image'       => ['nullable','string','max:191'],
+            'alcohol_level'         => ['nullable','numeric','between:1,10000'],
+            'org_id'       => ['required','string','max:191'],
         ];
     }
 }

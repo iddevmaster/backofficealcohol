@@ -12,7 +12,7 @@ class Employee extends Model
 
         use SoftDeletes;
 
-    protected $fillable = [
+    protected $fillable = ['id',
         'emp_id','prefix_id','first_name','last_name','phone','image',
         'fingerprint_registered','status','dpm_id','brn_id','org_id',
     ];
@@ -37,4 +37,13 @@ class Employee extends Model
     {
         return $this->image ? Storage::url($this->image) : null;
     }
+
+       public function fingerprints()
+    {
+        return $this->hasMany(\App\Models\Fingerprints::class,'emp_id', 'emp_id');
+
+      
+    }
+
+    
 }

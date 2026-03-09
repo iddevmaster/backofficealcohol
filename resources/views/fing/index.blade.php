@@ -853,7 +853,7 @@
             </div>
 
             <!-- Log -->
-            <div class="log-panel">
+            <!-- <div class="log-panel">
               <div class="panel-head">
                 <div class="panel-title">📝 ประวัติการบันทึก</div>
               </div>
@@ -869,7 +869,7 @@
                 </template>
               </div>
             </div>
-          </div>
+          </div> -->
         </template>
 
       </div></div>

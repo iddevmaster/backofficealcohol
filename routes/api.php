@@ -13,3 +13,6 @@ Route::get('/filteremploy', [FingerController::class , 'filteredUsers' ]);
 
 Route::get('/filteremphm', [FingerController::class , 'filteredUsersFromHm' ]);
 Route::post('/savefinger', [FingerController::class , 'saveFinger' ]);
+
+
+Route::post('/em/checkfinger', [FingerController::class , 'checkFinger' ]);

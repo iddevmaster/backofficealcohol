@@ -209,5 +209,52 @@ class FingerController extends Controller
             'data'    => [],
         ]);
     }
+
+
+            public function checkFinger(Request $request): JsonResponse
+    {
+        //
+
+         
+            $employees = Employee::where('user_code',$request->user_code)->limit(1)->get();
+            if (count($employees) > 0) {
+            $status = true;  
+            }else {
+
+            $status = false;  
+            }
+            $datas = [];
+            foreach ($employees as $index => $employs ) {
+  
+
+
+            $fingerNos = Fingerprints::where('emp_id', $employs->emp_id)
+                ->orderBy('finger_no', 'asc')->get();
+
+
+                
+
+
+            $datas[$index]['id'] = $employs->id;
+             $datas[$index]['user_code'] = $employs->user_code;
+            $datas[$index]['emp_id'] = $employs->emp_id;
+            $datas[$index]['prefix_id'] = $employs->prefix_id;
+            $datas[$index]['first_name'] = $employs->first_name;
+            $datas[$index]['last_name'] = $employs->last_name;
+            $datas[$index]['phone'] = $employs->phone;
+            $datas[$index]['enrolled'] = 3;
+            $datas[$index]['fingers'] = $fingerNos;
+
+            }
+
+
+        
+  
+
+                return response()->json([
+            'success' => $status,
+            'data'    => $datas,
+        ]);
+    }
     
 }

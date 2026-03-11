@@ -937,10 +937,31 @@
 
 
 </x-app-layout>
+
 <script>
 
 
+ import { FingerprintReader, SampleFormat } from "@digitalpersona/devices";
+
  function fpModule() {
+
+
+const reader = new FingerprintReader();
+
+// 1. ตรวจสอบการเชื่อมต่ออุปกรณ์
+reader.on("DeviceConnected", (event) => {
+    console.log("Scanner Ready!");
+});
+
+// 2. ดักจับตอนวางลายนิ้วมือ
+reader.on("SamplesAcquired", (event) => {
+    // ข้อมูลลายนิ้วมือจะอยู่ในรูปแบบ Base64 หรือ Raw Data
+    const base64Data = event.samples[0]; 
+    sendToServer(base64Data); // ส่งไปบันทึกในฐานข้อมูล Laravel ของคุณ
+});
+
+// เริ่มต้นทำงาน
+reader.startCapture();
 
   const fingerNames = [
     { name: 'นิ้วก้อย ซ้าย', shortName: 'ก้อย ซ้าย' },

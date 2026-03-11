@@ -192,13 +192,13 @@ class FingerController extends Controller
       public function saveFinger(Request $request): JsonResponse
     {
         //
-
+        \Log::info($request->all());
       
       $current = Carbon::now();
           $formpdpa = Fingerprints::create([
             'emp_id' => $request->id,
             'finger_no' => $request->finger_index,
-            'fingerprint_code' => 'xxx',
+            'fingerprint_code' => $request->fingerprint_code,
             'note' => 'xxx',
             'timestamp' => $current,
         ]);

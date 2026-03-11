@@ -27,13 +27,20 @@ use App\Http\Controllers\FingerController;
 use App\Models\Branches;
 use App\Models\Department;
 use App\Models\Employee;
-
+use Illuminate\Support\Facades\Http;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
 
 Route::get('/', [AuthController::class, 'login']);
+
+
+Route::get('/scan-proxy', function () {
+    // Laravel เป็นคนไปคุยกับเครื่องสแกนให้ (Server-to-Server ไม่ติด CORS)
+    $response = Http::get('http://localhost:18081/read'); 
+    return $response->json();
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

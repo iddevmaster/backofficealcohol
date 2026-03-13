@@ -7,7 +7,7 @@
       <h1 class="text-black text-2xl font-extrabold tracking-tight">ผลการทดสอบแอลกอฮอล์</h1>
       <p style="color:#4a5568" class="text-sm mt-1">วันจันทร์ที่ 9 มีนาคม 2569</p>
     </div>
-    <button class="g-brand text-black font-bold text-sm px-5 py-2.5 rounded-xl inline-flex items-center gap-2 hover:opacity-90 transition">
+    <button class="px-5 py-1.5 rounded-lg border text-xs font-bold" style="border-color:#6c63ff;background:rgba(10, 10, 10, 0.15);color:#9b8fff">
       ＋ บันทึกผลใหม่
     </button>
   </div>
@@ -20,10 +20,13 @@
       <!-- Search -->
       <div class="relative flex-1">
         <span class="absolute left-3 top-1/2 -translate-y-1/2" style="color:#4a5568">🔍</span>
-        <input type="text" placeholder="ค้นหาพนักงาน, รหัส, เครื่องเป่า..."
+        <input type="text" placeholder="ค้นหาพนักงาน, รหัส..."  x-model="searchQ"
           class="w-full rounded-xl pl-9 pr-4 py-2 text-sm outline-none transition"
           style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:#c8d0e4">
       </div>
+
+
+      
       <!-- Filters -->
       <div class="flex gap-2">
         <button class="px-3 py-1.5 rounded-lg border text-xs font-bold" style="border-color:#6c63ff;background:rgba(108,99,255,.15);color:#9b8fff">ทั้งหมด</button>
@@ -44,6 +47,7 @@
             <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em;min-width:190px">ระดับแอลกอฮอล์</th>
             <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">สถานะ</th>
             <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">รูปภาพ</th>
+             <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">องค์กร</th>
             <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">วันที่ทดสอบ</th>
             <th class="px-5 py-3.5"></th>
           </tr>
@@ -51,10 +55,10 @@
 
 
         <tbody id="tbody" >
-            <template x-for="(test, index) in testhist" :key="test.n">
+            <template x-for="(test, index) in filteredUsers" :key="test.id">
                 <tr class="tr" 
-                    :style="selectedId === test.n ? 'background: rgba(255,255,255,.05);' : ''"
-                    @click="selectedId = test.n"
+                    :style="selectedUser === test.id ? 'background: rgba(255,255,255,.05);' : ''"
+                    @click="selectUser(test)"
                     style="cursor:pointer; border-bottom:1px solid rgba(255,255,255,.04)">
                     
                     <td class="px-5 py-4 font-mono text-xs" style="color:#4a5568" x-text="String(index + 1).padStart(2, '0')"></td>
@@ -62,13 +66,13 @@
                     <td class="px-5 py-4">
                         <div class="flex items-center gap-3">
                             <div :style="`width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, #6c63ff99, #6c63ff); display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; font-weight:700; border:2px solid rgba(255,255,255,.1); flex-shrink:0`"
-                                 x-text="test.employee ? test.employee.first_name[0] : '?' ">
+                                 x-text="test.f_name ? test.f_name[0] : '?' ">
                             </div>
                             <div>
                                 <p style="color:#e2e8f0; font-weight:600; font-size:14px" 
-                                   x-text="test.employee ? test.employee.first_name + ' ' + test.employee.last_name : 'ไม่ทราบชื่อ'"></p>
+                                   x-text="test ? test.f_name + ' ' + test.l_name : 'ไม่ทราบชื่อ'"></p>
                                 <p style="color:#4a5568; font-size:12px; margin-top:2px" 
-                                   x-text="test.employee ? test.employee.emp_id : '-'"> </p>
+                                   x-text="test ? test.user_code : '-'"> </p>
                             </div>
                         </div>
                     </td>
@@ -107,12 +111,17 @@
                             </template>
                         </div>
                     </td>
-                    <td class="px-5 py-4" style="color:#4a5568; font-size:12px; white-space:nowrap" x-text="test.testing_date"></td>
+                      <td class="px-5 py-4">
+                        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#7c88aa; background:rgba(255,255,255,.05); padding:3px 8px; border-radius:6px" 
+                              x-text="test.org_name"></span>
+                    </td>
+                    <td class="px-5 py-4" style="color:#4a5568; font-size:12px; white-space:nowrap" x-text="test.created_at"></td>
 
                     <td class="px-5 py-4">
                         <div class="flex gap-2">
-                            <button class="btn-action">ดูรายละเอียด</button>
+                           
                             <button class="btn-action">แก้ไข</button>
+                             <button class="btn-action">ลบ</button>
                         </div>
                     </td>
                 </tr>
@@ -300,14 +309,7 @@
       confirmDeleteIdx: null,
       enrollAllQueue: [],
 
-      testhist: [
-              {n:'01',name:'นายสมชาย ใจดี',   id:'EMP001',sn:'BRZ-2024-001',lvl:0.00,date:'9 มี.ค. 68  07:02',color:'#6c63ff',init:'สจ'},
-              {n:'02',name:'นางสมหญิง รักงาน', id:'EMP002',sn:'BRZ-2024-001',lvl:0.00,date:'9 มี.ค. 68  07:15',color:'#00b4d8',init:'สง'},
-              {n:'03',name:'นายวิชัย มั่นคง',  id:'EMP003',sn:'BRZ-2024-002',lvl:0.52,date:'9 มี.ค. 68  07:30',color:'#f72585',init:'วม'},
-              {n:'04',name:'นางสาวอรทัย สดใส', id:'EMP004',sn:'BRZ-2024-002',lvl:0.00,date:'9 มี.ค. 68  07:45',color:'#06d6a0',init:'อส'},
-              {n:'05',name:'นายประสิทธิ์ เก่งกาจ',id:'EMP005',sn:'BRZ-2024-003',lvl:0.18,date:'9 มี.ค. 68  08:00',color:'#ffd166',init:'ปก'},
-              {n:'06',name:'นายสมชาย ใจดี',   id:'EMP001',sn:'BRZ-2024-003',lvl:0.00,date:'9 มี.ค. 68  14:00',color:'#6c63ff',init:'สจ'},
-            ],
+      testhist: [],
 
 
 
@@ -318,31 +320,53 @@
       get filteredUsers() {
         const q = this.searchQ.toLowerCase();
 
-        return this.testhist.filter(u => u.name.includes(this.searchQ) || u.id.toLowerCase().includes(q));
+      
+
+        return this.testhist.filter(u => {
+    return u.f_name.toLowerCase().includes(q) || 
+           u.l_name.toLowerCase().includes(q) || 
+           u.user_code.toLowerCase().includes(q) || 
+           u.org_name.toLowerCase().includes(q) || 
+           u.device_sn.toLowerCase().includes(q);
+  });
       },
 
       async fetchUsers() {
-      //   try {
+     
+        try {
           
-      //     const response = await fetch(`/api/testacl`);
-      //     const result = await response.json();
+          const response = await fetch(`/api/testacl`);
+          const result = await response.json();
 
 
-      //     this.users = result.data.data
+          this.testhist = result.data
+         
+       
 
 
-      //     this.users = result.data.data.map(user => ({
-      //       ...user,
-           
-      //       fingers: makeFingers(user.fingers),
-      //       logs: user.logs || []
-      //     }));
-      //   } catch (error) {
-      //     console.error("Fetch error:", error);
-      //   } finally {
-      //     this.isLoading = false;
-      //   }
-      // },
+      
+        } catch (error) {
+          console.error("Fetch error:", error);
+        } finally {
+          this.isLoading = false;
+        }
+      },
+
+          selectUser(u) {
+        this.selectedUser = u;
+      },
+
+      getStatus(lvl) {
+                if (lvl === 0) return { label: 'ผ่าน', cls: 'badge-pass', color: '#00e5a0' };
+                if (lvl < 0.5) return { label: 'เฝ้าระวัง', cls: 'badge-warn', color: '#ffc94d' };
+                return { label: 'ไม่ผ่าน', cls: 'badge-fail', color: '#ff4d6d' };
+            },
+            
+            // คำนวณ % สำหรับ Progress Bar
+            getPercent(lvl) {
+                return Math.min((lvl / 1) * 100, 100);
+            }
+
 }
 
       // selectUser(u) {
@@ -355,7 +379,7 @@
 }
 
 
-  }
+  
 </script>
 
 

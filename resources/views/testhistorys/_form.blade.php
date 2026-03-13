@@ -16,9 +16,6 @@
   </div>
 
 
-
-
-
       <div>
     <label class="block text-sm font-medium mb-1">alcohol_level</label>
     <input type="text" name="alcohol_level"

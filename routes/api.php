@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TambonController;
 use App\Http\Controllers\FingerController;
+use App\Http\Controllers\HistoriesController;
 
 Route::get('/provinces', [TambonController::class , 'getProvinces' ]);
 Route::get('/amphoes', [TambonController::class , 'getAmphoes' ]);

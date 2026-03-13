@@ -1125,6 +1125,7 @@
 
 <script>
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   function fpModule() {
 
 
@@ -1325,15 +1326,11 @@
           // เปลี่ยน URL มาเรียกที่ Route ของ Laravel แทน
           // ลบ http://localhost:8000 ออกได้เลย เพราะอยู่บนโดเมนเดียวกัน
           const response = await fetch('/scan-proxy');
-          
+
 
 
 
           let data = await response.json();
-
-          console.log(data)
-        
-
 
           if (!data || (Array.isArray(data) && data.length === 0) || !data.FingerCode) {
             this.scanMsg = 'กำลังรอสแกน... วางนิ้วบนเครื่อง'; // เปลี่ยนข้อความรอระหว่างยิง API
@@ -1343,73 +1340,73 @@
             return this.startScan(idx); // Recursive Call: เรียกตัวเองเพื่อเริ่มสแกนใหม่
           } else {
 
-           this.scanMsg = 'วิเคราะห์ข้อมูล...'; // เปลี่ยนข้อความรอระหว่างยิง API
+            this.scanMsg = 'วิเคราะห์ข้อมูล...'; // เปลี่ยนข้อความรอระหว่างยิง API
             await delay(2000); // รอ 2 วินาที
             this.scanMsg = 'ตรวจสอบคุณภาพ...';
-        await delay(2000); // รออีก 2 วินาที
+            await delay(2000); // รออีก 2 วินาที
 
-        this.scanMsg = 'บันทึกลงฐานข้อมูล...';
-        
-        // เคลียร์ข้อมูลตามที่คุณต้องการ
-      
-      
+            this.scanMsg = 'บันทึกลงฐานข้อมูล...';
+
+            // เคลียร์ข้อมูลตามที่คุณต้องการ
 
 
 
 
 
 
-        // แถม: ถ้าอยากให้ข้อความ 'บันทึก...' ค้างไว้แป๊บนึงค่อยหายไป
-        await delay(2000);
-        this.scanning = false;
-                               try {
-            this.scanMsg = 'กำลังส่งข้อมูลไปยังเซิร์ฟเวอร์...'; // เปลี่ยนข้อความรอระหว่างยิง API
 
-            const response = fetch('/api/savefinger', {
+
+            // แถม: ถ้าอยากให้ข้อความ 'บันทึก...' ค้างไว้แป๊บนึงค่อยหายไป
+            await delay(2000);
+            this.scanning = false;
+            try {
+              this.scanMsg = 'กำลังส่งข้อมูลไปยังเซิร์ฟเวอร์...'; // เปลี่ยนข้อความรอระหว่างยิง API
+
+              const response = fetch('/api/savefinger', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content 
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
+                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
                 },
                 body: JSON.stringify({
-                    id: this.selectedUser.id, // ส่ง ID ของ User ที่เลือกอยู่
-                    finger_index: idx,
-                    fingerprint_code: data.FingerCode,            // ส่งตำแหน่งนิ้ว (0-9)
-                    // fingerprint_data: "..."      // ถ้ามี Data จากเครื่องสแกนจริงให้ส่งไปด้วย
+                  id: this.selectedUser.id, // ส่ง ID ของ User ที่เลือกอยู่
+                  finger_index: idx,
+                  fingerprint_code: data.FingerCode, // ส่งตำแหน่งนิ้ว (0-9)
+                  // fingerprint_data: "..."      // ถ้ามี Data จากเครื่องสแกนจริงให้ส่งไปด้วย
                 })
-            });
+              });
 
               data.FingerCode = null;
 
 
-        } catch (error) {
-console.error("เกิดข้อผิดพลาด:", error);
-        this.scanMsg = 'การเชื่อมต่อผิดพลาด กำลังลองใหม่...';
+            } catch (error) {
+              console.error("เกิดข้อผิดพลาด:", error);
+              this.scanMsg = 'การเชื่อมต่อผิดพลาด กำลังลองใหม่...';
 
-        // หน่วงเวลา 3 วินาทีก่อนเริ่มใหม่ เพื่อไม่ให้ยิงรัวเกินไป
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        
-        return this.startScan(idx); // เริ่มต้นฟังก์ชันใหม่
-        } finally {
-           this.completeScan(idx);
-        }
+              // หน่วงเวลา 3 วินาทีก่อนเริ่มใหม่ เพื่อไม่ให้ยิงรัวเกินไป
+              await new Promise(resolve => setTimeout(resolve, 3000));
 
-   
+              return this.startScan(idx); // เริ่มต้นฟังก์ชันใหม่
+            } finally {
+              this.completeScan(idx);
+            }
+
+
 
           }
 
           // นำ data.FingerCode ไปใช้งานต่อ...
 
         } catch (error) {
-        console.error("เกิดข้อผิดพลาด:", error);
-        this.scanMsg = 'การเชื่อมต่อผิดพลาด กำลังลองใหม่...';
+          console.error("เกิดข้อผิดพลาด:", error);
+          this.scanMsg = 'การเชื่อมต่อผิดพลาด กำลังลองใหม่...';
 
-        // หน่วงเวลา 3 วินาทีก่อนเริ่มใหม่ เพื่อไม่ให้ยิงรัวเกินไป
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        
-        return this.startScan(idx); // เริ่มต้นฟังก์ชันใหม่
+          // หน่วงเวลา 3 วินาทีก่อนเริ่มใหม่ เพื่อไม่ให้ยิงรัวเกินไป
+          await new Promise(resolve => setTimeout(resolve, 3000));
+
+          return this.startScan(idx); // เริ่มต้นฟังก์ชันใหม่
         }
         //   this.scanning = true;
         //   this.scanningIdx = idx;
@@ -1514,6 +1511,7 @@ console.error("เกิดข้อผิดพลาด:", error);
       deleteSingleFinger() {
         const idx = this.confirmDeleteIdx;
         const finger = this.selectedUser.fingers[idx];
+        
         finger.enrolled = false;
         finger.templateId = null;
         this.selectedUser.enrolled = this.selectedUser.fingers.filter(f => f.enrolled).length;
@@ -1538,7 +1536,37 @@ console.error("เกิดข้อผิดพลาด:", error);
           time: today() + ' · ' + now(),
           color: '#ff5252'
         });
+
+
+
         this.confirmClearAll = false;
+
+
+
+        try {
+      
+          const response = fetch('/api/delall', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+            },
+            body: JSON.stringify({
+              id: this.selectedUser.id
+            })
+          });
+
+          data.FingerCode = null;
+
+
+        } catch (error) {
+
+
+        } finally {
+
+        }
       }
     }
 

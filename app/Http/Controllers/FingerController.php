@@ -256,5 +256,32 @@ class FingerController extends Controller
             'data'    => $datas,
         ]);
     }
+
+
+     public function delfingerall(Request $request): JsonResponse
+    {
+        //
+
+         
+           $datas = [];
+             Fingerprints::where('emp_id', $request->id)->delete();
+                return response()->json([
+            'success' => true,
+            'data'    => $datas,
+        ]);
+    }
+
+         public function delfingerone(Request $request): JsonResponse
+    {
+        //
+
+         
+           $datas = [];
+            //  Fingerprints::where('emp_id', $request->id)->delete();
+                return response()->json([
+            'success' => true,
+            'data'    => $datas,
+        ]);
+    }
     
 }

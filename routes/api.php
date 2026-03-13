@@ -13,6 +13,9 @@ Route::get('/filteremploy', [FingerController::class , 'filteredUsers' ]);
 
 Route::get('/filteremphm', [FingerController::class , 'filteredUsersFromHm' ]);
 Route::post('/savefinger', [FingerController::class , 'saveFinger' ]);
+Route::post('/delall', [FingerController::class , 'delfingerall' ]);
+
+Route::post('/delallone', [FingerController::class , 'delfingerone' ]);
 
 
 Route::post('/em/checkfinger', [FingerController::class , 'checkFinger' ]);

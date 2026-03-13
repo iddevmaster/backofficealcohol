@@ -14,6 +14,9 @@ use App\Models\Organization;
 use App\Models\Prefixes;
 use App\Models\Employee;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Log;
+
 
 
 class HistoriesController extends Controller
@@ -25,24 +28,14 @@ class HistoriesController extends Controller
     {
         //
 
-        
-        $q = (string) $request->get('q', '');
+        $q     = $request->get('q');
+
+
+$test = TestHistory::with('employee')->get();
 
 
 
-        $testhist = TestHistory::query()
-            ->when($q, function ($query) use ($q) {
-                $query->where(function ($w) use ($q) {
-                    $w->where('alcohol_level', 'like', "%{$q}%")->orWhere('device_sn', 'like', "%{$q}%");
-                });
-            })
-            ->orderByDesc('id')
-            ->paginate(12)
-            ->withQueryString();
-
-          
-
-        return view('testhistorys.index', compact('testhist', 'q'));
+        return view('testhistorys.index', compact('test', 'q'));
     }
 
     /**
@@ -112,5 +105,20 @@ class HistoriesController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+     public function filteredUsersTest(Request $request): JsonResponse
+    {
+
+        // $testhist [ {n:'01',name:'นายสมชาย ใจดี',   id:'EMP001',sn:'BRZ-2024-001',lvl:0.00,date:'9 มี.ค. 68  07:02',color:'#6c63ff',init:'สจ'},
+        //       {n:'02',name:'นางสมหญิง รักงาน', id:'EMP002',sn:'BRZ-2024-001',lvl:0.00,date:'9 มี.ค. 68  07:15',color:'#00b4d8',init:'สง'},
+        //       {n:'03',name:'นายวิชัย มั่นคง',  id:'EMP003',sn:'BRZ-2024-002',lvl:0.52,date:'9 มี.ค. 68  07:30',color:'#f72585',init:'วม'},
+        //       {n:'04',name:'นางสาวอรทัย สดใส', id:'EMP004',sn:'BRZ-2024-002',lvl:0.00,date:'9 มี.ค. 68  07:45',color:'#06d6a0',init:'อส'},
+        //       {n:'05',name:'นายประสิทธิ์ เก่งกาจ',id:'EMP005',sn:'BRZ-2024-003',lvl:0.18,date:'9 มี.ค. 68  08:00',color:'#ffd166',init:'ปก'},
+        //       {n:'06',name:'นายสมชาย ใจดี',   id:'EMP001',sn:'BRZ-2024-003',lvl:0.00,date:'9 มี.ค. 68  14:00',color:'#6c63ff',init:'สจ'},
+        //     ], 
+                  return response()->json([
+            'success' => true,
+            'data'    => $datas,
+        ]);
     }
 }

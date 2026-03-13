@@ -1511,6 +1511,7 @@
       deleteSingleFinger() {
         const idx = this.confirmDeleteIdx;
         const finger = this.selectedUser.fingers[idx];
+    
         
         finger.enrolled = false;
         finger.templateId = null;
@@ -1522,6 +1523,32 @@
           color: '#ff5252'
         });
         this.confirmDeleteIdx = null;
+
+                try {
+      
+          const response = fetch('/api/delallone', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+            },
+            body: JSON.stringify({
+              id: this.selectedUser.emp_id,
+              finger: idx
+            })
+          });
+
+       
+
+
+        } catch (error) {
+
+
+        } finally {
+
+        }
       },
 
       clearAllFingers() {

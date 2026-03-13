@@ -275,7 +275,7 @@ class FingerController extends Controller
     {
         //
 
-         
+         Fingerprints::where('emp_id', $request->id)->where('finger_no',$request->finger)->delete();
            $datas = [];
             //  Fingerprints::where('emp_id', $request->id)->delete();
                 return response()->json([

@@ -1,69 +1,361 @@
 <x-app-layout>
-<div class="flex items-center justify-between mb-4">
-  <h1 class="text-xl font-semibold">Users</h1>
-  <a href="{{ route('histories.create') }}" class="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">+ เพิ่มผู้ใช้</a>
-</div>
+<div class="mx-auto px-4 sm:px-6 py-8 fade" x-data="alcoholApp()">
 
-<form method="get" class="mb-4">
-  <div class="flex gap-2">
-    <input type="text" name="q" value="{{ $q }}" placeholder="ค้นหา username / ชื่อ / role / org"
-           class="flex-1 rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-    <button class="rounded-md border px-4 py-2 hover:bg-gray-50">ค้นหา</button>
-  </div>
-</form>
-
-@if (session('success'))
-    <div class="mb-4 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
-      {{ session('success') }}
+  <!-- ===== HEADER ===== -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-black text-2xl font-extrabold tracking-tight">ผลการทดสอบแอลกอฮอล์</h1>
+      <p style="color:#4a5568" class="text-sm mt-1">วันจันทร์ที่ 9 มีนาคม 2569</p>
     </div>
-@endif
-
-@if($testhist->count())
-  <div class="overflow-x-auto rounded-lg border bg-white">
-    <table class="min-w-full text-sm">
-      <thead class="bg-gray-100 text-gray-700">
-        <tr>
-          <th class="px-4 py-2 text-left">#</th>
-          <th class="px-4 py-2 text-left">username</th>
-          <th class="px-4 py-2 text-left">ชื่อ-สกุล</th>
-          <th class="px-4 py-2 text-left">role</th>
-          <th class="px-4 py-2 text-left">org</th>
-          <th class="px-4 py-2 text-left">สถานะ</th>
-          <th class="px-4 py-2 text-left">อัปเดต</th>
-          <th class="px-4 py-2 text-right">การทำงาน</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y">
-        @foreach($users as $u)
-          <tr>
-            <td class="px-4 py-2">{{ $u->id }}</td>
-            <td class="px-4 py-2">{{ $u->username }}</td>
-            <td class="px-4 py-2">{{ $u->full_name }}</td>
-            <td>{{ $u->role->name ?? '-' }}</td>
-            <td class="px-4 py-2">{{ $u->organize->name ?? '—' }}</td>
-            <td class="px-4 py-2">
-              <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs
-                {{ $u->status ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
-                {{ $u->status ? 'ใช้งาน' : 'ปิด' }}
-              </span>
-            </td>
-            <td class="px-4 py-2">{{ $u->updated_at->format('Y-m-d H:i') }}</td>
-            <td class="px-4 py-2 text-right">
-              <a href="{{ route('histories.show', $u) }}" class="inline-flex rounded-md border px-3 py-1.5 hover:bg-gray-50">ดู</a>
-              <a href="{{ route('histories.edit', $u) }}" class="inline-flex rounded-md border px-3 py-1.5 hover:bg-gray-50">แก้ไข</a>
-              <form action="{{ route('histories.destroy', $u) }}" method="post" class="inline" onsubmit="return confirm('ลบรายการนี้หรือไม่?');">
-                @csrf @method('DELETE')
-                <button class="inline-flex rounded-md bg-red-600 px-3 py-1.5 text-white hover:bg-red-700">ลบ</button>
-              </form>
-            </td>
-          </tr>
-        @endforeach
-      </tbody>
-    </table>
+    <button class="g-brand text-black font-bold text-sm px-5 py-2.5 rounded-xl inline-flex items-center gap-2 hover:opacity-90 transition">
+      ＋ บันทึกผลใหม่
+    </button>
   </div>
-  <div class="mt-4">{{ $users->links() }}</div>
-@else
-  <div class="rounded-md border bg-white p-6 text-center text-gray-600">ไม่พบข้อมูล</div>
-@endif
+
+
+  <!-- ===== MAIN PANEL ===== -->
+  <div class="card rounded-2xl overflow-hidden shadow-2xl" style="border:1px solid rgba(255,255,255,.07)">
+    <!-- Toolbar -->
+    <div class="px-6 py-4 flex flex-col sm:flex-row gap-3" style="border-bottom:1px solid rgba(255,255,255,.06)">
+      <!-- Search -->
+      <div class="relative flex-1">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2" style="color:#4a5568">🔍</span>
+        <input type="text" placeholder="ค้นหาพนักงาน, รหัส, เครื่องเป่า..."
+          class="w-full rounded-xl pl-9 pr-4 py-2 text-sm outline-none transition"
+          style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:#c8d0e4">
+      </div>
+      <!-- Filters -->
+      <div class="flex gap-2">
+        <button class="px-3 py-1.5 rounded-lg border text-xs font-bold" style="border-color:#6c63ff;background:rgba(108,99,255,.15);color:#9b8fff">ทั้งหมด</button>
+        <button class="px-3 py-1.5 rounded-lg border text-xs font-bold" style="border-color:rgba(255,255,255,.1);color:#4a5568">ผ่าน</button>
+        <!-- <button class="px-3 py-1.5 rounded-lg border text-xs font-bold" style="border-color:rgba(255,255,255,.1);color:#4a5568">เฝ้าระวัง</button> -->
+        <button class="px-3 py-1.5 rounded-lg border text-xs font-bold" style="border-color:rgba(255,255,255,.1);color:#4a5568">ไม่ผ่าน</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full" style="border-collapse:collapse">
+        <thead>
+          <tr style="background:rgba(255,255,255,.03)">
+            <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">#</th>
+            <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">พนักงาน</th>
+            <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">เครื่องเป่า SN</th>
+            <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em;min-width:190px">ระดับแอลกอฮอล์</th>
+            <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">สถานะ</th>
+            <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">รูปภาพ</th>
+            <th class="px-5 py-3.5 text-left text-xs font-bold uppercase" style="color:#4a5568;letter-spacing:.08em">วันที่ทดสอบ</th>
+            <th class="px-5 py-3.5"></th>
+          </tr>
+        </thead>
+
+
+        <tbody id="tbody" >
+            <template x-for="(test, index) in testhist" :key="test.n">
+                <tr class="tr" 
+                    :style="selectedId === test.n ? 'background: rgba(255,255,255,.05);' : ''"
+                    @click="selectedId = test.n"
+                    style="cursor:pointer; border-bottom:1px solid rgba(255,255,255,.04)">
+                    
+                    <td class="px-5 py-4 font-mono text-xs" style="color:#4a5568" x-text="String(index + 1).padStart(2, '0')"></td>
+
+                    <td class="px-5 py-4">
+                        <div class="flex items-center gap-3">
+                            <div :style="`width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, #6c63ff99, #6c63ff); display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; font-weight:700; border:2px solid rgba(255,255,255,.1); flex-shrink:0`"
+                                 x-text="test.employee ? test.employee.first_name[0] : '?' ">
+                            </div>
+                            <div>
+                                <p style="color:#e2e8f0; font-weight:600; font-size:14px" 
+                                   x-text="test.employee ? test.employee.first_name + ' ' + test.employee.last_name : 'ไม่ทราบชื่อ'"></p>
+                                <p style="color:#4a5568; font-size:12px; margin-top:2px" 
+                                   x-text="test.employee ? test.employee.emp_id : '-'"> </p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="px-5 py-4">
+                        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#7c88aa; background:rgba(255,255,255,.05); padding:3px 8px; border-radius:6px" 
+                              x-text="test.device_sn"></span>
+                    </td>
+
+                    <td class="px-5 py-4" style="min-width:190px">
+                        <div class="flex items-center gap-2">
+                            <div style="flex:1; height:6px; background:rgba(255,255,255,.08); border-radius:99px; overflow:hidden">
+                                <div :style="`width: ${getPercent(test.alcohol_level)}%; height:100%; background: ${getStatus(test.alcohol_level).color}; border-radius:99px; transition:width .6s` "></div>
+                            </div>
+                            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; min-width:38px; text-align:right"
+                                  :style="`color: ${getStatus(test.alcohol_level).color}`"
+                                  x-text="Number(test.alcohol_level).toFixed(2)"></span>
+                        </div>
+                    </td>
+
+                    <td class="px-5 py-4">
+                        <span :class="getStatus(test.alcohol_level).cls" 
+                              style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:99px; font-size:12px; font-weight:700">
+                            <span :style="`width:6px; height:6px; border-radius:50%; background: ${getStatus(test.alcohol_level).color}; display:inline-block`"></span>
+                            <span x-text="getStatus(test.alcohol_level).label"></span>
+                        </span>
+                    </td>
+
+                    <td class="px-5 py-4">
+                        <div style="width:40px; height:40px; border-radius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); display:flex; align-items:center; justify-content:center; font-size:18px; color:#4a5568">
+                            <template x-if="test.testing_image">
+                                <img :src="test.testing_image" style="width:100%; height:100%; border-radius:10px; object-fit:cover">
+                            </template>
+                            <template x-if="!test.testing_image">
+                                <span>📷</span>
+                            </template>
+                        </div>
+                    </td>
+                    <td class="px-5 py-4" style="color:#4a5568; font-size:12px; white-space:nowrap" x-text="test.testing_date"></td>
+
+                    <td class="px-5 py-4">
+                        <div class="flex gap-2">
+                            <button class="btn-action">ดูรายละเอียด</button>
+                            <button class="btn-action">แก้ไข</button>
+                        </div>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-3" style="border-top:1px solid rgba(255,255,255,.05)">
+      <p style="color:#4a5568;font-size:13px">แสดง 1–6 จาก 6 รายการ</p>
+      <div class="flex gap-1">
+        <button style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(108,99,255,.15);color:#9b8fff;font-weight:700;font-size:13px;cursor:pointer">1</button>
+        <button style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:transparent;color:#4a5568;font-size:13px;cursor:pointer">2</button>
+        <button style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:transparent;color:#4a5568;font-size:13px;cursor:pointer">3</button>
+      </div>
+    </div>
+
+  </div><!-- end panel -->
+
+  <!-- ===== DETAIL PANEL (show below for preview) ===== -->
+  <!-- <div class="mt-10">
+    <h2 class="text-black font-extrabold text-xl mb-6 tracking-tight">📋 รายละเอียดผลเทส — ตัวอย่าง</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    
+      <div class="flex flex-col gap-5">
+      
+        <div class="card rounded-2xl p-6 shadow-xl" style="border:1px solid rgba(255,255,255,.07)">
+          <p style="color:#4a5568;font-size:11px;letter-spacing:.08em" class="uppercase font-bold mb-4">ข้อมูลพนักงาน</p>
+          <div class="flex items-center gap-4 mb-5">
+            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f7258599,#f72585);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700;border:2px solid rgba(255,255,255,.1)">วม</div>
+            <div>
+              <p style="color:#fff;font-weight:700;font-size:17px">นายวิชัย มั่นคง</p>
+              <p style="color:#4a5568;font-size:13px;margin-top:3px">EMP003</p>
+            </div>
+          </div>
+          <div class="flex justify-between py-3" style="border-bottom:1px solid rgba(255,255,255,.05)">
+            <span style="color:#4a5568;font-size:13px">📞 เบอร์โทร</span>
+            <span style="color:#c8d0e4;font-size:13px;font-family:'JetBrains Mono',monospace">092-111-2233</span>
+          </div>
+        </div>
+     
+        <div class="card rounded-2xl p-6 shadow-xl text-center" style="border:1px solid rgba(255,77,109,.3)">
+          <p style="color:#4a5568;font-size:11px;letter-spacing:.08em" class="uppercase font-bold mb-4">ผลการทดสอบ</p>
+          <p style="color:#ff4d6d;font-size:52px;font-weight:900;font-family:'JetBrains Mono',monospace;line-height:1;margin-bottom:4px">0.52</p>
+          <p style="color:#4a5568;font-size:13px;margin-bottom:14px">mg/L (มิลลิกรัมต่อลิตร)</p>
+          <div style="width:100%;height:8px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-bottom:14px">
+            <div style="width:52%;height:100%;background:#ff4d6d;border-radius:99px"></div>
+          </div>
+          <span class="badge-fail" style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:99px;font-size:14px;font-weight:700">
+            <span style="width:8px;height:8px;border-radius:50%;background:#ff4d6d;display:inline-block"></span>
+            ไม่ผ่าน
+          </span>
+        </div>
+      </div>
+
+   
+      <div class="lg:col-span-2 flex flex-col gap-5">
+        <div class="card rounded-2xl p-6 shadow-xl" style="border:1px solid rgba(255,255,255,.07)">
+          <p style="color:#4a5568;font-size:11px;letter-spacing:.08em" class="uppercase font-bold mb-5">รายละเอียดการทดสอบ</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr">
+            <script>
+              const details = [
+                ['รหัสการทดสอบ','#0003'],['เครื่องเป่า SN','BRZ-2024-002'],
+                ['วันที่ทดสอบ','9 มี.ค. 2568  07:30 น.'],['บันทึกเมื่อ','9 มี.ค. 2568  07:30 น.'],
+                ['แก้ไขล่าสุด','9 มี.ค. 2568  07:30 น.'],
+              ];
+              document.addEventListener('DOMContentLoaded',()=>{
+                const g = document.getElementById('detail-grid');
+                details.forEach(([k,v])=>{
+                  g.innerHTML+=`
+                    <div class="flex justify-between py-3.5 px-1" style="border-bottom:1px solid rgba(255,255,255,.05)">
+                      <span style="color:#4a5568;font-size:13px">${k}</span>
+                      <span style="color:#e2e8f0;font-size:13px;font-family:'JetBrains Mono',monospace">${v}</span>
+                    </div>`;
+                });
+              });
+            </script>
+            <div id="detail-grid" style="grid-column:span 2"></div>
+          </div>
+        </div>
+       
+        <div class="card rounded-2xl p-6 shadow-xl" style="border:1px solid rgba(255,255,255,.07)">
+          <p style="color:#4a5568;font-size:11px;letter-spacing:.08em" class="uppercase font-bold mb-4">รูปภาพขณะทดสอบ</p>
+          <div style="width:100%;height:160px;border-radius:12px;background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#4a5568">
+            <span style="font-size:40px;margin-bottom:8px">📷</span>
+            <p style="font-size:13px">ไม่มีรูปภาพ</p>
+          </div>
+        </div>
+      
+        <div class="flex gap-3 justify-end">
+          <button style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#c8d0e4;padding:10px 20px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif">✏️ แก้ไขข้อมูล</button>
+          <button style="background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);color:#ff4d6d;padding:10px 20px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif">🗑️ ลบข้อมูล</button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  
+  <div class="mt-10 max-w-2xl">
+    <h2 class="text-black font-extrabold text-xl mb-6 tracking-tight">➕ ฟอร์มบันทึกผลเทสใหม่</h2>
+    <div class="card rounded-2xl p-8 shadow-2xl" style="border:1px solid rgba(255,255,255,.07)">
+      <div class="mb-5">
+        <label style="color:#4a5568;font-size:11px;letter-spacing:.08em;font-weight:700" class="block uppercase mb-2">พนักงาน *</label>
+        <select style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px 16px;color:#c8d0e4;font-size:14px;outline:none;font-family:'Sarabun',sans-serif">
+          <option>EMP003 — นายวิชัย มั่นคง</option>
+        </select>
+      </div>
+      <div class="mb-5">
+        <label style="color:#4a5568;font-size:11px;letter-spacing:.08em;font-weight:700" class="block uppercase mb-2">รหัสเครื่องเป่า (SN) *</label>
+        <input type="text" value="BRZ-2024-002" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px 16px;color:#c8d0e4;font-size:14px;outline:none;font-family:'Sarabun',sans-serif">
+      </div>
+      <div class="mb-5">
+        <label style="color:#4a5568;font-size:11px;letter-spacing:.08em;font-weight:700" class="block uppercase mb-2">ระดับแอลกอฮอล์ (mg/L) *</label>
+        <input type="number" value="0.52" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px 16px;color:#c8d0e4;font-size:14px;outline:none;font-family:'JetBrains Mono',monospace">
+        <div class="mt-3 p-3 rounded-xl" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)">
+          <div class="flex items-center gap-3">
+            <div style="flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden">
+              <div style="width:52%;height:100%;background:#ff4d6d;border-radius:99px"></div>
+            </div>
+            <span class="badge-fail" style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:99px">ไม่ผ่าน</span>
+          </div>
+        </div>
+      </div>
+      <div class="mb-5">
+        <label style="color:#4a5568;font-size:11px;letter-spacing:.08em;font-weight:700" class="block uppercase mb-2">วันที่และเวลาทดสอบ *</label>
+        <input type="datetime-local" value="2025-03-09T07:30" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px 16px;color:#c8d0e4;font-size:14px;outline:none;font-family:'Sarabun',sans-serif">
+      </div>
+      <div class="mb-8">
+        <label style="color:#4a5568;font-size:11px;letter-spacing:.08em;font-weight:700" class="block uppercase mb-2">รูปภาพขณะทดสอบ</label>
+        <div style="border:2px dashed rgba(255,255,255,.1);border-radius:12px;padding:24px;text-align:center;cursor:pointer">
+          <p style="font-size:36px;margin-bottom:8px">📷</p>
+          <p style="color:#4a5568;font-size:13px">คลิกเพื่ออัปโหลดรูปภาพ</p>
+          <p style="color:#374151;font-size:11px;margin-top:4px">PNG, JPG, WEBP (สูงสุด 5MB)</p>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button class="g-brand text-black font-bold px-6 py-2.5 rounded-xl text-sm" style="border:none;cursor:pointer;font-family:'Sarabun',sans-serif">✅ บันทึกผลเทส</button>
+        <button style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#7c88aa;padding:10px 24px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end container -->
 
 </x-app-layout>
+
+
+<script>
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  function alcoholApp() {
+
+
+
+
+  
+
+    const now = () => {
+      const d = new Date();
+      return d.toLocaleTimeString('th-TH', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    };
+
+    const today = () => new Date().toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+
+    return {
+      searchQ: '',
+      selectedUser: null,
+      scanning: false,
+      scanningIdx: null,
+      scanProgress: 0,
+      scanMsg: 'กำลังรอสแกน...',
+      scanTimer: null,
+      confirmClearAll: false,
+      confirmDeleteIdx: null,
+      enrollAllQueue: [],
+
+      testhist: [
+              {n:'01',name:'นายสมชาย ใจดี',   id:'EMP001',sn:'BRZ-2024-001',lvl:0.00,date:'9 มี.ค. 68  07:02',color:'#6c63ff',init:'สจ'},
+              {n:'02',name:'นางสมหญิง รักงาน', id:'EMP002',sn:'BRZ-2024-001',lvl:0.00,date:'9 มี.ค. 68  07:15',color:'#00b4d8',init:'สง'},
+              {n:'03',name:'นายวิชัย มั่นคง',  id:'EMP003',sn:'BRZ-2024-002',lvl:0.52,date:'9 มี.ค. 68  07:30',color:'#f72585',init:'วม'},
+              {n:'04',name:'นางสาวอรทัย สดใส', id:'EMP004',sn:'BRZ-2024-002',lvl:0.00,date:'9 มี.ค. 68  07:45',color:'#06d6a0',init:'อส'},
+              {n:'05',name:'นายประสิทธิ์ เก่งกาจ',id:'EMP005',sn:'BRZ-2024-003',lvl:0.18,date:'9 มี.ค. 68  08:00',color:'#ffd166',init:'ปก'},
+              {n:'06',name:'นายสมชาย ใจดี',   id:'EMP001',sn:'BRZ-2024-003',lvl:0.00,date:'9 มี.ค. 68  14:00',color:'#6c63ff',init:'สจ'},
+            ],
+
+
+
+      async init() {
+        await this.fetchUsers();
+      },
+
+      get filteredUsers() {
+        const q = this.searchQ.toLowerCase();
+
+        return this.testhist.filter(u => u.name.includes(this.searchQ) || u.id.toLowerCase().includes(q));
+      },
+
+      async fetchUsers() {
+      //   try {
+          
+      //     const response = await fetch(`/api/testacl`);
+      //     const result = await response.json();
+
+
+      //     this.users = result.data.data
+
+
+      //     this.users = result.data.data.map(user => ({
+      //       ...user,
+           
+      //       fingers: makeFingers(user.fingers),
+      //       logs: user.logs || []
+      //     }));
+      //   } catch (error) {
+      //     console.error("Fetch error:", error);
+      //   } finally {
+      //     this.isLoading = false;
+      //   }
+      // },
+}
+
+      // selectUser(u) {
+      //   this.selectedUser = u;
+      // },
+
+
+
+    
+}
+
+
+  }
+</script>
+
+

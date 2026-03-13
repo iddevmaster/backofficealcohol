@@ -41,9 +41,12 @@ class Employee extends Model
        public function fingerprints()
     {
         return $this->hasMany(\App\Models\Fingerprints::class,'emp_id', 'emp_id');
-
-      
     }
 
-    
+    public function testlgh()
+    {
+        return $this->hasMany(\App\Models\TestHistory::class,'tester_id', 'id');
+    }
+
+  
 }

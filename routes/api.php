@@ -19,3 +19,4 @@ Route::post('/delallone', [FingerController::class , 'delfingerone' ]);
 
 
 Route::post('/em/checkfinger', [FingerController::class , 'checkFinger' ]);
+Route::get('/testacl', [HistoriesController::class , 'filteredUsersTest' ]);

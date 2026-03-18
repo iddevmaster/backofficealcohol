@@ -1,7 +1,7 @@
 <x-app-layout>
 
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style>
+  <style scoped>
     :root {
       --bg: #0a0e1a;
       --surface: #111827;
@@ -43,7 +43,10 @@
       pointer-events: none;
       z-index: 0;
     }
-
+  .grid {
+    display: grid;
+    grid-auto-flow: column;
+}
 
 
     /* ─── SIDEBAR ─── */

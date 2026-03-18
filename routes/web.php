@@ -38,7 +38,7 @@ Route::get('/', [AuthController::class, 'login']);
 
 Route::get('/scan-proxy', function () {
     // Laravel เป็นคนไปคุยกับเครื่องสแกนให้ (Server-to-Server ไม่ติด CORS)
-    $response = Http::get('http://localhost:18081/read'); 
+    $response = Http::get('http://127.0.0.1:18081/read'); 
     return $response->json();
 });
 

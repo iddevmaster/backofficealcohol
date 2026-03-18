@@ -1323,15 +1323,9 @@
 
 
         try {
-          // เปลี่ยน URL มาเรียกที่ Route ของ Laravel แทน
-          // ลบ http://localhost:8000 ออกได้เลย เพราะอยู่บนโดเมนเดียวกัน
-          const response = await fetch('/scan-proxy');
-
-
-
-
+          const response = await fetch('http://127.0.0.1:18081/read');
           let data = await response.json();
-
+          
           if (!data || (Array.isArray(data) && data.length === 0) || !data.FingerCode) {
             this.scanMsg = 'กำลังรอสแกน... วางนิ้วบนเครื่อง'; // เปลี่ยนข้อความรอระหว่างยิง API
 

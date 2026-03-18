@@ -1323,7 +1323,7 @@
 
 
         try {
-          const response = await fetch('http://127.0.0.1:18081/read');
+          const response = await fetch('http://localhost:18081/read');
           let data = await response.json();
           
           if (!data || (Array.isArray(data) && data.length === 0) || !data.FingerCode) {

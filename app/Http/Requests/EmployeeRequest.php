@@ -31,7 +31,7 @@ class EmployeeRequest extends FormRequest
             'last_name'  => ['required','string','max:191'],
             'phone'    => ['nullable','string','max:50'],
             'image'    => ['nullable','image','max:2048'], // 2MB
-
+            
             'fingerprint_registered' => ['required','boolean'],
             'status'                 => ['required','boolean'],
 

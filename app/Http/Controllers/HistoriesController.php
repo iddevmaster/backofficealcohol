@@ -137,6 +137,7 @@ $test = TestHistory::with('employee')->get();
                         $datas[$index]['org_name'] = $org->name;
                         $datas[$index]['org_id'] = $org->org_id;
                         $datas[$index]['created_at'] = $tests->created_at;
+                        $datas[$index]['statusFilter'] = $tests->statusFilter;
                   
                
                 }

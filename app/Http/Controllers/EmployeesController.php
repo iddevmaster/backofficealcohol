@@ -65,6 +65,8 @@ class EmployeesController extends Controller
             $data['image'] = $request->file('image')->store('employees','public');
         }
 
+        $data['user_code'] = $data['emp_id'];
+
         $emp = Employee::create($data);
 
         return redirect()->route('employees.show', $emp)->with('success','สร้างพนักงานสำเร็จ');

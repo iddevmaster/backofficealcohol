@@ -24,6 +24,7 @@ use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\DeviceslogController;
 use App\Http\Controllers\HistoriesController;
 use App\Http\Controllers\FingerController;
+use App\Http\Controllers\ReportController;
 use App\Models\Branches;
 use App\Models\Department;
 use App\Models\Employee;
@@ -38,9 +39,11 @@ Route::get('/', [AuthController::class, 'login']);
 
 Route::get('/scan-proxy', function () {
     // Laravel เป็นคนไปคุยกับเครื่องสแกนให้ (Server-to-Server ไม่ติด CORS)
-    $response = Http::get('http://127.0.0.1:18081/read'); 
+    $response = Http::get('http://127.0.0.1:18081/read');
     return $response->json();
 });
+Route::get('/report/alcohol/export', [ReportController::class, 'export'])
+    ->name('report.alcohol.export');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -229,6 +232,7 @@ Route::middleware('auth')->group(function () {
     // Route::resource('/admin/roles', RoleController::class);
 
     Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard');
+    Route::get('/admin/report', [ReportController::class,'report'])->name('report.report');
     Route::resource('/admin/roles', RoleController::class)->names('admin.roles');
     Route::resource('/admin/permissions', PermissionController::class);
     Route::resource('/admin/employees', EmployeesController::class);

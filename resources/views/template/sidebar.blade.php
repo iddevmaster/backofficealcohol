@@ -46,6 +46,15 @@
 
         super-admin
 
+
+           <a href="{{ url('admin/report') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Report</span>
+        </a>
+
+
         <a href="{{ url('admin/departments') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -116,7 +125,7 @@
             </svg>
             <span>Test Histories</span>
         </a>
-        <!-- 
+        <!--
             <a href="data_tables_management.html" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0V4a1 1 0 011-1h3M6 3h2m8 0h2m3 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1h3m8 0a1 1 0 011 1v16a1 1 0 01-1 1H8a1 1 0 01-1-1V4a1 1 0 011-1z"/>
@@ -124,7 +133,7 @@
                 <span>จัดการตารางข้อมูล</span>
             </a>
 
-           
+
             <a href="user_profile_settings.html" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -132,10 +141,10 @@
                 <span>การตั้งค่าโปรไฟล์</span>
             </a>
 
-          
+
             <hr class="my-4 border-secondary-200" />
 
-          
+
             <div class="space-y-2">
                 <h3 class="px-3 text-xs font-semibold text-secondary-500 uppercase tracking-wider">ระบบ</h3>
                 <a href="javascript:void(0)" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">

@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Http;
 
 Route::get('/', [AuthController::class, 'login']);
 
-
+///อ่านลายนิ้วมือ
 Route::get('/scan-proxy', function () {
     // Laravel เป็นคนไปคุยกับเครื่องสแกนให้ (Server-to-Server ไม่ติด CORS)
     $response = Http::get('http://127.0.0.1:18081/read');
@@ -250,6 +250,8 @@ Route::get('/api/branches/{brn}/departments', function ($brn) {
     return Department::where('brn_id',$brn)->orderBy('name')->get(['id','name']);
 })->middleware(['web','auth'])->name('api.branch.departments');
 
+
+ //
 Route::get('/api/orgs/{org}/employee', fn($org) =>
     Employee::where('org_id',$org)->orderBy('first_name')->get(['id','first_name','last_name'])
 )->middleware(['web','auth'])->name('api.org.employee');

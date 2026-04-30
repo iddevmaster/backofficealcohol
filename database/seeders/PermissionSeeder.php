@@ -15,14 +15,20 @@ class PermissionSeeder extends Seeder
     {
 
 
-        $permissions = [
-'department-list', 'department-create', 'department-edit', 'department-delete',
-'product-list', 'product-create', 'product-edit', 'product-delete'
-];
+        // $permissions = [
+        //     'department-list',
+        //     'department-create',
+        //     'department-edit',
+        //     'department-delete',
+        //     'product-list',
+        //     'product-create',
+        //     'product-edit',
+        //     'product-delete'
+        // ];
 
-foreach ($permissions as $permission) {
-Permission::create(['name' => $permission,'guard_name' => 'web']);
-}
+        // foreach ($permissions as $permission) {
+        //     Permission::create(['name' => $permission, 'guard_name' => 'web']);
+        // }
         //
         //   $actions = [
         //     'viewAny',
@@ -33,12 +39,12 @@ Permission::create(['name' => $permission,'guard_name' => 'web']);
         //     'restore',
         //     'forceDelete',
         // ];
- 
+
         // $resources = [
         //     'user',
         //     'restaurant',
         // ];
- 
+
         // collect($resources)
         //     ->crossJoin($actions)
         //     ->map(function ($set) {

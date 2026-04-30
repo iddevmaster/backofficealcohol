@@ -21,7 +21,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $superRole = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => $guard]);
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => $guard]);
         $officerRole = Role::firstOrCreate(['name' => 'officer', 'guard_name' => $guard]);
-        $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => $guard]);
+        $employeeRole = Role::firstOrCreate(['name' => 'employee', 'guard_name' => $guard]);
 
         // Create permissions
         // $ViewPostPermission = Permission::create(['name' => 'list department']);
@@ -78,39 +78,21 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $user = User::find(1); // สมมติ user id=1
         $user->assignRole('super-admin');
-        $superRole->givePermissionTo(Permission::all());
 
 
-        $user2 = User::find(2); // สมมติ user id=1
+        $user2 = User::find(2); // สมมติ user id=2
         $user2->assignRole('admin');
 
 
 
-        $user3 = User::find(3); // สมมติ user id=1
-        $user3->assignRole('officer');
+        $superRole->givePermissionTo(Permission::all());
+        $adminRole->givePermissionTo(Permission::whereNot('name', "LIKE", "%devices%")->whereNot('name', "LIKE", "%deviceslog%")->get());
 
-
-
-        $user4 = User::find(4); // สมมติ user id=1
-        $user4->assignRole('user');
-
-
-
-        $adminRole->givePermissionTo([
-            'list branches',
-        ]);
-
-        $officerRole->givePermissionTo([
-            'list branches',
-        ]);
-
-
-
-        $userRole->givePermissionTo([
-            'list departments',
-            'create departments'
-        ]);
-
-
+        $officerRole->givePermissionTo(
+            Permission::where("name", "LIKE", "%reports%")
+                ->where("name", "LIKE", "%histories%")
+                ->where("name", "LIKE", "%finger%")
+                ->get()
+        );
     }
 }

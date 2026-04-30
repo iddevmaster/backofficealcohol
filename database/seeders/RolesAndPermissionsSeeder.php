@@ -17,11 +17,11 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         //
         $guard = 'web';
- app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-        $superRole = Role::create(['name' => 'super-admin', 'guard_name' => $guard]);
-        $adminRole = Role::create(['name' => 'admin','guard_name' => $guard]);
-        $editorRole = Role::create(['name' => 'editor', 'guard_name' => $guard]);
-        $userRole = Role::create(['name' => 'user', 'guard_name' => $guard]);
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        $superRole = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => $guard]);
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => $guard]);
+        $officerRole = Role::firstOrCreate(['name' => 'officer', 'guard_name' => $guard]);
+        $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => $guard]);
 
         // Create permissions
         // $ViewPostPermission = Permission::create(['name' => 'list department']);
@@ -37,17 +37,25 @@ class RolesAndPermissionsSeeder extends Seeder
         // $superRole->givePermissionTo($editPostPermission);
         // $superRole->givePermissionTo($deletePostPermission);
 
-       
+
         // ตั้ง guard ถ้าใช้ web (ค่า default)
         $guard = 'web';
 
         // กำหนดสิทธิเป็นกลุ่มๆ (ชื่อสิทธิใช้สไตล์ที่คุณเริ่ม เช่น "list department")
         $resources = [
-            'departments'   => ['list', 'create','store', 'edit', 'update', 'show', 'delete'],
-            'branches'       => ['list', 'create','store', 'edit', 'update', 'show', 'delete'],
-            'prefixes'       => ['list', 'create','store', 'edit', 'update', 'show', 'delete'],
-            'organizations' => ['list', 'create','store', 'edit', 'update', 'show', 'delete'],
-            // เพิ่มได้ตามต้องการ...
+            'departments' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'branches' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'prefixes' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'organizations' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'users' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'roles' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'permissions' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'devices' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'deviceslog' => ['list'],
+            'employees' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'reports' => ['access'],
+            'histories' => ['list'],
+            'finger' => ['list'],
         ];
 
 
@@ -56,52 +64,53 @@ class RolesAndPermissionsSeeder extends Seeder
         foreach ($resources as $res => $actions) {
             foreach ($actions as $act) {
                 Permission::firstOrCreate(
-                    ['name' => "{$act} {$res}",'guard_name' => $guard]
+                    ['name' => "{$act} {$res}", 'guard_name' => $guard]
                 );
             }
         }
 
 
-        
 
 
 
 
 
-$user = User::find(1); // สมมติ user id=1
-$user->assignRole('super-admin');
-$superRole->givePermissionTo(Permission::all());
+
+        $user = User::find(1); // สมมติ user id=1
+        $user->assignRole('super-admin');
+        $superRole->givePermissionTo(Permission::all());
 
 
-$user2 = User::find(2); // สมมติ user id=1
-$user2->assignRole('admin');
-
-
-
-$user3 = User::find(3); // สมมติ user id=1
-$user3->assignRole('editor');
+        $user2 = User::find(2); // สมมติ user id=1
+        $user2->assignRole('admin');
 
 
 
-$user4 = User::find(4); // สมมติ user id=1
-$user4->assignRole('user');
+        $user3 = User::find(3); // สมมติ user id=1
+        $user3->assignRole('officer');
 
 
 
- $adminRole->givePermissionTo([
+        $user4 = User::find(4); // สมมติ user id=1
+        $user4->assignRole('user');
+
+
+
+        $adminRole->givePermissionTo([
             'list branches',
         ]);
 
-        $editorRole->givePermissionTo([
+        $officerRole->givePermissionTo([
             'list branches',
         ]);
-   
 
 
-           $userRole->givePermissionTo([
-            'list departments', 'create departments'
+
+        $userRole->givePermissionTo([
+            'list departments',
+            'create departments'
         ]);
 
-    
+
     }
 }

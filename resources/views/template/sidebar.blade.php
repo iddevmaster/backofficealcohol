@@ -1,4 +1,5 @@
-<aside id="sidebar" class="fixed left-0 top-16 h-full w-64 bg-white border-r border-secondary-200 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+<aside id="sidebar"
+    class="fixed left-0 top-16 h-full w-64 bg-white border-r border-secondary-200 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
     <nav class="p-4 space-y-2">
         <!-- <a href="dashboard_overview.html" class="flex items-center space-x-3 px-3 py-2 rounded-md bg-primary-50 text-primary-700 font-medium">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10,127 +11,196 @@
 
         {{-- admin / staff / user
 
-        <a href="{{ url('admin/finger') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <span>Finger</span>
+        <a href="{{ url('admin/finger') }}"
+            class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Finger</span>
         </a>
 
-        <a href="{{ url('departments') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+        <a href="{{ url('departments') }}"
+            class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <span>Department</span>
         </a>
 
-        <a href="{{ url('branches') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+        <a href="{{ url('branches') }}"
+            class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <span>Branches</span>
         </a>
 
-        <a href="{{ url('/usersUser') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+        <a href="{{ url('/usersUser') }}"
+            class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <span>Users</span>
         </a>
-        <a href="{{ url('roles') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+        <a href="{{ url('roles') }}"
+            class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <span>Role</span>
         </a> --}}
 
-        {{-- super-admin --}}
-
-
-           <a href="{{ url('admin/report') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Report</span>
-        </a>
-
-
-        <a href="{{ url('admin/departments') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Department</span>
-        </a>
-
-        <a href="{{ url('admin/branches') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Branches</span>
-        </a>
-        <a href="{{ url('admin/organizations') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Organizations</span>
-        </a>
-
-        <a href="{{ url('admin/prefixes') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Prefixes</span>
-        </a>
-
-        <a href="{{ url('admin/users') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Users</span>
-        </a>
-
-        <a href="{{ url('admin/access') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Role</span>
-        </a>
-
-        <a href="{{ url('admin/devices') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Devices</span>
-        </a>
-
-        <a href="{{ url('admin/deviceslog') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Devices Log</span>
-        </a>
-
-
-        <a href="{{ url('admin/employees') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Employee</span>
-        </a>
-
-                <a href="{{ url('admin/finger') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+        {{-- Public --}}
+        <div class="space-y-1 mb-4">
+            <h3 class="px-3 text-xs font-semibold text-secondary-500 uppercase tracking-wider">General</h3>
+            @can('access reports')
+            <a href="{{ url('admin/report') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Report</span>
+            </a>
+            @endcan
+            @can('list histories')
+            <a href="{{ url('admin/histories') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Test Histories</span>
+            </a>
+            @endcan
+        </div>
+
+        {{-- Master Data --}}
+        <div class="space-y-1 mb-4">
+            <h3 class="px-3 text-xs font-semibold text-secondary-500 uppercase tracking-wider">Master Data</h3>
+            @can('list employees')
+            <a href="{{ url('admin/employees') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Employee</span>
+            </a>
+            @endcan
+            @can('list finger')
+            <a href="{{ url('admin/finger') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <span>Finger</span>
-        </a>
+            </a>
+            @endcan
+            @if(Auth::user()->org_id)
+                @can('show organizations')
+                <a href="{{ route('organizations.show', Auth::user()->org_id) }}"
+                    class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <span>Organization</span>
+                </a>
+                @endcan
+            @endif
+        </div>
 
-        <a href="{{ url('admin/histories') }}" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Test Histories</span>
-        </a>
+        {{-- Admin --}}
+        <div class="space-y-1 mb-4">
+            <h3 class="px-3 text-xs font-semibold text-secondary-500 uppercase tracking-wider">Administration</h3>
+            @can('list organizations')
+            <a href="{{ url('admin/organizations') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span>Organizations</span>
+            </a>
+            @endcan
+            @can('list branches')
+            <a href="{{ url('admin/branches') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span>Branches</span>
+            </a>
+            @endcan
+            @can('list departments')
+            <a href="{{ url('admin/departments') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span>Department</span>
+            </a>
+            @endcan
+            @can('list users')
+            <a href="{{ url('admin/users') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Users</span>
+            </a>
+            @endcan
+            @can('list devices')
+            <a href="{{ url('admin/devices') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Devices</span>
+            </a>
+            @endcan
+            @can('list deviceslog')
+            <a href="{{ url('admin/deviceslog') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Devices Log</span>
+            </a>
+            @endcan
+            @can('list roles')
+            <a href="{{ url('admin/access') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Role</span>
+            </a>
+            @endcan
+            @can('list prefixes')
+            <a href="{{ url('admin/prefixes') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Prefixes</span>
+            </a>
+            @endcan
+        </div>
         <!--
             <a href="data_tables_management.html" class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,10 +1,12 @@
 <x-app-layout>
 <div class="flex items-center justify-between mb-4">
   <h1 class="text-xl font-semibold">ฝ่าย</h1>
+  @can('create departments')
   <a href="{{ route('departments.create') }}"
      class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
     + เพิ่มฝ่าย
   </a>
+  @endcan
 </div>
 
 <form method="get" class="mb-4">
@@ -66,8 +68,11 @@
             </td>
             <td class="px-4 py-2">{{ $dep->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">
+              @can('edit departments')
               <a href="{{ route('departments.edit', $dep) }}"
                  class="inline-flex items-center rounded-md border px-3 py-1.5 hover:bg-gray-50">แก้ไข</a>
+              @endcan
+              @can('delete departments')
               <form action="{{ route('departments.destroy', $dep) }}" method="post" class="inline"
                     onsubmit="return confirm('ลบรายการนี้หรือไม่?');">
                 @csrf @method('DELETE')
@@ -75,6 +80,7 @@
                   ลบ
                 </button>
               </form>
+              @endcan
             </td>
           </tr>
         @endforeach

@@ -48,6 +48,7 @@ class OrganizationController extends Controller
 
     public function show(Organization $organization)
     {
+        $organization->load(['branches', 'departments']);
         return view('organizations.show', compact('organization'));
     }
 

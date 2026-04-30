@@ -23,4 +23,14 @@ class Organization extends Model
     {
         return ['org_id'];
     }
+
+    public function branches()
+    {
+        return $this->hasMany(Branches::class, 'org_id', 'id');
+    }
+
+    public function departments()
+    {
+        return $this->hasManyThrough(Department::class, Branches::class, 'org_id', 'brn_id', 'id', 'id');
+    }
 }

@@ -1,7 +1,9 @@
 <x-app-layout>
 <div class="flex items-center justify-between mb-4">
   <h1 class="text-xl font-semibold">สาขา</h1>
+  @can('create branches')
   <a href="{{ route('branches.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">+ เพิ่มสาขา</a>
+  @endcan
 </div>
 
 <form method="get" class="mb-4">
@@ -50,11 +52,15 @@
             <td class="px-4 py-2">ตำบล {{ $b->tambon->name ?? '—' }} อำเภอ {{ $b->amphur->name ?? '—' }} จังหวัด {{ $b->province->name ?? '—' }}</td>
             <td class="px-4 py-2">{{ $b->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">
+              @can('edit branches')
               <a href="{{ route('branches.edit', $b) }}" class="inline-flex rounded-md border px-3 py-1.5 hover:bg-gray-50">แก้ไข</a>
+              @endcan
+              @can('delete branches')
               <form action="{{ route('branches.destroy', $b) }}" method="post" class="inline" onsubmit="return confirm('ลบรายการนี้หรือไม่?');">
                 @csrf @method('DELETE')
                 <button class="inline-flex rounded-md bg-red-600 px-3 py-1.5 text-white hover:bg-red-700">ลบ</button>
               </form>
+              @endcan
             </td>
           </tr>
         @endforeach

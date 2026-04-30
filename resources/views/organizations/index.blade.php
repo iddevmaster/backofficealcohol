@@ -1,7 +1,9 @@
 <x-app-layout>
 <div class="flex items-center justify-between mb-4">
   <h1 class="text-xl font-semibold">Organizations</h1>
+  @can('create organizations')
   <a href="{{ route('organizations.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">+ เพิ่มองค์กร</a>
+  @endcan
 </div>
 
 <form method="get" class="mb-4">
@@ -46,12 +48,18 @@
             </td>
             <td class="px-4 py-2">{{ $o->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">
+              @can('show organizations')
               <a href="{{ route('organizations.show', $o) }}" class="inline-flex rounded-md border px-3 py-1.5 hover:bg-gray-50">ดู</a>
+              @endcan
+              @can('edit organizations')
               <a href="{{ route('organizations.edit', $o) }}" class="inline-flex rounded-md border px-3 py-1.5 hover:bg-gray-50">แก้ไข</a>
+              @endcan
+              @can('delete organizations')
               <form action="{{ route('organizations.destroy', $o) }}" method="post" class="inline" onsubmit="return confirm('ลบรายการนี้หรือไม่?');">
                 @csrf @method('DELETE')
                 <button class="inline-flex rounded-md bg-red-600 px-3 py-1.5 text-white hover:bg-red-700">ลบ</button>
               </form>
+              @endcan
             </td>
           </tr>
         @endforeach

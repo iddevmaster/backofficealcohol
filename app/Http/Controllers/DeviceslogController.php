@@ -11,12 +11,22 @@ use Illuminate\View\View;
 use Carbon\Carbon;
 use App\Http\Requests\DevicelogRequest;
 
-class DeviceslogController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class DeviceslogController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list deviceslog', only: ['index']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-  public function index(Request $request): View
+    public function index(Request $request): View
     {
         $q = (string) $request->get('q', '');
 

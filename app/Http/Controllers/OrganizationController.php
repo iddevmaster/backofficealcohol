@@ -6,23 +6,36 @@ use App\Models\Organization;
 use Illuminate\Http\Request;
 use App\Http\Requests\OrganizationRequest;
 use Illuminate\Support\Str;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class OrganizationController extends Controller
+class OrganizationController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list organizations', only: ['index']),
+            new Middleware('permission:create organizations', only: ['create', 'store']),
+            new Middleware('permission:edit organizations', only: ['edit', 'update']),
+            new Middleware('permission:show organizations', only: ['show']),
+            new Middleware('permission:delete organizations', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-       public function index(Request $request)
+    public function index(Request $request)
     {
         $q = (string) $request->get('q', '');
         $orgs = Organization::query()
-            ->when($q, fn($qr) => $qr->where('name','like',"%{$q}%")
-                                      ->orWhere('org_id','like',"%{$q}%"))
+            ->when($q, fn($qr) => $qr->where('name', 'like', "%{$q}%")
+                ->orWhere('org_id', 'like', "%{$q}%"))
             ->latest('id')
             ->paginate(10)
             ->withQueryString();
 
-        return view('organizations.index', compact('orgs','q'));
+        return view('organizations.index', compact('orgs', 'q'));
     }
 
     public function create()
@@ -43,7 +56,7 @@ class OrganizationController extends Controller
         $data['status'] = $request->boolean('status');
 
         Organization::create($data);
-        return redirect()->route('organizations.index')->with('success','บันทึกองค์กรสำเร็จ');
+        return redirect()->route('organizations.index')->with('success', 'บันทึกองค์กรสำเร็จ');
     }
 
     public function show(Organization $organization)
@@ -67,14 +80,14 @@ class OrganizationController extends Controller
         }
 
         $data['status'] = $request->boolean('status');
-       
+
         $organization->update($data);
-        return redirect()->route('organizations.index')->with('success','อัปเดตองค์กรสำเร็จ');
+        return redirect()->route('organizations.index')->with('success', 'อัปเดตองค์กรสำเร็จ');
     }
 
     public function destroy(Organization $organization)
     {
         $organization->delete();
-        return redirect()->route('organizations.index')->with('success','ลบองค์กรสำเร็จ');
+        return redirect()->route('organizations.index')->with('success', 'ลบองค์กรสำเร็จ');
     }
 }

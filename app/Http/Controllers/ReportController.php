@@ -50,8 +50,13 @@ class ReportController extends Controller
             });
         }
 
+        $user = auth()->user();
+        $isAdmin = $user->hasRole(['super-admin', 'admin']);
+
         // filter องค์กร
-        if ($request->filled('org_id')) {
+        if (!$isAdmin) {
+            $query->where('th.org_id', $user->org_id);
+        } elseif ($request->filled('org_id')) {
             $query->where('th.org_id', $request->org_id);
         }
 
@@ -82,7 +87,9 @@ class ReportController extends Controller
         // summary cards
         $summaryBase = DB::table('test_histories');
 
-        if ($request->filled('org_id')) {
+        if (!$isAdmin) {
+            $summaryBase->where('org_id', $user->org_id);
+        } elseif ($request->filled('org_id')) {
             $summaryBase->where('org_id', $request->org_id);
         }
         if ($request->filled('date_from')) {
@@ -97,7 +104,11 @@ class ReportController extends Controller
         $failCount  = (clone $summaryBase)->where('alcohol_level', '>', 0)->count();
         $todayCount = (clone $summaryBase)->whereDate('testing_date', now()->toDateString())->count();
 
-        $organizations = DB::table('organizations')->select('id', 'name')->orderBy('name')->get();
+        $organizations = DB::table('organizations')
+            ->select('id', 'name')
+            ->when(!$isAdmin, fn($q) => $q->where('id', $user->org_id))
+            ->orderBy('name')
+            ->get();
 
         return view('report.index', compact(
             'reports',

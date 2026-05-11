@@ -8,8 +8,22 @@ use App\Http\Requests\PrefixRequest;
 
 
 
-class PrefixesController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class PrefixesController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list prefixes', only: ['index']),
+            new Middleware('permission:create prefixes', only: ['create', 'store']),
+            new Middleware('permission:edit prefixes', only: ['edit', 'update']),
+            new Middleware('permission:show prefixes', only: ['show']),
+            new Middleware('permission:delete prefixes', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */

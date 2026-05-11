@@ -6,12 +6,28 @@ use Illuminate\Http\Request;
 use App\Models\{Role, Permission, User};
 use App\Http\Requests\RoleRequest;
 
-class RoleController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class RoleController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list roles', only: ['index']),
+            new Middleware('permission:create roles', only: ['create']),
+            new Middleware('permission:store roles', only: ['store']),
+            new Middleware('permission:edit roles', only: ['edit']),
+            new Middleware('permission:update roles', only: ['update']),
+            new Middleware('permission:show roles', only: ['show']),
+            new Middleware('permission:delete roles', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
- public function dashboard(Request $request) {
+    public function dashboard(Request $request) {
    
 
 $q = (string) $request->get('q', '');

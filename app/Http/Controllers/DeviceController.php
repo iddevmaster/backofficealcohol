@@ -9,12 +9,28 @@ use Illuminate\View\View;
 use App\Http\Requests\DeviceRequest;
 use Carbon\Carbon;
 
-class DeviceController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class DeviceController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list devices', only: ['index']),
+            new Middleware('permission:create devices', only: ['create']),
+            new Middleware('permission:store devices', only: ['store']),
+            new Middleware('permission:edit devices', only: ['edit']),
+            new Middleware('permission:update devices', only: ['update']),
+            new Middleware('permission:show devices', only: ['show']),
+            new Middleware('permission:delete devices', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
- public function index(Request $request): View
+    public function index(Request $request): View
     {
         $q = (string) $request->get('q', '');
 

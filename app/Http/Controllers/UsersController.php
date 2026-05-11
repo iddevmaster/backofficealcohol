@@ -10,51 +10,73 @@ use App\Models\Organization;
 use App\Models\Prefixes;
 use App\Models\Role;
 
-class UsersController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class UsersController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list users', only: ['index']),
+            new Middleware('permission:create users', only: ['create']),
+            new Middleware('permission:store users', only: ['store']),
+            new Middleware('permission:edit users', only: ['edit']),
+            new Middleware('permission:update users', only: ['update']),
+            new Middleware('permission:show users', only: ['show']),
+            new Middleware('permission:delete users', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-        public function index(Request $request)
+    public function index(Request $request)
     {
-      
 
-    $q = (string) $request->get('q', '');
 
-$users = User::query()
-    ->with('role','organize') // ผูก role มาพร้อมกัน ป้องกัน N+1
-    ->when($q, function ($qr) use ($q) {
-        $qr->where(function ($w) use ($q) {
-            $w->where('username', 'like', "%{$q}%")
-              ->orWhere('first_name', 'like', "%{$q}%")
-              ->orWhere('last_name', 'like', "%{$q}%")
-              ->orWhere('role_id', 'like', "%{$q}%")
-              ->orWhere('org_id', 'like', "%{$q}%");
-        })
-        // ค้นหาจากชื่่อ role ด้วย
-        ->orWhereHas('role', function ($r) use ($q) {
-            $r->where('name', 'like', "%{$q}%");
-        })
-        ->orWhereHas('organize', function ($s) use ($q) {
-            $s->where('name', 'like', "%{$q}%");
-        });
-    })
-    ->latest('id')
-    ->paginate(10)
-    ->withQueryString();
+        $q = (string) $request->get('q', '');
 
-        return view('users.index', compact('users','q'));
+        $users = User::query()
+            ->with('role', 'organize') // ผูก role มาพร้อมกัน ป้องกัน N+1
+            ->when($q, function ($qr) use ($q) {
+                $qr->where(function ($w) use ($q) {
+                    $w->where('username', 'like', "%{$q}%")
+                        ->orWhere('first_name', 'like', "%{$q}%")
+                        ->orWhere('last_name', 'like', "%{$q}%")
+                        ->orWhere('role_id', 'like', "%{$q}%")
+                        ->orWhere('org_id', 'like', "%{$q}%");
+                })
+                    // ค้นหาจากชื่่อ role ด้วย
+                    ->orWhereHas('role', function ($r) use ($q) {
+                        $r->where('name', 'like', "%{$q}%");
+                    })
+                    ->orWhereHas('organize', function ($s) use ($q) {
+                        $s->where('name', 'like', "%{$q}%");
+                    });
+            })
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('users.index', compact('users', 'q'));
+    }
+
+    private function getRoleName($roleId)
+    {
+        $role = Role::find($roleId);
+        return $role->name;
     }
 
     public function create()
     {
-    
-         return view('users.create', [
-        'roles' => Role::orderBy('name')->get(),
-        'orgs'  => Organization::orderBy('id')->get(),
-        'departments'  => Department::orderBy('name')->get(),
-        'prefixs'  => Prefixes::orderBy('id')->get(),
-    ]);
+
+        return view('users.create', [
+            'roles' => Role::orderBy('name')->get(),
+            'orgs' => Organization::orderBy('id')->get(),
+            'departments' => Department::orderBy('name')->get(),
+            'prefixs' => Prefixes::orderBy('id')->get(),
+        ]);
     }
 
     public function store(UserRequest $request)
@@ -62,9 +84,13 @@ $users = User::query()
         $data = $request->validated();
         $data['status'] = $request->boolean('status');
 
-        User::create($data);
+        $newuser = User::create($data);
 
-        return redirect()->route('users.index')->with('success','สร้างผู้ใช้สำเร็จ');
+        if ($newuser && !empty($request->role_id)) {
+            $newuser->assignRole($this->getRoleName($request->role_id));
+        }
+
+        return redirect()->route('users.index')->with('success', 'สร้างผู้ใช้สำเร็จ');
     }
 
     public function show(User $user)
@@ -74,14 +100,14 @@ $users = User::query()
 
     public function edit(User $user)
     {
-       
+
         return view('users.edit', [
-        'user'  => $user,
-        'roles' => Role::orderBy('name')->get(),
-        'orgs'  => Organization::orderBy('id')->get(),
-        'departments'  => Department::orderBy('name')->get(),
-        'prefixs'  => Prefixes::orderBy('id')->get(),
-    ]);
+            'user' => $user,
+            'roles' => Role::orderBy('name')->get(),
+            'orgs' => Organization::orderBy('id')->get(),
+            'departments' => Department::orderBy('name')->get(),
+            'prefixs' => Prefixes::orderBy('id')->get(),
+        ]);
     }
 
     public function update(UserRequest $request, User $user)
@@ -93,15 +119,18 @@ $users = User::query()
         if (empty($data['password'])) {
             unset($data['password']);
         }
-
         $user->update($data);
 
-        return redirect()->route('users.index')->with('success','อัปเดตผู้ใช้สำเร็จ');
+        if ($user && !empty($request->role_id)) {
+            $user->assignRole($this->getRoleName($request->role_id));
+        }
+
+        return redirect()->route('users.index')->with('success', 'อัปเดตผู้ใช้สำเร็จ');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('users.index')->with('success','ลบผู้ใช้สำเร็จ');
+        return redirect()->route('users.index')->with('success', 'ลบผู้ใช้สำเร็จ');
     }
 }

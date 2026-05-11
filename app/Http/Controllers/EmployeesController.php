@@ -3,57 +3,91 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Employee, Branches, Department, Organization,Prefixes};
+use App\Models\{Employee, Branches, Department, Organization, Prefixes};
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use App\Http\Requests\EmployeeRequest;
 
-class EmployeesController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class EmployeesController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list employees', only: ['index']),
+            new Middleware('permission:create employees', only: ['create']),
+            new Middleware('permission:store employees', only: ['store']),
+            new Middleware('permission:edit employees', only: ['edit']),
+            new Middleware('permission:update employees', only: ['update']),
+            new Middleware('permission:show employees', only: ['show']),
+            new Middleware('permission:delete employees', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-  public function index(Request $request): View
+    public function index(Request $request): View
     {
+        $user = auth()->user();
+        $isAdmin = $user->hasRole(['super-admin', 'admin']);
 
-       $employees = Employee::with('fingerprints')->paginate(20);
-       
-        $q     = $request->get('q');
+        $q = $request->get('q');
         $orgId = $request->get('org_id');
 
         $employees = Employee::query()
-            ->with(['organization','branches','department'])
-            ->when($orgId, fn($qq) => $qq->where('org_id', $orgId))
+            ->with(['organization', 'branches', 'department'])
+            ->when(!$isAdmin, fn($qq) => $qq->where('org_id', $user->org_id))
+            ->when($isAdmin && $orgId, fn($qq) => $qq->where('org_id', $orgId))
             ->when($q, function ($query) use ($q) {
                 $query->where(function ($w) use ($q) {
-                    $w->where('emp_id','like',"%{$q}%")
-                      ->orWhere('first_name','like',"%{$q}%")
-                      ->orWhere('last_name','like',"%{$q}%")
-                      ->orWhere('phone','like',"%{$q}%")
-                      ->orWhereHas('branches', fn($b)=>$b->where('name','like',"%{$q}%"))
-                      ->orWhereHas('department', fn($d)=>$d->where('name','like',"%{$q}%"));
+                    $w->where('emp_id', 'like', "%{$q}%")
+                        ->orWhere('first_name', 'like', "%{$q}%")
+                        ->orWhere('last_name', 'like', "%{$q}%")
+                        ->orWhere('phone', 'like', "%{$q}%")
+                        ->orWhereHas('branches', fn($b) => $b->where('name', 'like', "%{$q}%"))
+                        ->orWhereHas('department', fn($d) => $d->where('name', 'like', "%{$q}%"));
                 });
             })
             ->orderByDesc('id')
             ->paginate(12)
             ->withQueryString();
 
-        $organizations = Organization::orderBy('name')->get(['id','name']);
+        $organizations = Organization::query()
+            ->when(!$isAdmin, fn($qq) => $qq->where('id', $user->org_id))
+            ->orderBy('name')
+            ->get(['id', 'name']);
 
-        return view('employees.index', compact('employees','organizations','q','orgId'));
+        return view('employees.index', compact('employees', 'organizations', 'q', 'orgId'));
     }
 
     public function create(): View
     {
-        $organizations = Organization::orderBy('name')->get(['id','name']);
-        $branches      = Branches::orderBy('name')->get(['id','name','org_id']);
-        $departments   = Department::orderBy('name')->get(['id','name','brn_id']);
-        $prefixs  =  Prefixes::orderBy('id')->get();
+        $user = auth()->user();
+        $isAdmin = $user->hasRole(['super-admin', 'admin']);
 
+        $organizations = Organization::query()
+            ->when(!$isAdmin, fn($qq) => $qq->where('id', $user->org_id))
+            ->orderBy('name')
+            ->get(['id', 'name']);
 
-        return view('employees.create', compact('organizations','branches','departments','prefixs'));
+        $branches = Branches::query()
+            ->when(!$isAdmin, fn($qq) => $qq->where('org_id', $user->org_id))
+            ->orderBy('name')
+            ->get(['id', 'name', 'org_id']);
+
+        $departments = Department::query()
+            ->when(!$isAdmin, fn($qq) => $qq->whereHas('branches', fn($bq) => $bq->where('org_id', $user->org_id)))
+            ->orderBy('name')
+            ->get(['id', 'name', 'brn_id']);
+
+        $prefixs = Prefixes::orderBy('id')->get();
+
+        return view('employees.create', compact('organizations', 'branches', 'departments', 'prefixs'));
     }
 
     public function store(EmployeeRequest $request): RedirectResponse
@@ -62,30 +96,45 @@ class EmployeesController extends Controller
 
         // upload image
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('employees','public');
+            $data['image'] = $request->file('image')->store('employees', 'public');
         }
 
-        $data['user_code'] = $data['emp_id'];
+        // $data['user_code'] = $data['emp_id'];
 
         $emp = Employee::create($data);
 
-        return redirect()->route('employees.show', $emp)->with('success','สร้างพนักงานสำเร็จ');
+        return redirect()->route('employees.show', $emp)->with('success', 'สร้างพนักงานสำเร็จ');
     }
 
     public function show(Employee $employee): View
     {
-        $employee->load(['organization','branches','department']);
+        $employee->load(['organization', 'branches', 'department']);
         return view('employees.show', compact('employee'));
     }
 
     public function edit(Employee $employee): View
     {
-        $organizations = Organization::orderBy('name')->get(['id','name']);
-        $branches      = Branches::orderBy('name')->get(['id','name','org_id']);
-        $departments   = Department::orderBy('name')->get(['id','name','brn_id']);
-         $prefixs  =  Prefixes::orderBy('id')->get();
+        $user = auth()->user();
+        $isAdmin = $user->hasRole(['super-admin', 'admin']);
 
-        return view('employees.edit', compact('employee','organizations','branches','departments','prefixs'));
+        $organizations = Organization::query()
+            ->when(!$isAdmin, fn($qq) => $qq->where('id', $user->org_id))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $branches = Branches::query()
+            ->when(!$isAdmin, fn($qq) => $qq->where('org_id', $user->org_id))
+            ->orderBy('name')
+            ->get(['id', 'name', 'org_id']);
+
+        $departments = Department::query()
+            ->when(!$isAdmin, fn($qq) => $qq->whereHas('branches', fn($bq) => $bq->where('org_id', $user->org_id)))
+            ->orderBy('name')
+            ->get(['id', 'name', 'brn_id']);
+
+        $prefixs = Prefixes::orderBy('id')->get();
+
+        return view('employees.edit', compact('employee', 'organizations', 'branches', 'departments', 'prefixs'));
     }
 
     public function update(EmployeeRequest $request, Employee $employee): RedirectResponse
@@ -97,13 +146,13 @@ class EmployeesController extends Controller
             if ($employee->image) {
                 Storage::disk('public')->delete($employee->image);
             }
-            $data['image'] = $request->file('image')->store('employees','public');
+            $data['image'] = $request->file('image')->store('employees', 'public');
         }
 
         $employee->update($data);
 
 
-        return redirect()->route('employees.show', $employee)->with('success','บันทึกการแก้ไขแล้ว');
+        return redirect()->route('employees.show', $employee)->with('success', 'บันทึกการแก้ไขแล้ว');
     }
 
     public function destroy(Employee $employee): RedirectResponse
@@ -112,7 +161,7 @@ class EmployeesController extends Controller
         // if ($employee->image) Storage::disk('public')->delete($employee->image);
 
         $employee->delete();
-        return redirect()->route('employees.index')->with('success','ลบพนักงานแล้ว');
+        return redirect()->route('employees.index')->with('success', 'ลบพนักงานแล้ว');
     }
 
     private function validatedData(EmployeeRequest $request): array
@@ -121,7 +170,7 @@ class EmployeesController extends Controller
 
         // จัดการ boolean จาก checkbox
         $data['fingerprint_registered'] = $request->boolean('fingerprint_registered');
-        $data['status']                 = $request->boolean('status');
+        $data['status'] = $request->boolean('status');
 
         return $data;
     }

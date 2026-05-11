@@ -20,23 +20,63 @@ use Log;
 
 
 
-class HistoriesController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class HistoriesController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list histories', only: ['index']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): View
     {
-        //
+        $q = $request->get('q');
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
+        $status = $request->get('status');
 
-        $q     = $request->get('q');
+        $query = TestHistory::with('employee');
+
+        if ($q) {
+            $query->where(function ($query) use ($q) {
+                $query->where('device_sn', 'like', "%$q%")
+                    ->orWhereHas('employee', function ($query) use ($q) {
+                        $query->where('first_name', 'like', "%$q%")
+                            ->orWhere('last_name', 'like', "%$q%")
+                            ->orWhere('user_code', 'like', "%$q%");
+                    });
+            });
+        }
+
+        if ($dateFrom) {
+            $query->whereDate('testing_date', '>=', $dateFrom);
+        }
+        if ($dateTo) {
+            $query->whereDate('testing_date', '<=', $dateTo);
+        }
+
+        if ($status) {
+            if ($status === 'pass') {
+                $query->where('alcohol_level', '<=', 0);
+            } elseif ($status === 'fail') {
+                $query->where('alcohol_level', '>', 0);
+            }
+        }
+
+        $test = $query->orderByDesc('testing_date')->paginate(15)->withQueryString();
 
 
-$test = TestHistory::with('employee')->get();
-
-
-
-        return view('testhistorys.index', compact('test', 'q'));
+        return view('testhistorys.index', compact(
+            'test',
+            'q',
+        ));
     }
 
     /**
@@ -46,21 +86,21 @@ $test = TestHistory::with('employee')->get();
     {
         //
 
-                return view('testhistorys.create', [
-        'employee' => Employee::orderBy('org_id')->get(),
-        'orgs'  => Organization::orderBy('id')->get()
-    ]);
+        return view('testhistorys.create', [
+            'employee' => Employee::orderBy('org_id')->get(),
+            'orgs' => Organization::orderBy('id')->get()
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-        public function store(TeshistoriesRequest $request): RedirectResponse
+    public function store(TeshistoriesRequest $request): RedirectResponse
     {
         //
 
-            $data = $request->validated();
-        
+        $data = $request->validated();
+
 
         // รองรับค่า datetime-local "YYYY-MM-DDTHH:MM"
         // if (is_string($data['created_date'])) {
@@ -68,7 +108,7 @@ $test = TestHistory::with('employee')->get();
         // }
 
         $data['testing_date'] = Carbon::now();
-       
+
 
         $device = TestHistory::create($data);
 
@@ -107,9 +147,9 @@ $test = TestHistory::with('employee')->get();
     {
         //
     }
-     public function filteredUsersTest(Request $request): JsonResponse
+    public function filteredUsersTest(Request $request): JsonResponse
     {
-    
+
         // $testhist [ {n:'01',name:'นายสมชาย ใจดี',   id:'EMP001',sn:'BRZ-2024-001',lvl:0.00,date:'9 มี.ค. 68  07:02',color:'#6c63ff',init:'สจ'},
         //       {n:'02',name:'นางสมหญิง รักงาน', id:'EMP002',sn:'BRZ-2024-001',lvl:0.00,date:'9 มี.ค. 68  07:15',color:'#00b4d8',init:'สง'},
         //       {n:'03',name:'นายวิชัย มั่นคง',  id:'EMP003',sn:'BRZ-2024-002',lvl:0.52,date:'9 มี.ค. 68  07:30',color:'#f72585',init:'วม'},
@@ -119,32 +159,32 @@ $test = TestHistory::with('employee')->get();
         //     ], 
         $datas = [];
 
-        $data = TestHistory::where('org_id',1)->get();
+        $data = TestHistory::where('org_id', 1)->get();
 
-             foreach ($data as $index => $tests) {
-                   $getpem = Employee::where('id',$tests->tester_id)->first();
-                   $deve = Device::where('serial_num',$tests->device_sn)->first();
-                   $org = Organization::where('id',$tests->org_id)->first();
-                        $datas[$index]['id'] = $tests->id;
-                        $datas[$index]['f_name'] = $getpem->first_name;
-                        $datas[$index]['l_name'] = $getpem->last_name;
-                        $datas[$index]['prefix_id'] = $getpem->prefix_id;
-                        $datas[$index]['user_code'] = $getpem->user_code;
-                        $datas[$index]['alcohol_level'] = $tests->alcohol_level;
-                        $datas[$index]['testing_image'] = $tests->testing_image;
-                        $datas[$index]['device_sn'] = $tests->device_sn;
-                        $datas[$index]['device_name'] = $deve->serial_num;
-                        $datas[$index]['org_name'] = $org->name;
-                        $datas[$index]['org_id'] = $org->org_id;
-                        $datas[$index]['created_at'] = $tests->created_at;
-                        $datas[$index]['statusFilter'] = $tests->statusFilter;
-                  
-               
-                }
+        foreach ($data as $index => $tests) {
+            $getpem = Employee::where('id', $tests->tester_id)->first();
+            $deve = Device::where('serial_num', $tests->device_sn)->first();
+            $org = Organization::where('id', $tests->org_id)->first();
+            $datas[$index]['id'] = $tests->id;
+            $datas[$index]['f_name'] = $getpem->first_name;
+            $datas[$index]['l_name'] = $getpem->last_name;
+            $datas[$index]['prefix_id'] = $getpem->prefix_id;
+            $datas[$index]['user_code'] = $getpem->user_code;
+            $datas[$index]['alcohol_level'] = $tests->alcohol_level;
+            $datas[$index]['testing_image'] = $tests->testing_image;
+            $datas[$index]['device_sn'] = $tests->device_sn;
+            $datas[$index]['device_name'] = $deve->serial_num;
+            $datas[$index]['org_name'] = $org->name;
+            $datas[$index]['org_id'] = $org->org_id;
+            $datas[$index]['created_at'] = $tests->created_at;
+            $datas[$index]['statusFilter'] = $tests->statusFilter;
 
-                  return response()->json([
+
+        }
+
+        return response()->json([
             'success' => true,
-            'data'    => $datas,
+            'data' => $datas,
         ]);
     }
 }

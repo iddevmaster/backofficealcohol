@@ -6,12 +6,28 @@ use Illuminate\Http\Request;
 use App\Models\{Role, Permission, User};
 use App\Http\Requests\PermissionRequest;
 
-class PermissionController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class PermissionController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list permissions', only: ['index']),
+            new Middleware('permission:create permissions', only: ['create']),
+            new Middleware('permission:store permissions', only: ['store']),
+            new Middleware('permission:edit permissions', only: ['edit']),
+            new Middleware('permission:update permissions', only: ['update']),
+            new Middleware('permission:show permissions', only: ['show']),
+            new Middleware('permission:delete permissions', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-     public function index(Request $request)
+    public function index(Request $request)
     {
         $q = $request->get('q');
         $guard = $request->get('guard_name');

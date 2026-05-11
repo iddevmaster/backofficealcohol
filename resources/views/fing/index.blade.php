@@ -1,1599 +1,671 @@
 <x-app-layout>
-
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style scoped>
-    :root {
-      --bg: #0a0e1a;
-      --surface: #111827;
-      --surface2: #1a2235;
-      --border: #1e2d45;
-      --accent: #00d4ff;
-      --accent2: #0066ff;
-      --success: #00e676;
-      --warn: #ffab00;
-      --danger: #ff5252;
-      --text: #fafafa;
-      --text-dim: #64748b;
-      --glow: rgba(17, 23, 24, 0.15);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Sarabun', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* Grid background */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-  .grid {
-    display: grid;
-    grid-auto-flow: column;
-}
-
-
-    /* ─── SIDEBAR ─── */
-
-
-
-    .nav-section {
-      margin-bottom: 24px;
-    }
-
-    .nav-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--text-dim);
-      padding: 0 8px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-size: 14px;
-      color: var(--text-dim);
-      border: 1px solid transparent;
-      margin-bottom: 2px;
-    }
-
-    .nav-item:hover {
-      background: var(--surface2);
-      color: var(--text);
-    }
-
-    .nav-item.active {
-      background: rgba(0, 212, 255, 0.08);
-      border-color: rgba(0, 212, 255, 0.2);
-      color: var(--accent);
-    }
-
-    .nav-item .icon {
-      font-size: 16px;
-      width: 20px;
-      text-align: center;
-    }
-
-    /* ─── MAIN ─── */
-    .main {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .page-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .breadcrumb {
-      font-size: 12px;
-      color: var(--text-dim);
-      margin-top: 2px;
-    }
-
-    .breadcrumb span {
-      color: var(--accent);
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .badge {
-      background: rgba(0, 212, 255, 0.1);
-      border: 1px solid rgba(0, 212, 255, 0.3);
-      color: var(--accent);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-family: 'Space Mono', monospace;
-    }
-
-
-
-    /* ─── USER LIST PANEL ─── */
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .panel-head {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .panel-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .panel-meta {
-      font-size: 12px;
-      color: var(--text-dim);
-    }
-
-    /* Search bar */
-    .search-wrap {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .search-input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px 8px 36px;
-      color: var(--text);
-      font-size: 13px;
-      font-family: 'Sarabun', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-      position: relative;
-    }
-
-    .search-input:focus {
-      border-color: var(--accent);
-    }
-
-    .search-wrap-inner {
-      position: relative;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-dim);
-      font-size: 14px;
-    }
-
-    /* User rows */
-    .user-list {
-      padding: 8px;
-    }
-
-    .user-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-      margin-bottom: 4px;
-    }
-
-    .user-row:hover {
-      background: var(--surface2);
-    }
-
-    .user-row.selected {
-      background: rgba(0, 212, 255, 0.07);
-      border-color: rgba(0, 212, 255, 0.25);
-    }
-
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent2), #8b5cf6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
-      position: relative;
-    }
-
-    .avatar.green {
-      background: linear-gradient(135deg, #059669, #00e676);
-    }
-
-    .avatar.orange {
-      background: linear-gradient(135deg, #d97706, #ffab00);
-    }
-
-    .avatar.pink {
-      background: linear-gradient(135deg, #db2777, #f472b6);
-    }
-
-    .avatar.purple {
-      background: linear-gradient(135deg, #7c3aed, #a78bfa);
-    }
-
-    .user-info {
-      flex: 1
-    }
-
-    .user-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .user-dept {
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 1px;
-    }
-
-    .fp-count {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-family: 'Space Mono', monospace;
-    }
-
-    .fp-dots {
-      display: flex;
-      gap: 2px;
-    }
-
-    .fp-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-
-    .fp-dot.filled {
-      background: var(--accent);
-      box-shadow: 0 0 4px var(--accent);
-    }
-
-    /* ─── DETAIL PANEL ─── */
-    .detail-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    /* User card */
-    .user-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .user-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-    }
-
-    .card-user-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .card-avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent2), #8b5cf6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
-      box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
-    }
-
-    .card-name {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .card-id {
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 2px;
-      font-family: 'Space Mono', monospace;
-    }
-
-    .card-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .stat-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-    }
-
-    .stat-label {
-      font-size: 10px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .stat-val {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--accent);
-      font-family: 'Space Mono', monospace;
-      margin-top: 2px;
-    }
-
-    /* Fingerprint grid */
-    .fp-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .fp-grid {
-      padding: 16px;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-    }
-
-    .fp-slot {
-      aspect-ratio: 1;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.25s;
-      position: relative;
-      overflow: hidden;
-      gap: 4px;
-    }
-
-    .fp-slot:hover {
-      border-color: rgba(0, 212, 255, 0.4);
-      background: rgba(0, 212, 255, 0.04);
-      transform: translateY(-1px);
-    }
-
-    .fp-slot.enrolled {
-      border-color: rgba(0, 230, 118, 0.4);
-      background: rgba(0, 230, 118, 0.05);
-    }
-
-    .fp-slot.enrolled:hover {
-      border-color: rgba(255, 82, 82, 0.4);
-      background: rgba(255, 82, 82, 0.05);
-    }
-
-    .fp-slot.scanning {
-      border-color: var(--accent);
-      background: rgba(0, 212, 255, 0.08);
-      animation: scanPulse 1.2s ease-in-out infinite;
-    }
-
-    @keyframes scanPulse {
-
-      0%,
-      100% {
-        box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4);
-      }
-
-      50% {
-        box-shadow: 0 0 0 6px rgba(0, 212, 255, 0);
-      }
-    }
-
-    .fp-icon {
-      font-size: 22px;
-      line-height: 1;
-    }
-
-    .fp-label {
-      font-size: 9px;
-      color: var(--text-dim);
-      text-align: center;
-      line-height: 1.3;
-      padding: 0 4px;
-    }
-
-    .fp-slot.enrolled .fp-label {
-      color: var(--success);
-    }
-
-    .fp-status-dot {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-
-    .fp-slot.enrolled .fp-status-dot {
-      background: var(--success);
-      box-shadow: 0 0 6px var(--success);
-    }
-
-    /* Scan visualization */
-    .scan-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .scan-modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 36px 40px;
-      width: 360px;
-      text-align: center;
-      position: relative;
-    }
-
-    .scan-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .scan-sub {
-      font-size: 13px;
-      color: var(--text-dim);
-      margin-bottom: 28px;
-    }
-
-    /* Fingerprint SVG scanner */
-    .fp-scanner {
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 24px;
-      position: relative;
-    }
-
-    .fp-scanner-ring {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      position: absolute;
-      animation: ringPulse 2s ease-in-out infinite;
-    }
-
-    .fp-scanner-ring:nth-child(2) {
-      animation-delay: 0.4s;
-      transform: scale(0.85);
-    }
-
-    .fp-scanner-ring:nth-child(3) {
-      animation-delay: 0.8s;
-      transform: scale(0.7);
-    }
-
-    @keyframes ringPulse {
-
-      0%,
-      100% {
-        border-color: rgba(0, 212, 255, 0.1);
-      }
-
-      50% {
-        border-color: rgba(0, 212, 255, 0.5);
-      }
-    }
-
-    .fp-center {
-      position: absolute;
-      inset: 20px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0, 212, 255, 0.08), transparent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .fp-big-icon {
-      font-size: 52px;
-      animation: iconPulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes iconPulse {
-
-      0%,
-      100% {
-        transform: scale(1);
-        opacity: 0.7;
-      }
-
-      50% {
-        transform: scale(1.1);
-        opacity: 1;
-      }
-    }
-
-    /* Scan line */
-    .scan-line {
-      position: absolute;
-      left: 20px;
-      right: 20px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      top: 20px;
-      animation: scanLine 1.8s linear infinite;
-      box-shadow: 0 0 8px var(--accent);
-    }
-
-    @keyframes scanLine {
-      0% {
-        top: 20px;
-        opacity: 0;
-      }
-
-      10% {
-        opacity: 1;
-      }
-
-      90% {
-        opacity: 1;
-      }
-
-      100% {
-        top: 120px;
-        opacity: 0;
-      }
-    }
-
-    .scan-progress {
-      margin-bottom: 20px;
-    }
-
-    .progress-bar {
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent2), var(--accent));
-      border-radius: 2px;
-      transition: width 0.3s ease;
-      box-shadow: 0 0 8px var(--accent);
-    }
-
-    .progress-text {
-      font-size: 12px;
-      color: var(--text-dim);
-      font-family: 'Space Mono', monospace;
-    }
-
-    .scan-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    /* Buttons */
-    .btn {
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      font-family: 'Sarabun', sans-serif;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: #fff;
-      box-shadow: 0 0 16px rgba(0, 102, 255, 0.3);
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 0 24px rgba(0, 102, 255, 0.5);
-      transform: translateY(-1px);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      border-color: var(--border);
-      color: var(--text-dim);
-    }
-
-    .btn-ghost:hover {
-      background: var(--surface2);
-      color: var(--text);
-    }
-
-    .btn-danger {
-      background: rgba(255, 82, 82, 0.1);
-      border-color: rgba(255, 82, 82, 0.3);
-      color: var(--danger);
-    }
-
-    .btn-danger:hover {
-      background: rgba(255, 82, 82, 0.2);
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, #059669, #00e676);
-      color: #fff;
-    }
-
-    .btn-full {
-      width: 100%;
-      justify-content: center;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Status chip */
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .chip-success {
-      background: rgba(0, 230, 118, 0.1);
-      border: 1px solid rgba(0, 230, 118, 0.3);
-      color: var(--success);
-    }
-
-    .chip-warn {
-      background: rgba(255, 171, 0, 0.1);
-      border: 1px solid rgba(255, 171, 0, 0.3);
-      color: var(--warn);
-    }
-
-    .chip-info {
-      background: rgba(0, 212, 255, 0.1);
-      border: 1px solid rgba(0, 212, 255, 0.3);
-      color: var(--accent);
-    }
-
-    /* Finger name labels below grid */
-    .finger-names {
-      padding: 0 16px 16px;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-    }
-
-    .finger-name-label {
-      font-size: 9px;
-      color: var(--text-dim);
-      text-align: center;
-      line-height: 1.3;
-    }
-
-    /* Log timeline */
-    .log-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .log-list {
-      padding: 8px 16px 16px;
-    }
-
-    .log-item {
-      display: flex;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      align-items: flex-start;
-    }
-
-    .log-item:last-child {
-      border-bottom: none;
-    }
-
-    .log-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-top: 4px;
-      flex-shrink: 0;
-    }
-
-    .log-content {
-      flex: 1
-    }
-
-    .log-msg {
-      font-size: 12px;
-      color: var(--text);
-    }
-
-    .log-time {
-      font-size: 10px;
-      color: var(--text-dim);
-      margin-top: 2px;
-      font-family: 'Space Mono', monospace;
-    }
-
-    /* Empty state */
-    .empty-state {
-      padding: 48px 24px;
-      text-align: center;
-      color: var(--text-dim);
-    }
-
-    .empty-icon {
-      font-size: 40px;
-      margin-bottom: 12px;
-      opacity: 0.4;
-    }
-
-    .empty-text {
-      font-size: 13px;
-    }
-
-    /* Tooltip on enrolled finger hover */
-    .fp-slot .fp-tooltip {
-      position: absolute;
-      bottom: -28px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 82, 82, 0.9);
-      color: #fff;
-      font-size: 9px;
-      padding: 3px 7px;
-      border-radius: 4px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-      z-index: 10;
-    }
-
-    .fp-slot.enrolled:hover .fp-tooltip {
-      opacity: 1;
-    }
-
-    /* confirm delete modal */
-    .confirm-modal {
-      background: var(--surface);
-      border: 1px solid rgba(255, 82, 82, 0.3);
-      border-radius: 16px;
-      padding: 28px;
-      width: 320px;
-      text-align: center;
-    }
-
-    .confirm-icon {
-      font-size: 36px;
-      margin-bottom: 12px;
-    }
-
-    .confirm-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .confirm-msg {
-      font-size: 13px;
-      color: var(--text-dim);
-      margin-bottom: 24px;
-    }
-
-    /* scrollbar */
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 2px;
-    }
-
-    /* Ripple on success */
-    @keyframes successRipple {
-      0% {
-        transform: scale(0.8);
-        opacity: 1;
-      }
-
-      100% {
-        transform: scale(1.5);
-        opacity: 0;
-      }
-    }
-
-    .success-ripple {
-      animation: successRipple 0.6s ease-out;
-    }
-  </style>
-  <h1 class="text-2xl font-semibold mb-4">พนักงาน</h1>
-
-
-  <div class="layout" x-data="fpModule()">
-
-
-
-    <!-- MAIN -->
-
-
-    <div class="content">
-
-
-      <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-6">
-          <div>
-            <div class="panel">
-              <div class="panel-head">
-                <div class="panel-title">รายชื่อผู้ใช้งาน</div>
-                <div class="panel-meta" x-text="users.filter(u=>u.enrolled>0).length + '/' + users.length + ' ลงทะเบียนแล้ว'"></div>
+  @php
+    $employees->getCollection()->loadMissing('fingerprints');
+    $usersForJs = $employees->getCollection()->map(fn($e) => [
+      'id' => $e->id,
+      'emp_id' => $e->emp_id,
+      'first_name' => $e->full_name,
+      'name' => $e->full_name,
+      'color' => '',
+      'enrolled' => $e->fingerprints->count(),
+      'fingers' => $e->fingerprints->map(fn($f) => ['id' => $f->id, 'finger_no' => $f->finger_no, 'note' => $f->note])->toArray(),
+      'image_url' => $e->image_url,
+      'logs' => [],
+      'lastUpdate' => '',
+    ])->values();
+  @endphp
+
+  <h1 class="text-2xl font-semibold mb-4">จัดการลายนิ้วมือ</h1>
+
+  @hasanyrole('super-admin|admin')
+  {{-- Filter bar --}}
+  <form method="get" class="mb-4">
+    <div class="flex flex-wrap gap-2">
+      <select name="org_id" class="rounded border-gray-300">
+        <option value="">-- ทุกองค์กร --</option>
+        @foreach($organizations as $o)
+          <option value="{{ $o->id }}" @selected(request('org_id') == $o->id)>{{ $o->name }}</option>
+        @endforeach
+      </select>
+      <input type="text" name="q" placeholder="ค้นหา emp_id / ชื่อ / โทร" value="{{ $q }}"
+        class="flex-1 rounded border-gray-300 px-2">
+      <button class="rounded bg-slate-900 text-white px-3">ค้นหา</button>
+    </div>
+  </form>
+  @endhasanyrole
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4" x-data="fpModule()">
+
+    {{-- ─── LEFT: Employee List ─── --}}
+    <div class="lg:col-span-5">
+      <div class="overflow-hidden rounded-lg border bg-white">
+
+        {{-- Panel header --}}
+        <div class="flex items-center justify-between border-b px-4 py-3">
+          <span class="font-semibold text-sm">รายชื่อพนักงาน</span>
+          <span class="text-xs text-slate-500"
+            x-text="users.filter(u => u.enrolled > 0).length + '/' + users.length + ' ลงทะเบียนแล้ว'"></span>
+        </div>
+
+        {{-- Search --}}
+        <div class="p-3 border-b">
+          <input type="text" class="w-full rounded border-gray-300 text-sm px-3 py-1.5"
+            placeholder="ค้นหาชื่อหรือรหัส..." x-model="searchQ">
+        </div>
+
+        {{-- List --}}
+        <div class="divide-y max-h-[70vh] overflow-y-auto">
+          <template x-for="u in filteredUsers" :key="u.emp_id">
+            <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 transition"
+              :class="{ 'bg-blue-50 border-l-4 border-blue-500': selectedUser && selectedUser.id === u.id }"
+              @click="selectUser(u)">
+
+              {{-- Avatar --}}
+              <div class="flex-shrink-0">
+                <template x-if="u.image_url">
+                  <img :src="u.image_url" class="h-9 w-9 rounded-full object-cover border border-gray-100 shadow-sm"
+                    alt="">
+                </template>
+                <template x-if="!u.image_url">
+                  <div class="h-9 w-9 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                    :class="{
+                      'bg-blue-500':   u.color === '',
+                      'bg-emerald-500': u.color === 'green',
+                      'bg-amber-500':  u.color === 'orange',
+                      'bg-pink-500':   u.color === 'pink',
+                      'bg-purple-500': u.color === 'purple'
+                    }" x-text="u.first_name[0]"></div>
+                </template>
               </div>
-              <div class="search-wrap">
-                <div class="search-wrap-inner">
-                  <span class="search-icon">🔍</span>
-                  <input class="search-input" type="text" placeholder="ค้นหาชื่อหรือรหัส..." x-model="searchQ">
-                </div>
-              </div>
-              <div class="user-list">
-                <template x-for="u in filteredUsers" :key="u.emp_id">
-                  <div class="user-row" :class="{selected: selectedUser && selectedUser.id===u.emp_id}" @click="selectUser(u)">
-                    <div class="avatar" :class="u.color" x-text="u.first_name[0]"></div>
-                    <div class="user-info">
-                      <div class="user-name" x-text="u.name"></div>
-                      <div class="user-dept" x-text="u.first_name + ' · ' + u.emp_id"></div>
-                    </div>
-                    <div class="fp-count">
-                      <div class="fp-dots">
-                        <template x-for="i in 10" :key="i">
 
-                          <div class="fp-dot" :class="{filled: u.fingers.filter(f=>f.enrolled).length >= i}"></div>
-                        </template>
-                      </div>
-                    </div>
-                  </div>
+              {{-- Info --}}
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium truncate" x-text="u.name"></div>
+                <div class="text-xs text-slate-500 truncate" x-text="u.emp_id"></div>
+              </div>
+
+              <div class="flex gap-0.5 flex-shrink-0">
+                <template x-for="i in 3" :key="i">
+                  <div class="h-1.5 w-1.5 rounded-full"
+                    :class="u.fingers.filter(f => f.enrolled).length >= i ? 'bg-blue-500' : 'bg-gray-200'"></div>
                 </template>
               </div>
             </div>
+          </template>
+
+          {{-- Empty list --}}
+          <div x-show="filteredUsers.length === 0" class="px-4 py-10 text-center text-sm text-slate-400">
+            ไม่พบข้อมูล
           </div>
         </div>
-        <div class="col-span-6">
-          <div class="detail-panel">
 
-            <!-- No selection -->
-            <template x-if="!selectedUser">
-              <div class="panel">
-                <div class="empty-state">
-                  <div class="empty-icon">👆</div>
-                  <div class="empty-text">เลือกผู้ใช้เพื่อจัดการลายนิ้วมือ</div>
-                </div>
-              </div>
-            </template>
+      </div>
+    </div>
 
-            <!-- User detail -->
-            <template x-if="selectedUser">
-              <div>
-                <!-- User card -->
-                <div class="user-card">
-                  <div class="card-user-header">
-                    <div class="card-avatar" :class="selectedUser.color" x-text="selectedUser.first_name[0]"></div>
-                    <div>
-                      <div class="card-name" x-text="selectedUser.first_name"></div>
-                      <div class="card-id" x-text="selectedUser.emp_id"></div>
-                      <div style="margin-top:6px">
-                        <span class="chip" :class="selectedUser.fingers.filter(f=>f.enrolled).length>0 ? 'chip-success' : 'chip-warn'">
-                          <span x-text="selectedUser.fingers.filter(f=>f.enrolled).length>0 ? '✓ ลงทะเบียนแล้ว' : '⚠ ยังไม่ลงทะเบียน'"></span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-stats">
-                    <div class="stat-box">
-                      <div class="stat-label">นิ้วที่ลงทะเบียน</div>
-                      <div class="stat-val" x-text="selectedUser.fingers.filter(f=>f.enrolled).length + '/10'"></div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-label">แก้ไขล่าสุด</div>
-                      <div class="stat-val" style="font-size:12px; color: var(--text-dim);" x-text="selectedUser.lastUpdate"></div>
-                    </div>
-                  </div>
-                </div>
+    {{-- ─── RIGHT: Detail Panel ─── --}}
+    <div class="lg:col-span-7">
 
-                <!-- Fingerprint grid -->
-                <div class="fp-panel">
-                  <div class="panel-head">
-                    <div class="panel-title">🖐️ ลายนิ้วมือ 10 นิ้ว</div>
-                    <span class="chip chip-info" x-text="selectedUser.fingers.filter(f=>f.enrolled).length + ' นิ้ว'"></span>
-                  </div>
+      {{-- No selection --}}
+      <template x-if="!selectedUser">
+        <div class="rounded-lg border bg-white p-12 text-center text-slate-400">
+          <div class="text-4xl mb-3">👆</div>
+          <div class="text-sm">เลือกพนักงานเพื่อจัดการลายนิ้วมือ</div>
+        </div>
+      </template>
 
-                  <!-- Hand row: LEFT 5 + RIGHT 5 -->
-                  <div style="padding: 14px 16px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                    <div style="font-size:11px; color: var(--text-dim); text-align:center; padding-bottom:4px; border-bottom: 1px solid var(--border);">✋ มือซ้าย</div>
-                    <div style="font-size:11px; color: var(--text-dim); text-align:center; padding-bottom:4px; border-bottom: 1px solid var(--border);">🤚 มือขวา</div>
-                  </div>
+      {{-- User detail --}}
+      <template x-if="selectedUser">
+        <div class="space-y-4">
 
-                  <div class="fp-grid">
-                    <template x-for="(finger, idx) in selectedUser.fingers" :key="idx">
-                      <div class="fp-slot"
-                        :class="{enrolled: finger.enrolled, scanning: scanningIdx===idx}"
-                        @click="handleFingerClick(idx)">
-                        <div class="fp-status-dot"></div>
-                        <div class="fp-icon" x-text="finger.enrolled ? '🔵' : '⬜'"></div>
-                        <div class="fp-label" x-text="finger.shortName"></div>
-                        <div class="fp-tooltip">ลบออก</div>
-                      </div>
-                    </template>
-                  </div>
-
-                  <div class="finger-names">
-                    <template x-for="(finger, idx) in selectedUser.fingers" :key="idx">
-                      <div class="finger-name-label" x-text="finger.name"></div>
-                    </template>
-                  </div>
-
-                  <div style="padding: 0 16px 16px; display: flex; gap: 8px;">
-                    <button class="btn btn-primary btn-full" style="flex:2" @click="enrollAll()">
-                      + บันทึกทุกนิ้ว
-                    </button>
-                    <button class="btn btn-danger" style="flex:1" @click="confirmClearAll=true">
-                      🗑 ลบทั้งหมด
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Log -->
-                <!-- <div class="log-panel">
-              <div class="panel-head">
-                <div class="panel-title">📝 ประวัติการบันทึก</div>
-              </div>
-              <div class="log-list">
-                <template x-for="(log, i) in selectedUser.logs" :key="i">
-                  <div class="log-item">
-                    <div class="log-dot" :style="'background:' + log.color"></div>
-                    <div class="log-content">
-                      <div class="log-msg" x-text="log.msg"></div>
-                      <div class="log-time" x-text="log.time"></div>
-                    </div>
-                  </div>
+          {{-- Employee Card --}}
+          <div class="rounded-lg border bg-white p-4">
+            <div class="flex items-center gap-4">
+              <div class="flex-shrink-0">
+                <template x-if="selectedUser.image_url">
+                  <img :src="selectedUser.image_url"
+                    class="h-12 w-12 rounded-xl object-cover border border-gray-100 shadow-sm" alt="">
+                </template>
+                <template x-if="!selectedUser.image_url">
+                  <div class="h-12 w-12 rounded-xl flex items-center justify-center text-white font-bold text-lg"
+                    :class="{
+                      'bg-blue-500':   selectedUser.color === '',
+                      'bg-emerald-500': selectedUser.color === 'green',
+                      'bg-amber-500':  selectedUser.color === 'orange',
+                      'bg-pink-500':   selectedUser.color === 'pink',
+                      'bg-purple-500': selectedUser.color === 'purple'
+                    }" x-text="selectedUser.first_name[0]"></div>
                 </template>
               </div>
+              <div class="flex-1">
+                <div class="font-semibold" x-text="selectedUser.first_name"></div>
+                <div class="text-xs text-slate-500 font-mono" x-text="selectedUser.emp_id"></div>
+                <div class="mt-1">
+                  <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold" :class="selectedUser.fingers.filter(f => f.enrolled).length > 0
+                               ? 'bg-emerald-100 text-emerald-700'
+                               : 'bg-amber-100 text-amber-700'" x-text="selectedUser.fingers.filter(f => f.enrolled).length > 0
+                               ? '✓ ลงทะเบียนแล้ว'
+                               : '⚠ ยังไม่ลงทะเบียน'">
+                  </span>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-bold text-blue-600 font-mono"
+                  x-text="selectedUser.fingers.filter(f => f.enrolled).length + '/3'"></div>
+                <div class="text-xs text-slate-500">นิ้วที่ลงทะเบียน</div>
+              </div>
             </div>
-          </div> -->
-            </template>
+          </div>
 
+          {{-- Fingerprint Grid --}}
+          <div class="rounded-lg border bg-white overflow-hidden">
+            <div class="flex items-center justify-between border-b px-4 py-3">
+              <span class="font-semibold text-sm">🖐️ ลายนิ้วมือ 3 นิ้ว</span>
+              <span class="rounded-full bg-blue-100 text-blue-700 text-xs px-2 py-0.5 font-semibold"
+                x-text="selectedUser.fingers.filter(f => f.enrolled).length + ' นิ้ว'"></span>
+            </div>
+
+            {{-- Finger slots --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-4">
+              <template x-for="(finger, idx) in selectedUser.fingers" :key="idx">
+                <div class="relative flex flex-col rounded-xl border p-3 transition-all duration-200 bg-white" :class="{
+                     'border-emerald-200 bg-emerald-50/30': finger.enrolled,
+                     'border-gray-200 hover:border-blue-300': !finger.enrolled && scanningIdx !== idx,
+                     'border-blue-400 bg-blue-50 ring-2 ring-blue-100': scanningIdx === idx
+                   }">
+
+                  {{-- Header: Status & Icon --}}
+                  <div class="flex items-center gap-3 mb-3">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full shrink-0"
+                      :class="finger.enrolled ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'">
+                      <span class="text-lg" x-text="finger.enrolled ? '✔️' : '👆'"></span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-sm font-semibold text-gray-700 truncate" x-text="finger.shortName"></div>
+                      <div class="text-[11px] font-medium"
+                        :class="finger.enrolled ? 'text-emerald-600' : 'text-gray-400'"
+                        x-text="finger.enrolled ? 'สแกนแล้ว' : 'ยังไม่สแกน'"></div>
+                    </div>
+                  </div>
+
+                  {{-- Details (Label) --}}
+                  <div class="mb-3 flex-1 px-1">
+                    <div class="text-xs text-gray-500 mb-0.5">ป้ายกำกับ (Label):</div>
+                    <div class="text-sm font-medium text-gray-800 truncate"
+                      x-text="finger.enrolled ? (finger.name || 'ไม่มีป้ายกำกับ') : '-'"></div>
+                  </div>
+
+                  {{-- Actions --}}
+                  <div class="mt-auto">
+                    <template x-if="finger.enrolled">
+                      <button
+                        class="w-full flex justify-center items-center gap-1.5 rounded-lg bg-white hover:bg-red-50 text-red-600 border border-red-200 text-sm px-3 py-2 transition shadow-sm"
+                        @click.stop="confirmDelete(idx)">
+                        🗑 ลบลายนิ้วมือ
+                      </button>
+                    </template>
+                    <template x-if="!finger.enrolled">
+                      <button
+                        class="w-full flex justify-center items-center gap-1.5 rounded-lg bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-700 border border-blue-200 text-sm px-3 py-2 transition shadow-sm"
+                        @click.stop="handleFingerClick(idx)">
+                        + เพิ่มลายนิ้วมือ
+                      </button>
+                    </template>
+                  </div>
+
+                </div>
+              </template>
+            </div>
+
+            {{-- Actions --}}
+            <!-- <div class="flex gap-2 px-4 pb-4">
+              <button class="flex-1 rounded bg-blue-600 text-white text-sm px-4 py-2 hover:bg-blue-700 transition"
+                @click="enrollAll()">
+                + บันทึกทุกนิ้ว
+              </button>
+              <button class="rounded border border-red-300 text-red-600 text-sm px-4 py-2 hover:bg-red-50 transition"
+                @click="confirmClearAll = true">
+                🗑 ลบทั้งหมด
+              </button>
+            </div> -->
+          </div>
+
+        </div>
+      </template>
+    </div>
+
+    {{-- ─── SCAN MODAL ─── --}}
+    <template x-teleport="body">
+      <div id="modal-container">
+        {{-- ─── SCAN MODAL ─── --}}
+        <div x-show="scanning" x-transition.opacity
+          class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div class="bg-white rounded-2xl shadow-2xl w-80 p-8 text-center">
+            <div class="text-lg font-semibold mb-1"
+              x-text="'สแกนนิ้ว: ' + (selectedUser && selectedUser.fingers[scanningIdx] ? selectedUser.fingers[scanningIdx].name : '')">
+            </div>
+            <div class="text-sm text-slate-500 mb-4">วางนิ้วบนเครื่องสแกนลายนิ้วมือ</div>
+
+            {{-- Label Input --}}
+            <div class="mb-6 text-left">
+              <label class="block text-sm font-medium text-gray-700 mb-1">ป้ายกำกับลายนิ้วมือ</label>
+              <input type="text" x-model="fingerLabel" class="w-full rounded-lg border-gray-300 px-3 py-2 text-sm"
+                placeholder="เช่น นิ้วโป้งขวา">
+            </div>
+
+            {{-- Scanner animation --}}
+            <div class="relative w-28 h-28 mx-auto mb-6">
+              <div class="absolute inset-0 rounded-full border-2 border-blue-200"
+                :class="isScanningActive ? 'animate-ping' : ''"></div>
+              <div class="absolute inset-3 rounded-full border-2 border-blue-300"
+                :class="isScanningActive ? 'animate-ping' : ''" style="animation-delay:0.3s"></div>
+              <div class="absolute inset-6 rounded-full border-2 border-blue-400"
+                :class="isScanningActive ? 'animate-ping' : ''" style="animation-delay:0.6s"></div>
+              <div class="absolute inset-0 flex items-center justify-center text-5xl">👆</div>
+            </div>
+
+            {{-- Progress --}}
+            <div class="mb-4">
+              <div class="h-1.5 rounded-full bg-gray-200 mb-2 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500 transition-all duration-300"
+                  :style="'width:' + scanProgress + '%'"></div>
+              </div>
+              <div class="text-xs font-mono"
+                :class="scanError ? 'text-red-600 font-bold' : (scanCompleted ? 'text-emerald-600 font-bold' : 'text-slate-500')"
+                x-text="scanMsg"></div>
+            </div>
+
+            {{-- Action Buttons --}}
+            <div class="mt-4 flex flex-col gap-2">
+              <button x-show="!scanCompleted && !isScanningActive"
+                class="w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 text-sm font-medium transition-colors shadow-sm"
+                @click="startScan()">เริ่มสแกนลายนิ้วมือ</button>
+
+              <button x-show="isScanningActive"
+                class="w-full rounded-lg bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 text-sm font-medium transition-colors shadow-sm"
+                @click="isScanningActive = false; scanMsg = 'ยกเลิกการสแกนแล้ว'; scanProgress = 0;">หยุดสแกน</button>
+
+              <button x-show="scanCompleted"
+                class="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 text-sm font-medium transition-colors shadow-sm"
+                @click="saveFingerprint()">บันทึกข้อมูล</button>
+
+              <button
+                class="rounded-lg bg-red-100 hover:bg-gray-200 text-gray-700 px-8 py-2.5 text-sm font-medium transition-colors shadow-sm"
+                @click="cancelScan()">ปิดหน้าต่าง</button>
+            </div>
+          </div>
+        </div>
+
+        {{-- ─── CONFIRM CLEAR ALL ─── --}}
+        <div x-show="confirmClearAll" x-transition.opacity
+          class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div class="bg-white rounded-2xl shadow-2xl w-72 p-6 text-center border border-red-200">
+            <div class="text-3xl mb-3">⚠️</div>
+            <div class="font-semibold mb-2">ยืนยันการลบ</div>
+            <div class="text-sm text-slate-500 mb-5"
+              x-text="'ต้องการลบลายนิ้วมือทั้งหมดของ ' + (selectedUser ? selectedUser.name : '') + ' ใช่หรือไม่?'">
+            </div>
+            <div class="flex gap-2">
+              <button class="flex-1 rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+                @click="confirmClearAll = false">ยกเลิก</button>
+              <button class="flex-1 rounded bg-red-600 text-white px-4 py-2 text-sm hover:bg-red-700"
+                @click="clearAllFingers()">ลบทั้งหมด</button>
+            </div>
+          </div>
+        </div>
+
+        {{-- ─── CONFIRM DELETE SINGLE ─── --}}
+        <div x-show="confirmDeleteIdx !== null" x-transition.opacity
+          class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div class="bg-white rounded-2xl shadow-2xl w-72 p-6 text-center border border-red-200">
+            <div class="text-3xl mb-3">🗑️</div>
+            <div class="font-semibold mb-2">ลบลายนิ้วมือ</div>
+            <div class="text-sm text-slate-500 mb-5"
+              x-text="'ลบข้อมูล: ' + (selectedUser && confirmDeleteIdx !== null ? selectedUser.fingers[confirmDeleteIdx].name : '') + '?'">
+            </div>
+            <div class="flex gap-2">
+              <button class="flex-1 rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+                @click="confirmDeleteIdx = null">ยกเลิก</button>
+              <button class="flex-1 rounded bg-red-600 text-white px-4 py-2 text-sm hover:bg-red-700"
+                @click="deleteSingleFinger()">ลบ</button>
+            </div>
           </div>
         </div>
       </div>
-
-    </div>
-
-
-    <!-- ─── SCAN MODAL ─── -->
-    <div class="scan-modal-overlay" x-show="scanning" x-transition.opacity>
-      <div class="scan-modal">
-        <div class="scan-title" x-text="'สแกนนิ้ว: ' + (selectedUser && selectedUser.fingers[scanningIdx] ? selectedUser.fingers[scanningIdx].name : '')"></div>
-        <div class="scan-sub">วางนิ้วบนเครื่องสแกนลายนิ้วมือ</div>
-
-        <div class="fp-scanner">
-          <div class="fp-scanner-ring"></div>
-          <div class="fp-scanner-ring"></div>
-          <div class="fp-scanner-ring"></div>
-          <div class="fp-center">
-            <div class="fp-big-icon">👆</div>
-            <div class="scan-line"></div>
-          </div>
-        </div>
-
-        <div class="scan-progress">
-          <div class="progress-bar">
-            <div class="progress-fill" :style="'width:' + scanProgress + '%'"></div>
-          </div>
-          <div class="progress-text" x-text="scanMsg"></div>
-        </div>
-
-        <!-- <div class="scan-actions">
-        <button class="btn btn-ghost" style="flex:1" @click="cancelScan()">ยกเลิก</button>
-      </div> -->
-      </div>
-    </div>
-
-    <!-- ─── CONFIRM DELETE ─── -->
-    <div class="scan-modal-overlay" x-show="confirmClearAll" x-transition.opacity>
-      <div class="confirm-modal">
-        <div class="confirm-icon">⚠️</div>
-        <div class="confirm-title">ยืนยันการลบ</div>
-        <div class="confirm-msg" x-text="'ต้องการลบลายนิ้วมือทั้งหมดของ ' + (selectedUser ? selectedUser.name : '') + ' ใช่หรือไม่?'"></div>
-        <div style="display:flex; gap:10px;">
-          <button class="btn btn-ghost" style="flex:1" @click="confirmClearAll=false">ยกเลิก</button>
-          <button class="btn btn-danger" style="flex:1" @click="clearAllFingers()">ลบทั้งหมด</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── CONFIRM DELETE SINGLE ─── -->
-    <div class="scan-modal-overlay" x-show="confirmDeleteIdx!==null" x-transition.opacity>
-      <div class="confirm-modal">
-        <div class="confirm-icon">🗑️</div>
-        <div class="confirm-title">ลบลายนิ้วมือ</div>
-        <div class="confirm-msg" x-text="'ลบข้อมูล: ' + (selectedUser && confirmDeleteIdx!==null ? selectedUser.fingers[confirmDeleteIdx].name : '') + '?'"></div>
-        <div style="display:flex; gap:10px;">
-          <button class="btn btn-ghost" style="flex:1" @click="confirmDeleteIdx=null">ยกเลิก</button>
-          <button class="btn btn-danger" style="flex:1" @click="deleteSingleFinger()">ลบ</button>
-        </div>
-      </div>
-    </div>
+    </template>
 
   </div>
 
+  <script>
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-</x-app-layout>
+    function fpModule() {
 
-<script>
-  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+      const fingerNames = [
+        { name: 'ลายนิ้วมือที่ 1', shortName: 'นิ้วที่ 1' },
+        { name: 'ลายนิ้วมือที่ 2', shortName: 'นิ้วที่ 2' },
+        { name: 'ลายนิ้วมือที่ 3', shortName: 'นิ้วที่ 3' },
+      ];
 
-  function fpModule() {
+      function makeFingers(enrolledFingers = []) {
+        return fingerNames.map((f, i) => {
+          const enrolled = enrolledFingers.find(fp => fp.finger_no === i);
+          return {
+            ...f,
+            enrolled: !!enrolled,
+            fingerId: enrolled ? enrolled.id : null,
+            name: enrolled && enrolled.note ? enrolled.note : f.name,
+            templateId: enrolled ? 'FP-' + Math.random().toString(36).slice(2, 8).toUpperCase() : null
+          };
+        });
+      }
 
+      const now = () => {
+        const d = new Date();
+        return d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      };
 
-
-
-    const fingerNames = [{
-        name: 'นิ้วก้อย ซ้าย',
-        shortName: 'ก้อย ซ้าย'
-      },
-      {
-        name: 'นิ้วนาง ซ้าย',
-        shortName: 'นาง ซ้าย'
-      },
-      {
-        name: 'นิ้วกลาง ซ้าย',
-        shortName: 'กลาง ซ้าย'
-      },
-      {
-        name: 'นิ้วชี้ ซ้าย',
-        shortName: 'ชี้ ซ้าย'
-      },
-      {
-        name: 'นิ้วหัวแม่มือ ซ้าย',
-        shortName: 'หัวแม่ ซ้าย'
-      },
-      {
-        name: 'นิ้วหัวแม่มือ ขวา',
-        shortName: 'หัวแม่ ขวา'
-      },
-      {
-        name: 'นิ้วชี้ ขวา',
-        shortName: 'ชี้ ขวา'
-      },
-      {
-        name: 'นิ้วกลาง ขวา',
-        shortName: 'กลาง ขวา'
-      },
-      {
-        name: 'นิ้วนาง ขวา',
-        shortName: 'นาง ขวา'
-      },
-      {
-        name: 'นิ้วก้อย ขวา',
-        shortName: 'ก้อย ขวา'
-      },
-    ];
-
-
-
-
-    function makeFingers(enrolledSet = []) {
-      console.log(enrolledSet)
-      return fingerNames.map((f, i) => ({
-        ...f,
-        enrolled: enrolledSet.includes(i),
-        templateId: enrolledSet.includes(i) ? 'FP-' + Math.random().toString(36).slice(2, 8).toUpperCase() : null
-      }));
-    }
-
-    const now = () => {
-      const d = new Date();
-      return d.toLocaleTimeString('th-TH', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
+      const today = () => new Date().toLocaleDateString('th-TH', {
+        day: '2-digit', month: 'short', year: 'numeric'
       });
-    };
 
-    const today = () => new Date().toLocaleDateString('th-TH', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
+      return {
+        searchQ: '',
+        selectedUser: null,
+        scanning: false,
+        scanningIdx: null,
+        scanProgress: 0,
+        scanMsg: 'พร้อมสำหรับการสแกน',
+        scanTimer: null,
+        confirmClearAll: false,
+        confirmDeleteIdx: null,
+        enrollAllQueue: [],
 
-    return {
-      searchQ: '',
-      selectedUser: null,
-      scanning: false,
-      scanningIdx: null,
-      scanProgress: 0,
-      scanMsg: 'กำลังรอสแกน...',
-      scanTimer: null,
-      confirmClearAll: false,
-      confirmDeleteIdx: null,
-      enrollAllQueue: [],
+        fingerLabel: '',
+        scannedFingerCode: null,
+        isScanningActive: false,
+        scanCompleted: false,
+        scanError: false,
 
-      users: [{
-        id: 1,
-        first_name: 'สมชาย ใจดี',
-        empId: 'EMP-001',
-        dept: 'ฝ่ายบุคคล',
-        color: '',
-        enrolled: 3,
-        lastUpdate: '01 มี.ค. 2568',
-        fingers: makeFingers([2, 5, 7]),
-        logs: [{
-            msg: 'บันทึกนิ้วชี้ขวา สำเร็จ',
-            time: '01 มี.ค. 2568 · 09:12',
-            color: '#00e676'
-          },
-          {
-            msg: 'บันทึกนิ้วกลางขวา สำเร็จ',
-            time: '01 มี.ค. 2568 · 09:10',
-            color: '#00e676'
-          },
-          {
-            msg: 'บันทึกนิ้วกลางซ้าย สำเร็จ',
-            time: '28 ก.พ. 2568 · 14:05',
-            color: '#00e676'
-          },
-        ]
-      }],
+        users: @js($usersForJs),
 
-      // async init() {
-      //     this.isLoading = true;
-      //     try {
-      //         const response = await fetch('/api/filteremploy'); // ยิงไปที่ Route ของ Laravel
-      //         const data = await response.json();
-      //         const us = data.data.data
-      //         // นำข้อมูลที่ได้มา map เข้ากับโครงสร้าง fingers ที่เรามี
-      //         this.users = us.map(user => ({
-      //             ...user,
-      //             // สมมติว่า Laravel ส่งข้อมูลนิ้วที่เคยลงทะเบียนมาในรูปแบบ Array [0, 2, 5]
-      //             fingers: this.makeFingers(user.enrolled_indices || []), 
-      //             logs: user.logs || []
-      //         }));
-      //     } catch (error) {
-      //         console.error("โหลดข้อมูลพนักงานไม่สำเร็จ:", error);
-      //     } finally {
-      //         this.isLoading = false;
-      //     }
-      // },
-
-      async init() {
-        await this.fetchUsers();
-      },
-
-      get filteredUsers() {
-        const q = this.searchQ.toLowerCase();
-
-        return this.users.filter(u => u.first_name.includes(this.searchQ) || u.emp_id.toLowerCase().includes(q));
-      },
-
-      async fetchUsers() {
-        try {
-          // ส่ง searchQ ไปที่ API ด้วย (ถ้า Laravel รองรับ query string ?search=...)
-          const response = await fetch(`/api/filteremploy`);
-          const result = await response.json();
-
-
-          this.users = result.data.data
-
-
-          this.users = result.data.data.map(user => ({
-            ...user,
-            // สมมติว่า Laravel ส่งข้อมูลนิ้วที่เคยลงทะเบียนมาในรูปแบบ Array [0, 2, 5]
-            fingers: makeFingers(user.fingers),
-            logs: user.logs || []
+        init() {
+          // Users are already loaded from the server.
+          // Fingers are built by makeFingers() in fetchUsers() if needed.
+          this.users = this.users.map(u => ({
+            ...u,
+            fingers: makeFingers(u.fingers),
           }));
-        } catch (error) {
-          console.error("Fetch error:", error);
-        } finally {
-          this.isLoading = false;
-        }
-      },
+        },
 
-      selectUser(u) {
-        this.selectedUser = u;
-      },
+        get filteredUsers() {
+          const q = this.searchQ.toLowerCase();
+          return this.users.filter(u => u.first_name.includes(this.searchQ) || u.emp_id.toLowerCase().includes(q));
+        },
 
-      async handleFingerClick(idx) {
+        async fetchUsers() {
+          try {
+            const response = await fetch(`/api/filteremploy`);
+            if (!response.ok) throw new Error('ไม่สามารถโหลดข้อมูลพนักงานได้');
 
-        if (this.scanning) return;
-        const finger = this.selectedUser.fingers[idx];
-        if (finger.enrolled) {
-          this.confirmDeleteIdx = idx;
-        } else {
-          await this.startScan(idx);
-        }
-      },
+            const result = await response.json();
+            if (!result.success) throw new Error(result.message || 'เกิดข้อผิดพลาดในการดึงข้อมูล');
 
-      async addtem() {
-
-      },
-
-      async startScan(idx) {
-        this.scanning = true;
-        this.scanningIdx = idx;
-        this.scanProgress = 0;
-        this.scanMsg = 'กำลังรอสแกน... วางนิ้วบนเครื่อง';
-
-        let prog = 0;
-        const msgs = ['อ่านลายนิ้วมือ...', 'วิเคราะห์ข้อมูล...', 'ตรวจสอบคุณภาพ...', 'บันทึกลงฐานข้อมูล...'];
-        let phase = 0;
-
-
-        try {
-          const response = await fetch('http://localhost:18081/read');
-          let data = await response.json();
-          
-          if (!data || (Array.isArray(data) && data.length === 0) || !data.FingerCode) {
-            this.scanMsg = 'กำลังรอสแกน... วางนิ้วบนเครื่อง'; // เปลี่ยนข้อความรอระหว่างยิง API
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            return this.startScan(idx); // Recursive Call: เรียกตัวเองเพื่อเริ่มสแกนใหม่
-          } else {
-
-            this.scanMsg = 'วิเคราะห์ข้อมูล...'; // เปลี่ยนข้อความรอระหว่างยิง API
-            await delay(2000); // รอ 2 วินาที
-            this.scanMsg = 'ตรวจสอบคุณภาพ...';
-            await delay(2000); // รออีก 2 วินาที
-
-            this.scanMsg = 'บันทึกลงฐานข้อมูล...';
-
-            // เคลียร์ข้อมูลตามที่คุณต้องการ
-
-
-
-
-
-
-
-
-            // แถม: ถ้าอยากให้ข้อความ 'บันทึก...' ค้างไว้แป๊บนึงค่อยหายไป
-            await delay(2000);
-            this.scanning = false;
-            try {
-              this.scanMsg = 'กำลังส่งข้อมูลไปยังเซิร์ฟเวอร์...'; // เปลี่ยนข้อความรอระหว่างยิง API
-
-              const response = fetch('/api/savefinger', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
-                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-                },
-                body: JSON.stringify({
-                  id: this.selectedUser.id, // ส่ง ID ของ User ที่เลือกอยู่
-                  finger_index: idx,
-                  fingerprint_code: data.FingerCode, // ส่งตำแหน่งนิ้ว (0-9)
-                  // fingerprint_data: "..."      // ถ้ามี Data จากเครื่องสแกนจริงให้ส่งไปด้วย
-                })
-              });
-
-              data.FingerCode = null;
-
-
-            } catch (error) {
-              console.error("เกิดข้อผิดพลาด:", error);
-              this.scanMsg = 'การเชื่อมต่อผิดพลาด กำลังลองใหม่...';
-
-              // หน่วงเวลา 3 วินาทีก่อนเริ่มใหม่ เพื่อไม่ให้ยิงรัวเกินไป
-              await new Promise(resolve => setTimeout(resolve, 3000));
-
-              return this.startScan(idx); // เริ่มต้นฟังก์ชันใหม่
-            } finally {
-              this.completeScan(idx);
-            }
-
-
-
+            this.users = result.data.data.map(user => ({
+              ...user,
+              fingers: makeFingers(user.fingers),
+              logs: user.logs || []
+            }));
+          } catch (error) {
+            console.error("Fetch error:", error);
+            if (window.Swal) Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+          } finally {
+            this.isLoading = false;
           }
+        },
 
-          // นำ data.FingerCode ไปใช้งานต่อ...
+        selectUser(u) {
+          this.selectedUser = u;
+        },
 
-        } catch (error) {
-          console.error("เกิดข้อผิดพลาด:", error);
-          this.scanMsg = 'การเชื่อมต่อผิดพลาด กำลังลองใหม่...';
+        async handleFingerClick(idx) {
+          if (this.scanning) return;
+          const finger = this.selectedUser.fingers[idx];
+          if (finger.enrolled) {
+            this.confirmDelete(idx);
+          } else {
+            this.scanning = true;
+            this.scanningIdx = idx;
+            this.scanProgress = 0;
+            this.scanMsg = 'พร้อมสำหรับการสแกน';
+            this.fingerLabel = finger.name;
+            this.scannedFingerCode = null;
+            this.isScanningActive = false;
+            this.scanCompleted = false;
+            this.scanError = false;
 
-          // หน่วงเวลา 3 วินาทีก่อนเริ่มใหม่ เพื่อไม่ให้ยิงรัวเกินไป
-          await new Promise(resolve => setTimeout(resolve, 3000));
+            // Start scan automatically
+            this.startScan();
+          }
+        },
 
-          return this.startScan(idx); // เริ่มต้นฟังก์ชันใหม่
-        }
-        //   this.scanning = true;
-        //   this.scanningIdx = idx;
-        //   this.scanProgress = 0;
-        //   this.scanMsg = 'กำลังรอสแกน... วางนิ้วบนเครื่อง';
+        confirmDelete(idx) {
+          this.confirmDeleteIdx = idx;
+        },
 
-        //   let prog = 0;
-        //   const msgs = ['อ่านลายนิ้วมือ...', 'วิเคราะห์ข้อมูล...', 'ตรวจสอบคุณภาพ...', 'บันทึกลงฐานข้อมูล...'];
-        //   let phase = 0;
+        async startScan() {
+          this.isScanningActive = true;
+          this.scanProgress = 0;
+          this.scanMsg = 'กำลังรอสแกน... วางนิ้วบนเครื่อง';
+          this.scannedFingerCode = null;
+          this.scanCompleted = false;
+          this.scanError = false;
 
+          try {
+            if (!this.scanning || !this.isScanningActive) return;
+            const response = await fetch('http://localhost:18081/read');
+            if (!this.scanning || !this.isScanningActive) return;
+            let data = await response.json();
 
-        //   this.scanTimer = setInterval(() => {
-        //     prog += Math.random() * 18 + 6;
-        //     if (prog > 100) prog = 100;
-        //     this.scanProgress = Math.round(prog);
-        //     if (prog < 30) { this.scanMsg = msgs[0]; }
-        //     else if (prog < 60) { this.scanMsg = msgs[1]; }
-        //     else if (prog < 85) { this.scanMsg = msgs[2]; }
-        //     else { this.scanMsg = msgs[3]; }
+            if (!data || (Array.isArray(data) && data.length === 0) || !data.FingerCode) {
+              this.scanMsg = 'กำลังรอสแกน... วางนิ้วบนเครื่อง';
+              await delay(2000);
+              if (!this.scanning || !this.isScanningActive) return;
+              return this.startScan();
+            } else {
+              this.scanMsg = 'วิเคราะห์ข้อมูล...';
+              this.scanProgress = 33;
+              await delay(1000);
+              this.scanMsg = 'ตรวจสอบคุณภาพ...';
+              this.scanProgress = 66;
+              await delay(1000);
+              this.scanMsg = 'สแกนสำเร็จ พร้อมบันทึกข้อมูล';
+              this.scanProgress = 100;
+              this.isScanningActive = false;
+              this.scannedFingerCode = data.FingerCode;
+              this.scanCompleted = true;
+            }
+          } catch (error) {
+            if (!this.scanning || !this.isScanningActive) return;
+            console.error("เกิดข้อผิดพลาด:", error);
+            this.scanError = true;
+            this.scanMsg = 'การเชื่อมต่อผิดพลาด กำลังลองใหม่...';
+            await delay(3000);
+            if (!this.scanning || !this.isScanningActive) return;
+            return this.startScan();
+          }
+        },
 
-        //     if (prog >= 100) {
-        //       clearInterval(this.scanTimer);
-        //       setTimeout(() => {
+        async saveFingerprint() {
+          if (!this.scannedFingerCode) return;
+          const idx = this.scanningIdx;
+          this.scanMsg = 'กำลังส่งข้อมูลไปยังเซิร์ฟเวอร์...';
+          this.scanError = false;
 
+          try {
+            const response = await fetch('/api/savefinger', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+              },
+              body: JSON.stringify({
+                id: this.selectedUser.id,
+                finger_index: idx,
+                fingerprint_code: this.scannedFingerCode,
+                finger_label: this.fingerLabel,
+              })
+            });
 
+            const responseJson = await response.json();
+            if (!response.ok) throw new Error('ข้อมูลไม่ถูกต้อง');
 
+            if (responseJson.success) {
+              const finger = this.selectedUser.fingers[idx];
+              finger.name = this.fingerLabel || finger.name;
+              if (responseJson.data && responseJson.data.id) {
+                finger.fingerId = responseJson.data.id;
+              }
+              this.completeScan(idx);
+              if (window.Swal) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'สำเร็จ',
+                  text: 'บันทึกลายลายนิ้วมือเรียบร้อยแล้ว',
+                  timer: 1500,
+                  showConfirmButton: false
+                });
+              }
+            } else {
+              throw new Error(responseJson.message || 'บันทึกไม่สำเร็จ');
+            }
+          } catch (error) {
+            console.error("เกิดข้อผิดพลาด:", error);
+            this.scanError = true;
+            this.scanMsg = 'เกิดข้อผิดพลาด: ' + error.message;
+            if (window.Swal) Swal.fire({ icon: 'error', title: 'บันทึกไม่สำเร็จ', text: error.message });
+          }
+        },
 
-        //         try {
-        //     this.scanMsg = 'กำลังส่งข้อมูลไปยังเซิร์ฟเวอร์...'; // เปลี่ยนข้อความรอระหว่างยิง API
-
-        //     const response = fetch('/api/savefinger', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'Accept': 'application/json',
-        //             // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
-        //             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content 
-        //         },
-        //         body: JSON.stringify({
-        //             id: this.selectedUser.id, // ส่ง ID ของ User ที่เลือกอยู่
-        //             finger_index: idx,             // ส่งตำแหน่งนิ้ว (0-9)
-        //             // fingerprint_data: "..."      // ถ้ามี Data จากเครื่องสแกนจริงให้ส่งไปด้วย
-        //         })
-        //     });
-
-
-
-
-        // } catch (error) {
-
-        // } finally {
-        //    this.completeScan(idx);
-        // }
-
-
-
-        //       }, 400);
-        //     }
-        //   }, 200);
-      },
-
-
-
-
-      completeScan(idx) {
-        this.scanning = false;
-        this.scanningIdx = null;
-        const finger = this.selectedUser.fingers[idx];
-        finger.enrolled = true;
-        finger.templateId = 'FP-' + Math.random().toString(36).slice(2, 8).toUpperCase();
-        this.selectedUser.enrolled = this.selectedUser.fingers.filter(f => f.enrolled).length;
-        this.selectedUser.lastUpdate = today();
-        this.selectedUser.logs.unshift({
-          msg: 'บันทึก' + finger.name + ' สำเร็จ · ' + finger.templateId,
-          time: today() + ' · ' + now(),
-          color: '#00e676'
-        });
-
-        // Continue queue if enrollAll
-        if (this.enrollAllQueue.length > 0) {
-          const next = this.enrollAllQueue.shift();
-          setTimeout(() => this.startScan(next), 300);
-        }
-      },
-
-      cancelScan() {
-        clearInterval(this.scanTimer);
-        this.scanning = false;
-        this.scanningIdx = null;
-        this.enrollAllQueue = [];
-      },
-
-      enrollAll() {
-        const unenrolled = this.selectedUser.fingers
-          .map((f, i) => f.enrolled ? null : i)
-          .filter(i => i !== null);
-        if (unenrolled.length === 0) return;
-        this.enrollAllQueue = unenrolled.slice(1);
-        this.startScan(unenrolled[0]);
-      },
-
-      deleteSingleFinger() {
-        const idx = this.confirmDeleteIdx;
-        const finger = this.selectedUser.fingers[idx];
-    
-        
-        finger.enrolled = false;
-        finger.templateId = null;
-        this.selectedUser.enrolled = this.selectedUser.fingers.filter(f => f.enrolled).length;
-        this.selectedUser.lastUpdate = today();
-        this.selectedUser.logs.unshift({
-          msg: 'ลบ' + finger.name,
-          time: today() + ' · ' + now(),
-          color: '#ff5252'
-        });
-        this.confirmDeleteIdx = null;
-
-                try {
-      
-          const response = fetch('/api/delallone', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-            },
-            body: JSON.stringify({
-              id: this.selectedUser.emp_id,
-              finger: idx
-            })
+        completeScan(idx) {
+          this.scanning = false;
+          this.scanningIdx = null;
+          const finger = this.selectedUser.fingers[idx];
+          finger.enrolled = true;
+          finger.templateId = 'FP-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+          this.selectedUser.enrolled = this.selectedUser.fingers.filter(f => f.enrolled).length;
+          this.selectedUser.lastUpdate = today();
+          this.selectedUser.logs.unshift({
+            msg: 'บันทึก' + finger.name + ' สำเร็จ · ' + finger.templateId,
+            time: today() + ' · ' + now(),
+            color: '#00e676'
           });
 
-       
+          if (this.enrollAllQueue.length > 0) {
+            const next = this.enrollAllQueue.shift();
+            setTimeout(() => this.handleFingerClick(next), 300);
+          }
+        },
 
+        cancelScan() {
+          clearInterval(this.scanTimer);
+          this.scanning = false;
+          this.scanningIdx = null;
+          this.isScanningActive = false;
+          this.scanCompleted = false;
+          this.enrollAllQueue = [];
+        },
 
-        } catch (error) {
+        enrollAll() {
+          const unenrolled = this.selectedUser.fingers
+            .map((f, i) => f.enrolled ? null : i)
+            .filter(i => i !== null);
+          if (unenrolled.length === 0) return;
+          this.enrollAllQueue = unenrolled.slice(1);
+          this.handleFingerClick(unenrolled[0]);
+        },
 
+        async deleteSingleFinger() {
+          if (this.confirmDeleteIdx === null) return;
+          const idx = this.confirmDeleteIdx;
+          const finger = this.selectedUser.fingers[idx];
 
-        } finally {
+          try {
+            const response = await fetch('/api/delallone', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+              },
+              body: JSON.stringify({ id: finger.fingerId })
+            });
 
-        }
-      },
+            if (!response.ok) throw new Error('ไม่สามารถลบข้อมูลได้');
+            const result = await response.json();
 
-      clearAllFingers() {
-        this.selectedUser.fingers.forEach(f => {
-          f.enrolled = false;
-          f.templateId = null;
-        });
-        this.selectedUser.enrolled = 0;
-        this.selectedUser.lastUpdate = today();
-        this.selectedUser.logs.unshift({
-          msg: 'ลบลายนิ้วมือทั้งหมด',
-          time: today() + ' · ' + now(),
-          color: '#ff5252'
-        });
+            if (result.success) {
+              finger.enrolled = false;
+              finger.templateId = null;
+              this.selectedUser.enrolled = this.selectedUser.fingers.filter(f => f.enrolled).length;
+              this.selectedUser.lastUpdate = today();
+              this.selectedUser.logs.unshift({
+                msg: 'ลบ' + finger.name,
+                time: today() + ' · ' + now(),
+                color: '#ff5252'
+              });
+              if (window.Swal) Swal.fire({ icon: 'success', title: 'ลบสำเร็จ', timer: 1000, showConfirmButton: false });
+            } else {
+              throw new Error(result.message || 'ลบไม่สำเร็จ');
+            }
+          } catch (error) {
+            console.error("Delete error:", error);
+            if (window.Swal) Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: error.message });
+          } finally {
+            this.confirmDeleteIdx = null;
+          }
+        },
 
+        async clearAllFingers() {
+          try {
+            const response = await fetch('/api/delall', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+              },
+              body: JSON.stringify({ id: this.selectedUser.id })
+            });
 
+            if (!response.ok) throw new Error('ไม่สามารถลบข้อมูลทั้งหมดได้');
+            const result = await response.json();
 
-        this.confirmClearAll = false;
-
-
-
-        try {
-      
-          const response = fetch('/api/delall', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              // อย่าลืม CSRF Token ถ้าไม่ได้ใช้ JWT
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-            },
-            body: JSON.stringify({
-              id: this.selectedUser.id
-            })
-          });
-
-          data.FingerCode = null;
-
-
-        } catch (error) {
-
-
-        } finally {
-
+            if (result.success) {
+              this.selectedUser.fingers.forEach(f => {
+                f.enrolled = false;
+                f.templateId = null;
+              });
+              this.selectedUser.enrolled = 0;
+              this.selectedUser.lastUpdate = today();
+              this.selectedUser.logs.unshift({
+                msg: 'ลบลายนิ้วมือทั้งหมด',
+                time: today() + ' · ' + now(),
+                color: '#ff5252'
+              });
+              if (window.Swal) Swal.fire({ icon: 'success', title: 'ลบทั้งหมดสำเร็จ', timer: 1500, showConfirmButton: false });
+            } else {
+              throw new Error(result.message || 'ลบทั้งหมดไม่สำเร็จ');
+            }
+          } catch (error) {
+            console.error("Clear all error:", error);
+            if (window.Swal) Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: error.message });
+          } finally {
+            this.confirmClearAll = false;
+          }
         }
       }
     }
+  </script>
 
-
-  }
-</script>
+</x-app-layout>

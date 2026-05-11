@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,7 +19,7 @@ return new class extends Migration
             $table->integer('finger_no');
 
             // The fingerprint_code field is a string.
-            $table->string('fingerprint_code');
+            $table->text('fingerprint_code');
 
             // The timestamp field is a datetime.
             $table->dateTime('timestamp');

@@ -11,46 +11,63 @@ use App\Models\Amphurs;
 use App\Models\Organization;
 use App\Models\Tambon;
 
-class BranchesController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class BranchesController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:list branches', only: ['index']),
+            new Middleware('permission:create branches', only: ['create', 'store']),
+            new Middleware('permission:edit branches', only: ['edit', 'update']),
+            new Middleware('permission:show branches', only: ['show']),
+            new Middleware('permission:delete branches', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-   public function index(Request $request): View
+    public function index(Request $request): View
     {
+        $user = auth()->user();
+        $isAdmin = $user->hasRole(['super-admin', 'admin']);
+
         $q = (string) $request->get('q', '');
         $branches = Branches::query()
-            ->with('organize','province','tambon','amphur')
-            ->when($q, fn($query) =>
-                $query->where('brn_id','like',"%{$q}%")
-                      ->orWhere('name','like',"%{$q}%")
-                      ->orWhere('org_id','like',"%{$q}%")
-                      ->orWhere('address','like',"%{$q}%")
-            )
-            ->orWhereHas('province', function ($q2) use ($q) {
-                        $q2->where('name', 'like', "%{$q}%");
-                    })
-                    ->orWhereHas('amphur', function ($q3) use ($q) {
-                        $q3->where('name', 'like', "%{$q}%");
-                    })
-                    ->orWhereHas('tambon', function ($q4) use ($q) {
-                        $q4->where('name', 'like', "%{$q}%");
-                    })
+            ->with('organize', 'province', 'tambon', 'amphur')
+            ->when(!$isAdmin, fn($qq) => $qq->where('org_id', $user->org_id))
+            ->when($q, function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('brn_id', 'like', "%{$q}%")
+                        ->orWhere('name', 'like', "%{$q}%")
+                        ->orWhere('address', 'like', "%{$q}%")
+                        ->orWhereHas('province', fn($q2) => $q2->where('name', 'like', "%{$q}%"))
+                        ->orWhereHas('amphur', fn($q3) => $q3->where('name', 'like', "%{$q}%"))
+                        ->orWhereHas('tambon', fn($q4) => $q4->where('name', 'like', "%{$q}%"));
+                });
+            })
             ->latest('id')
             ->paginate(10)
             ->withQueryString();
 
-
-        return view('branches.index', compact('branches','q'));
+        return view('branches.index', compact('branches', 'q'));
     }
 
     public function create(): View
     {
+        $user = auth()->user();
+        $isAdmin = $user->hasRole(['super-admin', 'admin']);
+
         $branch = new Branches();
-         $organization = Organization::orderBy('name')->get();
-             $provinces = \App\Http\Controllers\LocationController::provincesForForm();
-        return view('branches.create', compact('provinces','branch','organization'));
- 
+        $organization = Organization::query()
+            ->when(!$isAdmin, fn($q) => $q->where('id', $user->org_id))
+            ->orderBy('name')
+            ->get();
+        $provinces = \App\Http\Controllers\LocationController::provincesForForm();
+        return view('branches.create', compact('provinces', 'branch', 'organization'));
     }
 
     public function store(BranchRequest $request): RedirectResponse
@@ -66,35 +83,22 @@ class BranchesController extends Controller
 
     public function edit(Branches $branch): View
     {
-        $organization = Organization::orderBy('name')->get();
-         $provinces = \App\Http\Controllers\LocationController::provincesForForm();
+        $user = auth()->user();
+        $isAdmin = $user->hasRole(['super-admin', 'admin']);
+
+        $organization = Organization::query()
+            ->when(!$isAdmin, fn($q) => $q->where('id', $user->org_id))
+            ->orderBy('name')
+            ->get();
+
+        $provinces = \App\Http\Controllers\LocationController::provincesForForm();
         $values = [
             'province_id' => $branch->province_id,
             'amphur_id'   => $branch->amphur_id,
             'tambon_id'   => $branch->tambon_id,
         ];
 
-
-    //         $provinces = LocationController::provincesForForm();
-    // $amphurs   = Amphurs::where('province_id', $branch->province_id)->orderBy('name')->get(['id','name']);
-    // $tambons   = Tambon::where('amphur_id', $branch->amphur_id)->orderBy('name')->get(['id','name']);
-
-    // return view('branches.edit', [
-    //     'branch'    => $branch,
-    //     'provinces' => $provinces,
-    //     'amphurs'   => $amphurs,
-    //     'tambons'   => $tambons,
-    //     'values'    => [
-    //         'province_id' => $branch->province_id,
-    //         'amphur_id'   => $branch->amphur_id,
-    //         'tambon_id'   => $branch->tambon_id,
-    //     ],
-    // ]);
-          
-
-  return view('branches.edit', compact('branch','provinces','values','organization'));
-
-    
+        return view('branches.edit', compact('branch', 'provinces', 'values', 'organization'));
     }
 
     public function update(BranchRequest $request, Branches $branch): RedirectResponse

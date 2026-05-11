@@ -188,104 +188,26 @@ Route::get('/locations/tambons/{amphur}',   [LocationController::class, 'tambons
 
 Route::middleware('auth')->group(function () {
 
-       Route::resource('/admin/departments', DepartmentController::class)->middleware([
-        'index'   => 'permission:list departments',
-        'create'  => 'permission:create departments',
-        'store'   => 'permission:store departments',
-        'edit'    => 'permission:edit departments',
-        'update'  => 'permission:update departments',
-        'show'    => 'permission:show departments',
-        'destroy' => 'permission:delete departments',
-    ]);
+       Route::resource('/admin/departments', DepartmentController::class);
 
 
-            Route::resource('/admin/branches', BranchesController::class)->middleware([
-        'index'   => 'permission:list branches',
-        'create'  => 'permission:create branches',
-        'store'   => 'permission:create branches',
-        'edit'    => 'permission:edit branches',
-        'update'  => 'permission:edit branches',
-        'show'    => 'permission:show branches',
-        'destroy' => 'permission:delete branches',
-    ]);
-    Route::resource('/admin/organizations', OrganizationController::class)->middleware([
-        'index'   => 'permission:list organizations',
-        'create'  => 'permission:create organizations',
-        'store'   => 'permission:create organizations',
-        'edit'    => 'permission:edit organizations',
-        'update'  => 'permission:edit organizations',
-        'show'    => 'permission:show organizations',
-        'destroy' => 'permission:delete organizations',
-    ]);
-    Route::resource('/admin/prefixes', PrefixesController::class)->middleware([
-        'index'   => 'permission:list prefixes',
-        'create'  => 'permission:create prefixes',
-        'store'   => 'permission:create prefixes',
-        'edit'    => 'permission:edit prefixes',
-        'update'  => 'permission:edit prefixes',
-        'show'    => 'permission:show prefixes',
-        'destroy' => 'permission:delete prefixes',
-    ]);
+            Route::resource('/admin/branches', BranchesController::class);
+    Route::resource('/admin/organizations', OrganizationController::class);
+    Route::resource('/admin/prefixes', PrefixesController::class);
 
-    Route::resource('/admin/users', UsersController::class)->middleware([
-        'index'   => 'permission:list users',
-        'create'  => 'permission:create users',
-        'store'   => 'permission:store users',
-        'edit'    => 'permission:edit users',
-        'update'  => 'permission:update users',
-        'show'    => 'permission:show users',
-        'destroy' => 'permission:delete users',
-    ]);
-    Route::resource('/admin/devices', DeviceController::class)->names('devices')->middleware([
-        'index'   => 'permission:list devices',
-        'create'  => 'permission:create devices',
-        'store'   => 'permission:store devices',
-        'edit'    => 'permission:edit devices',
-        'update'  => 'permission:update devices',
-        'show'    => 'permission:show devices',
-        'destroy' => 'permission:delete devices',
-    ]);
+    Route::resource('/admin/users', UsersController::class);
+    Route::resource('/admin/devices', DeviceController::class)->names('devices');
 
     Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard')
         ->middleware('permission:list permissions');
     Route::get('/admin/report', [ReportController::class,'report'])->name('report.report')
         ->middleware('permission:access reports');
-    Route::resource('/admin/roles', RoleController::class)->names('admin.roles')->middleware([
-        'index'   => 'permission:list roles',
-        'create'  => 'permission:create roles',
-        'store'   => 'permission:store roles',
-        'edit'    => 'permission:edit roles',
-        'update'  => 'permission:update roles',
-        'show'    => 'permission:show roles',
-        'destroy' => 'permission:delete roles',
-    ]);
-    Route::resource('/admin/permissions', PermissionController::class)->middleware([
-        'index'   => 'permission:list permissions',
-        'create'  => 'permission:create permissions',
-        'store'   => 'permission:store permissions',
-        'edit'    => 'permission:edit permissions',
-        'update'  => 'permission:update permissions',
-        'show'    => 'permission:show permissions',
-        'destroy' => 'permission:delete permissions',
-    ]);
-    Route::resource('/admin/employees', EmployeesController::class)->middleware([
-        'index'   => 'permission:list employees',
-        'create'  => 'permission:create employees',
-        'store'   => 'permission:store employees',
-        'edit'    => 'permission:edit employees',
-        'update'  => 'permission:update employees',
-        'show'    => 'permission:show employees',
-        'destroy' => 'permission:delete employees',
-    ]);
-    Route::resource('/admin/deviceslog', DeviceslogController::class)->middleware([
-        'index'   => 'permission:list deviceslog',
-    ]);
-    Route::resource('/admin/histories', HistoriesController::class)->middleware([
-        'index'   => 'permission:list histories',
-    ]);
-    Route::resource('/admin/finger', FingerController::class)->middleware([
-        'index'   => 'permission:list finger',
-    ]);
+    Route::resource('/admin/roles', RoleController::class)->names('admin.roles');
+    Route::resource('/admin/permissions', PermissionController::class);
+    Route::resource('/admin/employees', EmployeesController::class);
+    Route::resource('/admin/deviceslog', DeviceslogController::class);
+    Route::resource('/admin/histories', HistoriesController::class);
+    Route::resource('/admin/finger', FingerController::class);
 
 
 Route::get('/api/orgs/{org}/branches', fn($org) =>

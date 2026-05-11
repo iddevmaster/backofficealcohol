@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
 
 
         User::create([
-            'username' => 'rkknoob',
+            'username' => 'superadmin',
             'password' => Hash::make('12345678'),
             'prefix_id' => 1,
             'first_name' => 'บุญเขต',

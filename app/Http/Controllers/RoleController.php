@@ -32,13 +32,10 @@ class RoleController extends Controller implements HasMiddleware
 
 $q = (string) $request->get('q', '');
 
-$roles = Role::withCount('permissions','organize')
+$roles = Role::withCount('permissions')
     ->when($q, function($query) use ($q) {
         $query->where('name','like',"%{$q}%")
-              ->orWhere('guard_name','like',"%{$q}%")
-              ->orWhereHas('organize', function($q2) use ($q) {
-                  $q2->where('name','like',"%{$q}%");
-              });
+              ->orWhere('guard_name','like',"%{$q}%");
     })
     ->orderByDesc('id')
     ->paginate(10)

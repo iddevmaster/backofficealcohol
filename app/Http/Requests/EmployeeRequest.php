@@ -25,7 +25,7 @@ class EmployeeRequest extends FormRequest
      $id = $this->route('employee')?->id;
 
         return [
-            'emp_id'   => ['required','string','max:191', Rule::unique('employees','emp_id')->ignore($id)],
+            'emp_id'   => ['nullable','string','max:191', Rule::unique('employees','emp_id')->ignore($id)],
             'prefix_id'   => ['required','string','max:50'],
             'first_name' => ['required','string','max:191'],
             'last_name'  => ['required','string','max:191'],

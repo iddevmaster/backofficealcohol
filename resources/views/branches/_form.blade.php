@@ -4,8 +4,10 @@
   <div>
     <label class="block text-sm font-medium mb-1">รหัสสาขา (brn_id)</label>
     <input type="text" name="brn_id"
-      class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('brn_id') border-red-500 @enderror"
-      value="{{ old('brn_id', $branch->brn_id) }}">
+      class="w-full rounded-md border-gray-300 bg-gray-100 focus:border-indigo-500 focus:ring-indigo-500 @error('brn_id') border-red-500 @enderror"
+      value="{{ old('brn_id', $branch->brn_id) }}"
+      placeholder="{{ !$branch->exists ? 'ระบบจะสร้างให้อัตโนมัติ' : '' }}"
+      {{ !$branch->exists ? 'disabled' : 'readonly' }}>
     @error('brn_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
   </div>
 

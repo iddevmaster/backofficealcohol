@@ -14,20 +14,22 @@ class OrganizationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'org_id' => ['nullable','uuid'],  // ถ้าไม่ส่งมา จะ gen อัตโนมัติใน Controller
-            'name'   => ['required','string','max:255'],
-            'logo'   => ['nullable','string','max:255'], // เก็บ path/URL เป็น string
-            'status' => ['required','boolean'],
+            'org_id'   => ['nullable','uuid'],  // ถ้าไม่ส่งมา จะ gen อัตโนมัติใน Controller
+            'org_code' => ['required','string','max:50'],
+            'name'     => ['required','string','max:255'],
+            'logo'     => ['nullable','string','max:255'], // เก็บ path/URL เป็น string
+            'status'   => ['required','boolean'],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'org_id' => 'รหัสองค์กร (UUID)',
-            'name'   => 'ชื่อองค์กร',
-            'logo'   => 'โลโก้',
-            'status' => 'สถานะ',
+            'org_id'   => 'รหัสองค์กร (UUID)',
+            'org_code' => 'ตัวย่อองค์กร',
+            'name'     => 'ชื่อองค์กร',
+            'logo'     => 'โลโก้',
+            'status'   => 'สถานะ',
         ];
     }
 }

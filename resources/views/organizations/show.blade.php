@@ -20,6 +20,10 @@
                     <dt class="text-sm text-gray-500">ชื่อ</dt>
                     <dd class="font-medium">{{ $organization->name }}</dd>
                 </div>
+                <div>
+                    <dt class="text-sm text-gray-500">ตัวย่อองค์กร (org_code)</dt>
+                    <dd class="font-medium">{{ $organization->org_code }}</dd>
+                </div>
                 <div class="md:col-span-2">
                     <dt class="text-sm text-gray-500">โลโก้</dt>
                     <dd class="font-medium break-words">

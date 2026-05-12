@@ -28,6 +28,7 @@
         <tr>
           <th class="px-4 py-2 text-left">#</th>
           <th class="px-4 py-2 text-left">รหัสอง์กร</th>
+          <th class="px-4 py-2 text-left">ตัวย่อ</th>
           <th class="px-4 py-2 text-left">ชื่อ</th>
           <th class="px-4 py-2 text-left">สถานะ</th>
           <th class="px-4 py-2 text-left">อัปเดตล่าสุด</th>
@@ -39,6 +40,7 @@
           <tr>
             <td class="px-4 py-2">{{ $o->id }}</td>
             <td class="px-4 py-2">{{ $o->org_id }}</td>
+            <td class="px-4 py-2">{{ $o->org_code }}</td>
             <td class="px-4 py-2">{{ $o->name }}</td>
             <td class="px-4 py-2">
               <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs

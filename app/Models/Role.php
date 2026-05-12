@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Spatie\Permission\Traits\HasRoles; 
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;   // ✅ ต้อง use ของ Laravel
 
@@ -12,7 +12,7 @@ class Role extends Model
 {
     //
 
-    protected $fillable = ['name', 'guard_name', 'org_id'];
+    protected $fillable = ['name', 'guard_name'];
 
     public function permissions()
     {
@@ -24,8 +24,4 @@ class Role extends Model
         return $this->morphedByMany(\App\Models\User::class, 'model', 'model_has_roles', 'role_id', 'model_id');
     }
 
-    public function organize(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class, 'org_id', 'id');
-    }
 }

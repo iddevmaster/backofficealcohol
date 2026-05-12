@@ -1,4 +1,5 @@
 <x-app-layout>
+  <style>[x-cloak] { display: none !important; }</style>
   <div x-data="accessUi()" x-init="init()" class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
@@ -42,7 +43,6 @@
                 <th class="px-4 py-2 text-left text-xs font-semibold">ID</th>
                 <th class="px-4 py-2 text-left text-xs font-semibold">Name</th>
                 <th class="px-4 py-2 text-left text-xs font-semibold">Guard</th>
-                <th class="px-4 py-2 text-left text-xs font-semibold">Organize</th>
                 <!-- <th class="px-4 py-2 text-left text-xs font-semibold">#Perms</th> -->
                 <th class="px-4 py-2"></th>
               </tr>
@@ -53,7 +53,6 @@
                   <td class="px-4 py-2">{{ $r->id }}</td>
                   <td class="px-4 py-2">{{ $r->name }}</td>
                   <td class="px-4 py-2">{{ $r->guard_name }}</td>
-                  <td class="px-4 py-2">{{ $r->organize->name ?? "-" }}</td>
                   <!-- <td class="px-4 py-2">{{ $r->permissions_count ?? $r->permissions()->count() }}</td> -->
                   <td class="px-4 py-2 text-right">
                     <a href="{{ route('admin.roles.show', $r) }}" class="text-blue-600">ดู</a>
@@ -139,8 +138,6 @@
                   @foreach(($guards ?? ['web', 'api']) as $g)<option value="{{ $g }}">{{ $g }}</option>@endforeach
                 </select>
               </div>
-              <div><label class="block text-sm mb-1">Organize *</label><input type="number" name="org_id" value="1"
-                  class="w-full rounded border-gray-300" /></div>
               <div class="pt-2">
                 <button type="button" @click="toggleAllPerms(true)" class="text-blue-700 text-sm underline">Check
                   all</button>

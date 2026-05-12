@@ -72,8 +72,20 @@ class BranchesController extends Controller implements HasMiddleware
 
     public function store(BranchRequest $request): RedirectResponse
     {
-        Branches::create($request->validated());
-        return redirect()->route('branches.index')->with('success','บันทึกข้อมูลสาขาสำเร็จ');
+        $data = $request->validated();
+
+        // ดึงข้อมูลองค์กรเพื่อเอา org_code
+        $org = Organization::findOrFail($data['org_id']);
+        $orgCode = $org->org_code;
+
+        // นับจำนวนสาขาที่มีอยู่แล้วในองค์กรนี้
+        $count = Branches::where('org_id', $org->id)->count();
+
+        // เจน brn_id: org_code + B + ลำดับ (IDDB001)
+        $data['brn_id'] = $orgCode . 'B' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
+
+        Branches::create($data);
+        return redirect()->route('branches.index')->with('success', 'บันทึกข้อมูลสาขาสำเร็จ');
     }
 
     public function show(Branches $branch): View
@@ -94,8 +106,8 @@ class BranchesController extends Controller implements HasMiddleware
         $provinces = \App\Http\Controllers\LocationController::provincesForForm();
         $values = [
             'province_id' => $branch->province_id,
-            'amphur_id'   => $branch->amphur_id,
-            'tambon_id'   => $branch->tambon_id,
+            'amphur_id' => $branch->amphur_id,
+            'tambon_id' => $branch->tambon_id,
         ];
 
         return view('branches.edit', compact('branch', 'provinces', 'values', 'organization'));
@@ -104,12 +116,12 @@ class BranchesController extends Controller implements HasMiddleware
     public function update(BranchRequest $request, Branches $branch): RedirectResponse
     {
         $branch->update($request->validated());
-        return redirect()->route('branches.index')->with('success','อัปเดตข้อมูลสาขาสำเร็จ');
+        return redirect()->route('branches.index')->with('success', 'อัปเดตข้อมูลสาขาสำเร็จ');
     }
 
     public function destroy(Branches $branch): RedirectResponse
     {
         $branch->delete();
-        return redirect()->route('branches.index')->with('success','ลบข้อมูลสาขาสำเร็จ');
+        return redirect()->route('branches.index')->with('success', 'ลบข้อมูลสาขาสำเร็จ');
     }
 }

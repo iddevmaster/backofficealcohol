@@ -15,11 +15,6 @@ $selected = old('permissions', $selected ?? ($role->permissions->pluck('id')->to
       @endforeach
     </select>
   </div>
-  <div>
-    <label class="block text-sm mb-1">Org *</label>
-    <input type="number" name="org_id" class="w-full rounded border-gray-300" required
-      value="{{ old('org_id', $role->org_id ?? 1) }}">
-  </div>
 </div>
 <div class="mt-4">
   <label class="block text-sm mb-2">Permissions</label>

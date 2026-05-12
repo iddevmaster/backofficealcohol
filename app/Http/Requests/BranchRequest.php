@@ -22,7 +22,7 @@ class BranchRequest extends FormRequest
     public function rules(): array
     {
          return [
-            'brn_id'      => ['required','string','max:50'/*, Rule::unique('branches','brn_id')->ignore($id)*/],
+            'brn_id'      => ['nullable','string','max:50'/*, Rule::unique('branches','brn_id')->ignore($id)*/],
             'name'        => ['required','string','max:255'],
             'address'     => ['required','string','max:500'],
             'tambon_id'   => ['required','integer'],

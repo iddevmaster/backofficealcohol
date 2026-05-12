@@ -23,7 +23,7 @@ class DepartmentRequest extends FormRequest
     {
                return [
             'dpm_id' => [
-                'required','string','max:50',
+                'nullable','string','max:50',
                 // Rule::unique('departments','dpm_id')->ignore($id),
             ],
             'name'   => ['required','string','max:255'],

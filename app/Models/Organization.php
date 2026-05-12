@@ -12,7 +12,7 @@ class Organization extends Model
 
     use HasFactory, HasUuids;
 
-    protected $fillable = ['org_id','name','logo','status'];
+    protected $fillable = ['org_id', 'org_code', 'name', 'logo', 'status'];
 
     protected $casts = [
         'status' => 'boolean',

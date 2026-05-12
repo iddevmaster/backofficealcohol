@@ -30,9 +30,11 @@
   class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
   <div class="md:col-span-1">
-    <label class="block text-sm font-medium mb-1">EMP ID *</label>
-    <input name="emp_id" required class="w-full rounded border-gray-300"
-      value="{{ old('emp_id', $employee->emp_id ?? '') }}">
+    <label class="block text-sm font-medium mb-1">EMP ID</label>
+    <input name="emp_id" class="w-full rounded border-gray-300 bg-gray-100"
+      value="{{ old('emp_id', $employee->emp_id ?? '') }}"
+      placeholder="ระบบจะสร้างให้อัตโนมัติ"
+      {{ !isset($employee) || !$employee->exists ? 'disabled' : 'readonly' }}>
     @error('emp_id')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
   </div>
 

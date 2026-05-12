@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Branches;
 use App\Models\Department;
+use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -70,8 +71,22 @@ class DepartmentController extends Controller implements HasMiddleware
 
     public function store(DepartmentRequest $request): RedirectResponse
     {
+        $data = $request->validated();
 
-        Department::create($request->validated());
+        // ดึงสาขาเพื่อหา org_id
+        $branch = Branches::findOrFail($data['brn_id']);
+        $org = Organization::findOrFail($branch->org_id);
+        $orgCode = $org->org_code;
+
+        // นับจำนวนแผนกที่มีอยู่แล้วในองค์กรนี้ (ผ่านสาขา)
+        $count = Department::whereHas('branches', function ($q) use ($org) {
+            $q->where('org_id', $org->id);
+        })->count();
+
+        // เจน dpm_id: org_code + D + ลำดับ (IDDD001)
+        $data['dpm_id'] = $orgCode . 'D' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
+
+        Department::create($data);
         return redirect()->route('departments.index')->with('success', 'บันทึกข้อมูลสำเร็จ');
     }
 

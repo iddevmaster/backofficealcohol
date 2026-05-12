@@ -94,12 +94,22 @@ class EmployeesController extends Controller implements HasMiddleware
     {
         $data = $this->validatedData($request);
 
+        $org = Organization::findOrFail($data['org_id']);
+
+        // Generate Next Employee Number
+        $lastEmployee = Employee::where('org_id', $org->id)->orderByDesc('emp_no')->first();
+        $nextNo = $lastEmployee ? $lastEmployee->emp_no + 1 : 1;
+
+        //  Generate Employee Code
+        $employeeCode = $org->org_code . 'E' . str_pad($nextNo, 5, '0', STR_PAD_LEFT);
+
+        $data['emp_id'] = $employeeCode;
+        $data['emp_no'] = $nextNo;
+
         // upload image
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('employees', 'public');
         }
-
-        // $data['user_code'] = $data['emp_id'];
 
         $emp = Employee::create($data);
 

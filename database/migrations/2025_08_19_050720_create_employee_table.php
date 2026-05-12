@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,6 +16,8 @@ return new class extends Migration
             // The employee ID field, which is a unique string.
             $table->string('emp_id')->unique();
 
+            $table->unsignedInteger('emp_no');
+
             // Fields for the employee's name.
             $table->string('prefix_id');
             $table->string('first_name');
@@ -27,25 +28,36 @@ return new class extends Migration
             $table->string('image')->nullable();
 
             // A boolean to track if a fingerprint is registered.
-            $table->boolean('fingerprint_registered');
-            $table->boolean('status');
+            $table->boolean('fingerprint_registered')->default(false);
+            $table->boolean('status')->default(true);
 
             // Foreign key relationships to other tables, which are nullable.
-            $table->unsignedBigInteger('dpm_id')->nullable();
-            $table->foreign('dpm_id')->references('id')->on('departments')->onDelete('set null');
+            $table->foreignId('dpm_id')
+                ->nullable()
+                ->constrained('departments')
+                ->nullOnDelete();
 
-            $table->unsignedBigInteger('brn_id')->nullable();
-            $table->foreign('brn_id')->references('id')->on('branches')->onDelete('set null');
+            $table->foreignId('brn_id')
+                ->nullable()
+                ->constrained('branches')
+                ->nullOnDelete();
 
             // Foreign key to the organizations table.
-            $table->unsignedBigInteger('org_id');
-            $table->foreign('org_id')->references('id')->on('organizations')->onDelete('cascade');
+            $table->foreignId('org_id')
+                ->constrained('organizations')
+                ->cascadeOnDelete();
 
             // Adds created_at and updated_at columns for timestamps.
             $table->timestamps();
 
             // Adds a deleted_at column for soft deleting records.
             $table->softDeletes();
+
+            // กัน employee_no ซ้ำใน organization เดียวกัน
+            $table->unique(
+                ['org_id', 'emp_no'],
+                'org_employee_no_unique'
+            );
         });
     }
 

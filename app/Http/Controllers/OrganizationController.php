@@ -30,7 +30,8 @@ class OrganizationController extends Controller implements HasMiddleware
         $q = (string) $request->get('q', '');
         $orgs = Organization::query()
             ->when($q, fn($qr) => $qr->where('name', 'like', "%{$q}%")
-                ->orWhere('org_id', 'like', "%{$q}%"))
+                ->orWhere('org_id', 'like', "%{$q}%")
+                ->orWhere('org_code', 'like', "%{$q}%"))
             ->latest('id')
             ->paginate(10)
             ->withQueryString();

@@ -28,7 +28,7 @@ class DeviceApiController extends Controller
             ], 404);
         }
 
-        $searchEmpId = $org->org_code . $empId;
+        $searchEmpId = $org->org_code . "E" . $empId;
 
         $employee = Employee::with(['prefix', 'fingerprints'])
             ->where('emp_id', $searchEmpId)

@@ -45,13 +45,16 @@ Retrieve employee data including fingerprints by employee code.
 
 ---
 
-**`GET /api/device/employee/{emp_id}`**
+**`GET /api/device/employee/{org_id}/{emp_id}`**
 
-#### Path Parameter
+#### Path Parameters
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `emp_id` | string | ✓ | Employee code (e.g., `EMP001`) |
+| `org_id` | string | ✓ | Organization UUID |
+| `emp_id` | string | ✓ | Employee numeric sequence (e.g., `001`) |
+
+> **Note:** The API retrieves the `org_code` (e.g., `TSMC`) from the organization and concatenates it with `emp_id` (e.g., `001`) to find the employee (e.g., `TSMC001`).
 
 #### Request Headers
 
@@ -215,7 +218,7 @@ Submit an alcohol test result from a device. The image file is saved to server s
 ### Get Employee
 
 ```bash
-curl -X GET "http://<server>/api/device/employee/EMP001" \
+curl -X GET "http://<server>/api/device/employee/991a03e1-381d-4f1b-a9a3-5c8c1d85b99a/001" \
   -H "Authorization: Bearer <your_token>" \
   -H "Accept: application/json"
 ```

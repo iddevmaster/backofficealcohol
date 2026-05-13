@@ -25,6 +25,6 @@ Route::get('/testacl', [HistoriesController::class , 'filteredUsersTest' ]);
 
 // Device API — protected by Sanctum personal access token
 Route::middleware('auth:sanctum')->prefix('device')->group(function () {
-    Route::get('/employee/{emp_id}', [DeviceApiController::class, 'getEmployee']);
+    Route::get('/employee/{org_id}/{emp_id}', [DeviceApiController::class, 'getEmployee']);
     Route::post('/test',             [DeviceApiController::class, 'storeTest']);
 });

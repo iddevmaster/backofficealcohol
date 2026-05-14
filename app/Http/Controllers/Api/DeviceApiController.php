@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreScanRequest;
 use App\Http\Requests\Api\StoreTestRequest;
+use App\Models\DeviceScan;
 use App\Models\Employee;
 use App\Models\Organization;
 use App\Models\TestHistory;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class DeviceApiController extends Controller
@@ -61,9 +64,7 @@ class DeviceApiController extends Controller
     /**
      * POST /api/device/test
      *
-     * Store a new alcohol test record.
-     * Accepts emp_id (string code), resolves tester_id (PK) internally.
-     * Saves testing_image file to storage and stores the path.
+     * Store a new alcohol test record (legacy endpoint).
      */
     public function storeTest(StoreTestRequest $request): JsonResponse
     {
@@ -77,7 +78,8 @@ class DeviceApiController extends Controller
         }
 
         $imagePath = $request->file('testing_image')
-            ->store('test-images', 'public');
+            ? $request->file('testing_image')->store('test-images', 'public')
+            : null;
 
         $testHistory = TestHistory::create([
             'tester_id' => $employee->id,
@@ -91,15 +93,95 @@ class DeviceApiController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Test data stored successfully',
-            'data' => [
-                'id' => $testHistory->id,
-                'tester_id' => $testHistory->tester_id,
-                'device_sn' => $testHistory->device_sn,
-                'alcohol_level' => $testHistory->alcohol_level,
-                'testing_image' => $testHistory->testing_image,
-                'testing_date' => $testHistory->testing_date,
-                'org_id' => $testHistory->org_id,
-            ],
+            'data' => $testHistory,
+        ], 201);
+    }
+
+    /**
+     * GET /api/device/employees/{org_id}
+     *
+     * Bulk sync employees for an organization.
+     */
+    public function getEmployees(string $orgId, Request $request): JsonResponse
+    {
+        $org = Organization::where('org_id', $orgId)->first();
+
+        if (!$org) {
+            return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
+        }
+
+        $query = Employee::with('fingerprints')->where('org_id', $org->id);
+
+        if ($request->has('updated_since')) {
+            $query->where('updated_at', '>', $request->updated_since);
+        }
+
+        $employees = $query->get()->map(fn($emp) => [
+            'id' => $emp->id,
+            'emp_id' => $emp->emp_id,
+            'full_name' => $emp->full_name,
+            'org_id' => $org->org_id,
+            'updated_at' => $emp->updated_at->toIso8601String(),
+            'fingerprints' => $emp->fingerprints->map(fn($fp) => [
+                'id' => $fp->id,
+                'finger_index' => $fp->finger_no,
+                'fingerprint_code' => $fp->fingerprint_code,
+                'updated_at' => $fp->updated_at->toIso8601String(),
+            ]),
+        ]);
+
+        return response()->json($employees);
+    }
+
+    /**
+     * POST /api/device/scans/{org_id}
+     *
+     * Unified endpoint for alcohol, fingerprint, and identification scans.
+     */
+    public function storeScan(StoreScanRequest $request, string $orgId): JsonResponse
+    {
+        $org = Organization::where('org_id', $orgId)->first();
+        if (!$org) {
+            return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
+        }
+
+        $employee = Employee::where('emp_id', $request->employee_id)
+            ->where('org_id', $org->id)
+            ->first();
+
+        if (!$employee) {
+            return response()->json(['success' => false, 'message' => 'Employee not found'], 404);
+        }
+
+        if ($request->scan_type === 'alcohol') {
+            $imagePath = $request->file('testing_image')
+                ? $request->file('testing_image')->store('test-images', 'public')
+                : null;
+
+            $record = TestHistory::create([
+                'tester_id'     => $employee->id,
+                'device_sn'     => $request->device_id,
+                'alcohol_level' => $request->value ?? 0,
+                'result'        => $request->result,
+                'testing_image' => $imagePath,
+                'testing_date'  => $request->scanned_at,
+                'org_id'        => $org->id,
+            ]);
+        } else {
+            $record = DeviceScan::create([
+                'employee_id' => $employee->id,
+                'org_id'      => $org->id,
+                'device_id'   => $request->device_id,
+                'scan_type'   => $request->scan_type,
+                'result'      => $request->result,
+                'scanned_at'  => $request->scanned_at,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Scan result recorded',
+            'id'      => $record->id,
         ], 201);
     }
 }

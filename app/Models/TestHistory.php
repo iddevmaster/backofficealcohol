@@ -15,6 +15,7 @@ class TestHistory extends Model
         'tester_id',
         'device_sn',
         'alcohol_level',
+        'result',
         'testing_image',
         'testing_date',
         'org_id',

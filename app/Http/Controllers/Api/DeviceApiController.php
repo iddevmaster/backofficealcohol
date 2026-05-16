@@ -145,7 +145,7 @@ class DeviceApiController extends Controller
             return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
         }
 
-        $employee = Employee::where('emp_id', $request->employee_id)
+        $employee = Employee::where('id', $request->employee_id)
             ->where('org_id', $org->id)
             ->first();
 
@@ -159,29 +159,29 @@ class DeviceApiController extends Controller
                 : null;
 
             $record = TestHistory::create([
-                'tester_id'     => $employee->id,
-                'device_sn'     => $request->device_id,
+                'tester_id' => $employee->id,
+                'device_sn' => $request->device_id,
                 'alcohol_level' => $request->value ?? 0,
-                'result'        => $request->result,
+                'result' => $request->result,
                 'testing_image' => $imagePath,
-                'testing_date'  => $request->scanned_at,
-                'org_id'        => $org->id,
+                'testing_date' => $request->scanned_at,
+                'org_id' => $org->id,
             ]);
         } else {
             $record = DeviceScan::create([
                 'employee_id' => $employee->id,
-                'org_id'      => $org->id,
-                'device_id'   => $request->device_id,
-                'scan_type'   => $request->scan_type,
-                'result'      => $request->result,
-                'scanned_at'  => $request->scanned_at,
+                'org_id' => $org->id,
+                'device_id' => $request->device_id,
+                'scan_type' => $request->scan_type,
+                'result' => $request->result,
+                'scanned_at' => $request->scanned_at,
             ]);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Scan result recorded',
-            'id'      => $record->id,
+            'id' => $record->id,
         ], 201);
     }
 }

@@ -26,7 +26,7 @@ class StoreScanRequest extends FormRequest
             'device_id'     => ['required', 'string', 'max:191'],
             'employee_id'   => ['required', 'string', 'max:191'],
             'scan_type'     => ['required', 'string', 'in:alcohol,fingerprint,identification'],
-            'result'        => ['required', 'string', 'in:pass,fail,match,no_match,identified'],
+            'result'        => ['required', 'string', 'in:pass,fail,match,no_match,identified,no_templates,scan_error'],
             'value'         => ['nullable', 'numeric', 'min:0'],
             'scanned_at'    => ['required', 'date'],
             'testing_image' => ['nullable', 'image', 'max:10240'], // Optional, specifically for alcohol type

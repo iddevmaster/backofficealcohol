@@ -8,10 +8,17 @@ class Devieslog extends Model
 {
     //
 
-     protected $table = 'deviceslog';
+    protected $table = 'deviceslog';
 
-        protected $fillable = ['id',
-        'tested_count','serial_num','ip_address','latitude','longitude','created_date','updated_at'
+    protected $fillable = [
+        'id',
+        'tested_count',
+        'serial_num',
+        'ip_address',
+        'latitude',
+        'longitude',
+        'created_date',
+        'updated_at'
     ];
 
     // protected $casts = [

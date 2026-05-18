@@ -12,7 +12,7 @@ class Device extends Model
     protected $fillable = [
         'model','serial_num','ip_address','sensor_sn','sensor_body_sn',
         'pi_mac_address','created_date','latitude','longitude',
-        'tested_count','last_calibration','status',
+        'tested_count','last_calibration','status','lastseen_at',
     ];
 
     protected $casts = [
@@ -22,5 +22,6 @@ class Device extends Model
         'longitude'        => 'float',
         'tested_count'     => 'integer',
         'status'           => 'integer',
+        'lastseen_at'      => 'datetime',
     ];
 }

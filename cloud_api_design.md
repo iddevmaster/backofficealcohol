@@ -85,6 +85,69 @@ Used by the kiosk to report test results and identification activity.
 
 ---
 
+## 3. Device Management
+Used by the kiosk to register its hardware identifiers and maintain an active connection status with the cloud.
+
+### **POST** `/device/register`
+
+**Request Body:**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `serial_num` | String | Hardware serial number or UUID. |
+| `ip_address` | String | Current local IP address of the kiosk. |
+| `mac_address` | String | MAC address of the kiosk's primary network interface. |
+
+**Example Request:**
+```json
+{
+  "serial_num": "0000000012345678",
+  "ip_address": "192.168.1.50",
+  "mac_address": "B8:27:EB:AA:BB:CC"
+}
+```
+
+**Response (Success):**
+Returns the master configuration data that the kiosk needs to operate and sync data.
+```json
+{
+  "success": true,
+  "data": {
+    "org_id": "uuid-org-123",
+    "org_code": "IDD",
+    "device_id": "uuid-device-456",
+    "status": "active"
+  }
+}
+```
+
+---
+
+### **POST** `/device/heartbeat`
+
+**Request Body:**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `device_id` | String | The `device_id` returned from the registration endpoint. |
+| `status` | String | Current status of the device (e.g., `"online"`). |
+
+**Example Request:**
+```json
+{
+  "device_id": "uuid-device-456",
+  "status": "online"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "success": true,
+  "message": "Heartbeat received"
+}
+```
+
+---
+
 ## Error Handling
 The Cloud API should use standard HTTP status codes:
 - `200 OK`: Successful GET.

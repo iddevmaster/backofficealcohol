@@ -6,15 +6,100 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreScanRequest;
 use App\Http\Requests\Api\StoreTestRequest;
 use App\Models\DeviceScan;
+use App\Models\Device;
 use App\Models\Employee;
 use App\Models\Organization;
+use App\Models\OrgDevice;
 use App\Models\TestHistory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DeviceApiController extends Controller
 {
+    /**
+     * POST /api/device/register
+     *
+     * Register device hardware identifiers and return master configuration data.
+     */
+    public function register(Request $request): JsonResponse
+    {
+        $request->validate([
+            'serial_num' => 'required|string',
+            'ip_address' => 'required|string',
+            'mac_address' => 'required|string',
+        ]);
+
+        $device = Device::where('serial_num', $request->serial_num)->first();
+
+        if (!$device) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Device not found'
+            ], 404);
+        }
+
+        // Update the device
+        $device->ip_address = $request->ip_address;
+        $device->pi_mac_address = $request->mac_address;
+        $device->save();
+
+        // Get organization info
+        $orgDevice = OrgDevice::where('serial_num', $request->serial_num)->first();
+
+        if (!$orgDevice) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Device not assigned to any organization'
+            ], 404);
+        }
+
+        $org = $orgDevice->organization;
+
+        if (!$org) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Organization not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'org_id' => $org->org_id,
+                'org_code' => $org->org_code,
+                'device_id' => $device->serial_num,
+                'status' => 'active'
+            ]
+        ]);
+    }
+
+    /**
+     * POST /api/device/heartbeat
+     *
+     * Receive heartbeat from device.
+     */
+    public function heartbeat(Request $request): JsonResponse
+    {
+        $request->validate([
+            'device_id' => 'required|string',
+            'status' => 'required|string',
+        ]);
+
+        $device = Device::where('serial_num', $request->device_id)->first();
+
+        if ($device) {
+            // Update lastseen_at to keep track of last heartbeat
+            $device->lastseen_at = now();
+            $device->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Heartbeat received'
+        ]);
+    }
     /**
      * GET /api/device/employee/{org_id}/{emp_id}
      *

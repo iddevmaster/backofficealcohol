@@ -51,6 +51,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'roles' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
             'permissions' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
             'devices' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
+            'org_devices' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
             'deviceslog' => ['list'],
             'employees' => ['list', 'create', 'store', 'edit', 'update', 'show', 'delete'],
             'reports' => ['access'],

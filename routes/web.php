@@ -9,6 +9,7 @@ use App\Http\Controllers\BranchesUserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DepartmentUserController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\OrgDeviceController;
 use App\Http\Controllers\TambonController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
@@ -197,6 +198,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/admin/users', UsersController::class);
     Route::resource('/admin/devices', DeviceController::class)->names('devices');
+    Route::resource('/admin/org-devices', OrgDeviceController::class)->names('org-devices');
 
     Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard')
         ->middleware('permission:list permissions');

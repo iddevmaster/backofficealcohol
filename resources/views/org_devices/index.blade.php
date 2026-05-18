@@ -236,11 +236,17 @@
                       @error('name')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
                   </div>
 
+                  @php
+                      $isAdmin = auth()->user()->hasRole(['super-admin', 'admin']);
+                  @endphp
+
                   <!-- Serial Number -->
                   <div>
                       <label for="edit_serial_num" class="block text-sm font-medium mb-1">Serial Number *</label>
                       <select name="serial_num" id="edit_serial_num" required
-                              class="w-full rounded border-gray-300" x-model="editForm.serial_num">
+                              class="w-full rounded border-gray-300 {{ !$isAdmin ? 'bg-gray-100 cursor-not-allowed text-gray-500' : '' }}"
+                              {{ !$isAdmin ? 'disabled' : '' }}
+                              x-model="editForm.serial_num">
                           <option value="">-- เลือก Serial Number --</option>
                           @foreach($masterDevices as $masterDevice)
                               <option value="{{ $masterDevice->serial_num }}">
@@ -248,6 +254,9 @@
                               </option>
                           @endforeach
                       </select>
+                      @if(!$isAdmin)
+                          <input type="hidden" name="serial_num" :value="editForm.serial_num">
+                      @endif
                       @error('serial_num')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
                   </div>
 
@@ -255,7 +264,9 @@
                   <div>
                       <label for="edit_org_select" class="block text-sm font-medium mb-1">องค์กร *</label>
                       <select name="org_id" id="edit_org_select" required
-                              class="w-full rounded border-gray-300" x-model="editForm.org_id"
+                              class="w-full rounded border-gray-300 {{ !$isAdmin ? 'bg-gray-100 cursor-not-allowed text-gray-500' : '' }}"
+                              {{ !$isAdmin ? 'disabled' : '' }}
+                              x-model="editForm.org_id"
                               @change="fetchAndPopulateBranches($event.target.value, document.getElementById('edit_brn_select'))">
                           <option value="">-- เลือกองค์กร --</option>
                           @foreach($organizations as $org)
@@ -264,6 +275,9 @@
                               </option>
                           @endforeach
                       </select>
+                      @if(!$isAdmin)
+                          <input type="hidden" name="org_id" :value="editForm.org_id">
+                      @endif
                       @error('org_id')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
                   </div>
 
@@ -271,9 +285,14 @@
                   <div>
                       <label for="edit_brn_select" class="block text-sm font-medium mb-1">สาขา *</label>
                       <select name="brn_id" id="edit_brn_select" required
-                              class="w-full rounded border-gray-300" x-model="editForm.brn_id">
+                              class="w-full rounded border-gray-300 {{ !$isAdmin ? 'bg-gray-100 cursor-not-allowed text-gray-500' : '' }}"
+                              {{ !$isAdmin ? 'disabled' : '' }}
+                              x-model="editForm.brn_id">
                           <option value="">-- เลือกสาขา (กรุณาเลือกองค์กรก่อน) --</option>
                       </select>
+                      @if(!$isAdmin)
+                          <input type="hidden" name="brn_id" :value="editForm.brn_id">
+                      @endif
                       @error('brn_id')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
                   </div>
 

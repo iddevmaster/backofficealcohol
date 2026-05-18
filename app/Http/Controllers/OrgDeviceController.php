@@ -94,24 +94,41 @@ class OrgDeviceController extends Controller implements HasMiddleware
      */
     public function update(Request $request, OrgDevice $orgDevice): RedirectResponse
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'serial_num' => 'required|string|max:255|exists:devices,serial_num|unique:org_devices,serial_num,' . $orgDevice->id,
-            'org_id' => 'required|exists:organizations,id',
-            'brn_id' => 'required|exists:branches,id',
-            'note' => 'nullable|string|max:255',
-        ], [
-            'name.required' => 'กรุณากรอกชื่ออุปกรณ์',
-            'serial_num.required' => 'กรุณาเลือก Serial Number',
-            'serial_num.exists' => 'ไม่พบ Serial Number นี้ในระบบ',
-            'serial_num.unique' => 'Serial Number นี้ถูกใช้งานโดยองค์กรอื่นแล้ว',
-            'org_id.required' => 'กรุณาเลือกองค์กร',
-            'org_id.exists' => 'ไม่พบข้อมูลองค์กรนี้ในระบบ',
-            'brn_id.required' => 'กรุณาเลือกสาขา',
-            'brn_id.exists' => 'ไม่พบข้อมูลสาขานี้ในระบบ',
-        ]);
+        $user = auth()->user();
+        $isAdmin = $user->hasRole(['super-admin', 'admin']);
 
-        $orgDevice->update($data);
+        if (!$isAdmin) {
+            $data = $request->validate([
+                'name' => 'required|string|max:255',
+                'note' => 'nullable|string|max:255',
+            ], [
+                'name.required' => 'กรุณากรอกชื่ออุปกรณ์',
+            ]);
+
+            $orgDevice->update([
+                'name' => $data['name'],
+                'note' => $data['note'] ?? null,
+            ]);
+        } else {
+            $data = $request->validate([
+                'name' => 'required|string|max:255',
+                'serial_num' => 'required|string|max:255|exists:devices,serial_num|unique:org_devices,serial_num,' . $orgDevice->id,
+                'org_id' => 'required|exists:organizations,id',
+                'brn_id' => 'required|exists:branches,id',
+                'note' => 'nullable|string|max:255',
+            ], [
+                'name.required' => 'กรุณากรอกชื่ออุปกรณ์',
+                'serial_num.required' => 'กรุณาเลือก Serial Number',
+                'serial_num.exists' => 'ไม่พบ Serial Number นี้ในระบบ',
+                'serial_num.unique' => 'Serial Number นี้ถูกใช้งานโดยองค์กรอื่นแล้ว',
+                'org_id.required' => 'กรุณาเลือกองค์กร',
+                'org_id.exists' => 'ไม่พบข้อมูลองค์กรนี้ในระบบ',
+                'brn_id.required' => 'กรุณาเลือกสาขา',
+                'brn_id.exists' => 'ไม่พบข้อมูลสาขานี้ในระบบ',
+            ]);
+
+            $orgDevice->update($data);
+        }
 
         return redirect()->route('org-devices.index')
             ->with('success', 'อัปเดตข้อมูลอุปกรณ์ขององค์กรสำเร็จแล้ว');

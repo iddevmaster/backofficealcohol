@@ -93,12 +93,17 @@ class DeviceApiController extends Controller
             // Update lastseen_at to keep track of last heartbeat
             $device->lastseen_at = now();
             $device->save();
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Heartbeat received'
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Heartbeat received'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Device not found'
+            ], 404);
+        }
     }
     /**
      * GET /api/device/employee/{org_id}/{emp_id}

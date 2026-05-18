@@ -75,7 +75,7 @@ class RoleController extends Controller implements HasMiddleware
         $role = Role::create($data);
         if ($perms)
             $role->permissions()->sync($perms);
-        return redirect()->route('access.index')->with('success', 'สร้าง Role สำเร็จ');
+        return redirect()->route('access.dashboard')->with('success', 'สร้าง Role สำเร็จ');
     }
 
     public function show(Role $role)

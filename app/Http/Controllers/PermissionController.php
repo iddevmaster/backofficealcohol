@@ -49,7 +49,7 @@ class PermissionController extends Controller implements HasMiddleware
     public function store(PermissionRequest $request)
     {
         Permission::create($request->validated());
-        return redirect()->route('access.index')->with('success', 'สร้าง Permission สำเร็จ');
+        return redirect()->route('access.dashboard')->with('success', 'สร้าง Permission สำเร็จ');
     }
 
     public function show(Permission $permission)

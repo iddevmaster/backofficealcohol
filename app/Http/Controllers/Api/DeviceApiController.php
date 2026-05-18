@@ -183,7 +183,6 @@ class DeviceApiController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Test data stored successfully',
-            'data' => $testHistory,
         ], 201);
     }
 

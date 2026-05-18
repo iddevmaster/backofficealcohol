@@ -69,7 +69,7 @@ class DeviceController extends Controller implements HasMiddleware
 
         $device = Device::create($data);
 
-        return redirect()->route('devices.show', $device)
+        return redirect()->route('devices.index')
             ->with('success', 'สร้างอุปกรณ์สำเร็จ');
     }
 

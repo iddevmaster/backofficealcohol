@@ -15,7 +15,31 @@ class DeviceRequest extends FormRequest
         return true;
     }
 
-        public function rules(): array
+    protected function prepareForValidation()
+    {
+        if (!$this->has('created_date')) {
+            $this->merge([
+                'created_date' => now()->format('Y-m-d H:i:s'),
+            ]);
+        }
+        if (!$this->has('tested_count')) {
+            $this->merge([
+                'tested_count' => 0,
+            ]);
+        }
+        if (!$this->has('last_calibration')) {
+            $this->merge([
+                'last_calibration' => now()->toDateString(),
+            ]);
+        }
+        if (!$this->has('status')) {
+            $this->merge([
+                'status' => 1,
+            ]);
+        }
+    }
+
+    public function rules(): array
     {
         $id = $this->route('device')?->id;
 

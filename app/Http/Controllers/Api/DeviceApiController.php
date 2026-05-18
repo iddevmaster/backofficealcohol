@@ -176,7 +176,7 @@ class DeviceApiController extends Controller
             'device_sn' => $request->device_sn,
             'alcohol_level' => $request->alcohol_level,
             'testing_image' => $imagePath,
-            'testing_date' => \Carbon\Carbon::parse($request->testing_date)->toDateTimeString(),
+            'testing_date' => \Carbon\Carbon::parse($request->testing_date, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString(),
             'org_id' => $request->org_id,
         ]);
 
@@ -202,7 +202,8 @@ class DeviceApiController extends Controller
         $query = Employee::with('fingerprints')->where('org_id', $org->id);
 
         if ($request->has('updated_since')) {
-            $query->where('updated_at', '>', $request->updated_since);
+            $updatedSince = \Carbon\Carbon::parse($request->updated_since, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString();
+            $query->where('updated_at', '>', $updatedSince);
         }
 
         $employees = $query->get()->map(fn($emp) => [
@@ -242,7 +243,7 @@ class DeviceApiController extends Controller
             return response()->json(['success' => false, 'message' => 'Employee not found'], 404);
         }
 
-        $scannedAt = \Carbon\Carbon::parse($request->scanned_at)->toDateTimeString();
+        $scannedAt = \Carbon\Carbon::parse($request->scanned_at, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString();
 
         if ($request->scan_type === 'alcohol') {
             $imagePath = $request->file('testing_image')

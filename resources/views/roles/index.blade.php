@@ -1,6 +1,5 @@
 <x-app-layout>
   <h1 class="text-2xl font-semibold mb-4">Roles</h1>
-  <!-- <a href="{{ route('roles.create') }}" class="mb-3 inline-block rounded bg-blue-600 text-white px-3 py-2">+ New</a> -->
   <div class="bg-white rounded-xl shadow overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">

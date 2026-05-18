@@ -176,7 +176,7 @@ class DeviceApiController extends Controller
             'device_sn' => $request->device_sn,
             'alcohol_level' => $request->alcohol_level,
             'testing_image' => $imagePath,
-            'testing_date' => $request->testing_date,
+            'testing_date' => \Carbon\Carbon::parse($request->testing_date)->toDateTimeString(),
             'org_id' => $request->org_id,
         ]);
 
@@ -242,6 +242,8 @@ class DeviceApiController extends Controller
             return response()->json(['success' => false, 'message' => 'Employee not found'], 404);
         }
 
+        $scannedAt = \Carbon\Carbon::parse($request->scanned_at)->toDateTimeString();
+
         if ($request->scan_type === 'alcohol') {
             $imagePath = $request->file('testing_image')
                 ? $request->file('testing_image')->store('test-images', 'public')
@@ -253,7 +255,7 @@ class DeviceApiController extends Controller
                 'alcohol_level' => $request->value ?? 0,
                 'result' => $request->result,
                 'testing_image' => $imagePath,
-                'testing_date' => $request->scanned_at,
+                'testing_date' => $scannedAt,
                 'org_id' => $org->id,
             ]);
         } else {
@@ -263,7 +265,7 @@ class DeviceApiController extends Controller
                 'device_id' => $request->device_id,
                 'scan_type' => $request->scan_type,
                 'result' => $request->result,
-                'scanned_at' => $request->scanned_at,
+                'scanned_at' => $scannedAt,
             ]);
         }
 

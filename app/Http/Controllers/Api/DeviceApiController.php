@@ -286,6 +286,7 @@ class DeviceApiController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Scan result recorded',
+            'testing_image' => $imagePath,
             'id' => $record->id,
         ], 201);
     }

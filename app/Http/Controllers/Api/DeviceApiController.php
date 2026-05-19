@@ -230,21 +230,6 @@ class DeviceApiController extends Controller
      */
     public function storeScan(StoreScanRequest $request, string $orgId): JsonResponse
     {
-        // Fallback: Automatically parse JSON raw body if missing Content-Type header
-        if (empty($request->all()) && $request->getContent()) {
-            $jsonData = json_decode($request->getContent(), true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($jsonData)) {
-                $request->merge($jsonData);
-            }
-        }
-
-        \Illuminate\Support\Facades\Log::info('storeScan received data', [
-            'scan_type' => $request->scan_type,
-            'has_file' => $request->hasFile('testing_image'),
-            'has_string' => is_string($request->input('testing_image')),
-            'string_len' => is_string($request->input('testing_image')) ? strlen($request->input('testing_image')) : 0,
-        ]);
-
         $org = Organization::where('org_id', $orgId)->first();
         if (!$org) {
             return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
@@ -264,35 +249,15 @@ class DeviceApiController extends Controller
             $imagePath = null;
             if ($request->file('testing_image')) {
                 $imagePath = $request->file('testing_image')->store('test-images', 'public');
-            } elseif (is_string($request->input('testing_image'))) {
-                $data = trim($request->input('testing_image'), "\"' \t\n\r\0\x0B");
-                
+            } elseif ($request->filled('testing_image')) {
+                $data = $request->input('testing_image');
+                // Remove data:image/...;base64, prefix if present
                 if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
                     $data = substr($data, strpos($data, ',') + 1);
                 }
-
-                // Clean whitespace, newlines, and convert space to plus (URL encoding issue fix)
-                $data = str_replace(' ', '+', $data);
-                $data = preg_replace('/\s+/', '', $data);
-
                 $decodedImage = base64_decode($data);
-                if ($decodedImage !== false) {
-                    // Auto-detect extension from the binary payload
-                    $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                    $mimeType = $finfo->buffer($decodedImage);
-                    
-                    $extension = 'jpg'; // Default extension
-                    if ($mimeType === 'image/png') {
-                        $extension = 'png';
-                    } elseif ($mimeType === 'image/gif') {
-                        $extension = 'gif';
-                    } elseif ($mimeType === 'image/webp') {
-                        $extension = 'webp';
-                    } elseif ($mimeType === 'image/jpeg') {
-                        $extension = 'jpg';
-                    }
-
-                    $fileName = 'test-images/' . uniqid() . '.' . $extension;
+                if ($decodedImage) {
+                    $fileName = 'test-images/' . uniqid() . '.jpg';
                     \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $decodedImage);
                     $imagePath = $fileName;
                 }

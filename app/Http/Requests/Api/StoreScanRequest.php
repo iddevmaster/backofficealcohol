@@ -16,26 +16,6 @@ class StoreScanRequest extends FormRequest
     }
 
     /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        // Automatically parse JSON raw body if the Content-Type header was missing or incorrect
-        if (empty($this->all()) && $this->getContent()) {
-            $jsonData = json_decode($this->getContent(), true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($jsonData)) {
-                $this->merge($jsonData);
-            }
-        }
-
-        // Clean testing_image string by trimming literal quotes and whitespace
-        if (is_string($this->input('testing_image'))) {
-            $cleaned = trim($this->input('testing_image'), "\"' \t\n\r\0\x0B");
-            $this->merge(['testing_image' => $cleaned]);
-        }
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
@@ -49,44 +29,7 @@ class StoreScanRequest extends FormRequest
             'result'        => ['required', 'string', 'in:pass,fail,match,no_match,identified,no_templates,scan_error'],
             'value'         => ['nullable', 'numeric', 'min:0'],
             'scanned_at'    => ['required', 'date'],
-            'testing_image' => [
-                'nullable',
-                function ($attribute, $value, $fail) {
-                    if ($value instanceof \Illuminate\Http\UploadedFile) {
-                        $validator = \Illuminate\Support\Facades\Validator::make(
-                            [$attribute => $value],
-                            [$attribute => 'image|max:10240']
-                        );
-                        if ($validator->fails()) {
-                            $fail($validator->errors()->first($attribute));
-                        }
-                    } elseif (is_string($value)) {
-                        $data = $value;
-                        if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
-                            $data = substr($data, strpos($data, ',') + 1);
-                        }
-                        
-                        // Clean whitespace, newlines, and convert space to plus (URL encoding issue fix)
-                        $data = str_replace(' ', '+', $data);
-                        $data = preg_replace('/\s+/', '', $data);
-
-                        $decoded = base64_decode($data, true);
-                        if ($decoded === false) {
-                            $fail('The ' . $attribute . ' must be a valid base64 image string.');
-                            return;
-                        }
-
-                        // Verify that the decoded binary is a valid image
-                        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                        $mimeType = $finfo->buffer($decoded);
-                        if (strpos($mimeType, 'image/') !== 0) {
-                            $fail('The ' . $attribute . ' must be a valid image.');
-                        }
-                    } else {
-                        $fail('The ' . $attribute . ' must be an image file or a base64 string.');
-                    }
-                }
-            ], // Optional, specifically for alcohol type
+            'testing_image' => ['nullable'], // Simply accept string base64 or file upload
         ];
     }
 

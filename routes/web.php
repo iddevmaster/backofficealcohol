@@ -30,6 +30,7 @@ use App\Models\Branches;
 use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\DashboardController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -46,9 +47,7 @@ Route::get('/scan-proxy', function () {
 Route::get('/report/alcohol/export', [ReportController::class, 'export'])
     ->name('report.alcohol.export');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
 

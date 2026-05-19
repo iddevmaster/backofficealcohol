@@ -149,7 +149,7 @@
 
                             <td class="px-4 py-3">
                                 @if($row->testing_image)
-                                    <img src="{{ asset($row->testing_image) }}"
+                                    <img src="{{ asset(\Illuminate\Support\Str::startsWith($row->testing_image, 'storage/') ? $row->testing_image : 'storage/' . $row->testing_image) }}"
                                          alt="testing image"
                                          class="w-12 h-12 rounded-lg object-cover border border-slate-200">
                                 @else

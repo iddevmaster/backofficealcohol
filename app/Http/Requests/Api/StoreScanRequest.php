@@ -16,6 +16,26 @@ class StoreScanRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        // Automatically parse JSON raw body if the Content-Type header was missing or incorrect
+        if (empty($this->all()) && $this->getContent()) {
+            $jsonData = json_decode($this->getContent(), true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($jsonData)) {
+                $this->merge($jsonData);
+            }
+        }
+
+        // Clean testing_image string by trimming literal quotes and whitespace
+        if (is_string($this->input('testing_image'))) {
+            $cleaned = trim($this->input('testing_image'), "\"' \t\n\r\0\x0B");
+            $this->merge(['testing_image' => $cleaned]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>

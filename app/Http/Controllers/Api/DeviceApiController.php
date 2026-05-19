@@ -230,6 +230,21 @@ class DeviceApiController extends Controller
      */
     public function storeScan(StoreScanRequest $request, string $orgId): JsonResponse
     {
+        // Fallback: Automatically parse JSON raw body if missing Content-Type header
+        if (empty($request->all()) && $request->getContent()) {
+            $jsonData = json_decode($request->getContent(), true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($jsonData)) {
+                $request->merge($jsonData);
+            }
+        }
+
+        \Illuminate\Support\Facades\Log::info('storeScan received data', [
+            'scan_type' => $request->scan_type,
+            'has_file' => $request->hasFile('testing_image'),
+            'has_string' => is_string($request->input('testing_image')),
+            'string_len' => is_string($request->input('testing_image')) ? strlen($request->input('testing_image')) : 0,
+        ]);
+
         $org = Organization::where('org_id', $orgId)->first();
         if (!$org) {
             return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
@@ -250,7 +265,7 @@ class DeviceApiController extends Controller
             if ($request->file('testing_image')) {
                 $imagePath = $request->file('testing_image')->store('test-images', 'public');
             } elseif (is_string($request->input('testing_image'))) {
-                $data = $request->input('testing_image');
+                $data = trim($request->input('testing_image'), "\"' \t\n\r\0\x0B");
                 
                 if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
                     $data = substr($data, strpos($data, ',') + 1);

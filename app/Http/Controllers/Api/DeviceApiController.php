@@ -246,9 +246,25 @@ class DeviceApiController extends Controller
         $scannedAt = \Carbon\Carbon::parse($request->scanned_at, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString();
 
         if ($request->scan_type === 'alcohol') {
-            $imagePath = $request->file('testing_image')
-                ? $request->file('testing_image')->store('test-images', 'public')
-                : null;
+            $imagePath = null;
+            if ($request->file('testing_image')) {
+                $imagePath = $request->file('testing_image')->store('test-images', 'public');
+            } elseif (is_string($request->input('testing_image'))) {
+                $data = $request->input('testing_image');
+                $extension = 'jpg'; // Default extension
+
+                if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
+                    $extension = $matches[1];
+                    $data = substr($data, strpos($data, ',') + 1);
+                }
+
+                $decodedImage = base64_decode($data);
+                if ($decodedImage !== false) {
+                    $fileName = 'test-images/' . uniqid() . '.' . $extension;
+                    \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $decodedImage);
+                    $imagePath = $fileName;
+                }
+            }
 
             $record = TestHistory::create([
                 'tester_id' => $employee->id,

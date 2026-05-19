@@ -29,7 +29,30 @@ class StoreScanRequest extends FormRequest
             'result'        => ['required', 'string', 'in:pass,fail,match,no_match,identified,no_templates,scan_error'],
             'value'         => ['nullable', 'numeric', 'min:0'],
             'scanned_at'    => ['required', 'date'],
-            'testing_image' => ['nullable', 'image', 'max:10240'], // Optional, specifically for alcohol type
+            'testing_image' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $validator = \Illuminate\Support\Facades\Validator::make(
+                            [$attribute => $value],
+                            [$attribute => 'image|max:10240']
+                        );
+                        if ($validator->fails()) {
+                            $fail($validator->errors()->first($attribute));
+                        }
+                    } elseif (is_string($value)) {
+                        $data = $value;
+                        if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
+                            $data = substr($data, strpos($data, ',') + 1);
+                        }
+                        if (base64_decode($data, true) === false) {
+                            $fail('The ' . $attribute . ' must be a valid base64 image string.');
+                        }
+                    } else {
+                        $fail('The ' . $attribute . ' must be an image file or a base64 string.');
+                    }
+                }
+            ], // Optional, specifically for alcohol type
         ];
     }
 

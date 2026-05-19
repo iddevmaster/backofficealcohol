@@ -247,10 +247,13 @@ class DeviceApiController extends Controller
 
         if ($request->scan_type === 'alcohol') {
             $imagePath = null;
-            if ($request->file('testing_image')) {
-                $imagePath = $request->file('testing_image')->store('test-images', 'public');
-            } elseif ($request->filled('testing_image')) {
-                $data = $request->input('testing_image');
+            $fileInput = $request->file('image') ?? $request->file('testing_image');
+            $stringInput = $request->input('image') ?? $request->input('testing_image');
+
+            if ($fileInput) {
+                $imagePath = $fileInput->store('test-images', 'public');
+            } elseif ($stringInput) {
+                $data = $stringInput;
                 // Remove data:image/...;base64, prefix if present
                 if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
                     $data = substr($data, strpos($data, ',') + 1);

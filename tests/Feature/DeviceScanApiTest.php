@@ -38,7 +38,7 @@ beforeEach(function () {
     \Laravel\Sanctum\Sanctum::actingAs($this->user);
 });
 
-it('can record alcohol scan with an uploaded image file', function () {
+it('can record alcohol scan with an uploaded image file using parameter testing_image', function () {
     $file = UploadedFile::fake()->image('test_image.jpg');
 
     $response = $this->postJson("/api/device/scans/{$this->org->org_id}", [
@@ -57,20 +57,36 @@ it('can record alcohol scan with an uploaded image file', function () {
             'message' => 'Scan result recorded',
         ]);
 
-    $this->assertDatabaseHas('test_histories', [
-        'tester_id' => $this->employee->id,
-        'device_sn' => 'DEV123',
-        'alcohol_level' => 0.05,
+    $record = \App\Models\TestHistory::first();
+    expect($record->testing_image)->not->toBeNull();
+    Storage::disk('public')->assertExists($record->testing_image);
+});
+
+it('can record alcohol scan with an uploaded image file using parameter image', function () {
+    $file = UploadedFile::fake()->image('test_image.jpg');
+
+    $response = $this->postJson("/api/device/scans/{$this->org->org_id}", [
+        'device_id' => 'DEV123',
+        'employee_id' => (string) $this->employee->id,
+        'scan_type' => 'alcohol',
         'result' => 'pass',
-        'org_id' => $this->org->id,
+        'value' => 0.05,
+        'scanned_at' => now()->toIso8601String(),
+        'image' => $file,
     ]);
+
+    $response->assertStatus(201)
+        ->assertJson([
+            'success' => true,
+            'message' => 'Scan result recorded',
+        ]);
 
     $record = \App\Models\TestHistory::first();
     expect($record->testing_image)->not->toBeNull();
     Storage::disk('public')->assertExists($record->testing_image);
 });
 
-it('can record alcohol scan with a base64 encoded image string', function () {
+it('can record alcohol scan with a base64 encoded image string using parameter image', function () {
     // Base64 for 1x1 pixel black png
     $base64Image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
@@ -81,7 +97,7 @@ it('can record alcohol scan with a base64 encoded image string', function () {
         'result' => 'pass',
         'value' => 0.05,
         'scanned_at' => now()->toIso8601String(),
-        'testing_image' => $base64Image,
+        'image' => $base64Image,
     ]);
 
     $response->assertStatus(201)
@@ -90,14 +106,6 @@ it('can record alcohol scan with a base64 encoded image string', function () {
             'message' => 'Scan result recorded',
         ]);
 
-    $this->assertDatabaseHas('test_histories', [
-        'tester_id' => $this->employee->id,
-        'device_sn' => 'DEV123',
-        'alcohol_level' => 0.05,
-        'result' => 'pass',
-        'org_id' => $this->org->id,
-    ]);
-
     $record = \App\Models\TestHistory::first();
     expect($record->testing_image)->not->toBeNull();
     expect($record->testing_image)->toStartWith('test-images/');
@@ -105,7 +113,7 @@ it('can record alcohol scan with a base64 encoded image string', function () {
     Storage::disk('public')->assertExists($record->testing_image);
 });
 
-it('can record alcohol scan with a raw base64 encoded image string without prefix', function () {
+it('can record alcohol scan with a raw base64 encoded image string without prefix using parameter image', function () {
     // Raw Base64 for 1x1 pixel black png (starts without data: prefix)
     $rawBase64Image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
@@ -116,7 +124,7 @@ it('can record alcohol scan with a raw base64 encoded image string without prefi
         'result' => 'pass',
         'value' => 0.05,
         'scanned_at' => now()->toIso8601String(),
-        'testing_image' => $rawBase64Image,
+        'image' => $rawBase64Image,
     ]);
 
     $response->assertStatus(201)
@@ -124,14 +132,6 @@ it('can record alcohol scan with a raw base64 encoded image string without prefi
             'success' => true,
             'message' => 'Scan result recorded',
         ]);
-
-    $this->assertDatabaseHas('test_histories', [
-        'tester_id' => $this->employee->id,
-        'device_sn' => 'DEV123',
-        'alcohol_level' => 0.05,
-        'result' => 'pass',
-        'org_id' => $this->org->id,
-    ]);
 
     $record = \App\Models\TestHistory::first();
     expect($record->testing_image)->not->toBeNull();

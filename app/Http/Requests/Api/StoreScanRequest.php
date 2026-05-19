@@ -23,13 +23,13 @@ class StoreScanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'device_id'     => ['required', 'string', 'max:191'],
-            'employee_id'   => ['required', 'string', 'max:191'],
-            'scan_type'     => ['required', 'string', 'in:alcohol,fingerprint,identification'],
-            'result'        => ['required', 'string', 'in:pass,fail,match,no_match,identified,no_templates,scan_error'],
-            'value'         => ['nullable', 'numeric', 'min:0'],
-            'scanned_at'    => ['required', 'date'],
-            'testing_image' => ['nullable'], // Simply accept string base64 or file upload
+            'device_id' => ['required', 'string', 'max:191'],
+            'employee_id' => ['required', 'string', 'max:191'],
+            'scan_type' => ['required', 'string', 'in:alcohol,fingerprint,identification'],
+            'result' => ['required', 'string', 'in:pass,fail,match,no_match,identified,no_templates,scan_error'],
+            'value' => ['nullable', 'numeric', 'min:0'],
+            'scanned_at' => ['required', 'date'],
+            'image' => ['nullable'], // Simply accept string base64 or file upload
         ];
     }
 
@@ -41,7 +41,7 @@ class StoreScanRequest extends FormRequest
         throw new \Illuminate\Http\Exceptions\HttpResponseException(response()->json([
             'success' => false,
             'message' => 'Validation failed',
-            'errors'  => $validator->errors(),
+            'errors' => $validator->errors(),
         ], 422));
     }
 }

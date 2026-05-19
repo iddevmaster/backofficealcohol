@@ -105,6 +105,41 @@ it('can record alcohol scan with a base64 encoded image string', function () {
     Storage::disk('public')->assertExists($record->testing_image);
 });
 
+it('can record alcohol scan with a raw base64 encoded image string without prefix', function () {
+    // Raw Base64 for 1x1 pixel black png (starts without data: prefix)
+    $rawBase64Image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
+    $response = $this->postJson("/api/device/scans/{$this->org->org_id}", [
+        'device_id' => 'DEV123',
+        'employee_id' => (string) $this->employee->id,
+        'scan_type' => 'alcohol',
+        'result' => 'pass',
+        'value' => 0.05,
+        'scanned_at' => now()->toIso8601String(),
+        'testing_image' => $rawBase64Image,
+    ]);
+
+    $response->assertStatus(201)
+        ->assertJson([
+            'success' => true,
+            'message' => 'Scan result recorded',
+        ]);
+
+    $this->assertDatabaseHas('test_histories', [
+        'tester_id' => $this->employee->id,
+        'device_sn' => 'DEV123',
+        'alcohol_level' => 0.05,
+        'result' => 'pass',
+        'org_id' => $this->org->id,
+    ]);
+
+    $record = \App\Models\TestHistory::first();
+    expect($record->testing_image)->not->toBeNull();
+    expect($record->testing_image)->toStartWith('test-images/');
+    expect($record->testing_image)->toEndWith('.png');
+    Storage::disk('public')->assertExists($record->testing_image);
+});
+
 it('rejects invalid base64 image strings', function () {
     $response = $this->postJson("/api/device/scans/{$this->org->org_id}", [
         'device_id' => 'DEV123',

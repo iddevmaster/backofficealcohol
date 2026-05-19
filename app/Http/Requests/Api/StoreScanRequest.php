@@ -45,8 +45,22 @@ class StoreScanRequest extends FormRequest
                         if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
                             $data = substr($data, strpos($data, ',') + 1);
                         }
-                        if (base64_decode($data, true) === false) {
+                        
+                        // Clean whitespace, newlines, and convert space to plus (URL encoding issue fix)
+                        $data = str_replace(' ', '+', $data);
+                        $data = preg_replace('/\s+/', '', $data);
+
+                        $decoded = base64_decode($data, true);
+                        if ($decoded === false) {
                             $fail('The ' . $attribute . ' must be a valid base64 image string.');
+                            return;
+                        }
+
+                        // Verify that the decoded binary is a valid image
+                        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                        $mimeType = $finfo->buffer($decoded);
+                        if (strpos($mimeType, 'image/') !== 0) {
+                            $fail('The ' . $attribute . ' must be a valid image.');
                         }
                     } else {
                         $fail('The ' . $attribute . ' must be an image file or a base64 string.');

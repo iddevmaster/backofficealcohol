@@ -251,15 +251,32 @@ class DeviceApiController extends Controller
                 $imagePath = $request->file('testing_image')->store('test-images', 'public');
             } elseif (is_string($request->input('testing_image'))) {
                 $data = $request->input('testing_image');
-                $extension = 'jpg'; // Default extension
-
+                
                 if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
-                    $extension = $matches[1];
                     $data = substr($data, strpos($data, ',') + 1);
                 }
 
+                // Clean whitespace, newlines, and convert space to plus (URL encoding issue fix)
+                $data = str_replace(' ', '+', $data);
+                $data = preg_replace('/\s+/', '', $data);
+
                 $decodedImage = base64_decode($data);
                 if ($decodedImage !== false) {
+                    // Auto-detect extension from the binary payload
+                    $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                    $mimeType = $finfo->buffer($decodedImage);
+                    
+                    $extension = 'jpg'; // Default extension
+                    if ($mimeType === 'image/png') {
+                        $extension = 'png';
+                    } elseif ($mimeType === 'image/gif') {
+                        $extension = 'gif';
+                    } elseif ($mimeType === 'image/webp') {
+                        $extension = 'webp';
+                    } elseif ($mimeType === 'image/jpeg') {
+                        $extension = 'jpg';
+                    }
+
                     $fileName = 'test-images/' . uniqid() . '.' . $extension;
                     \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $decodedImage);
                     $imagePath = $fileName;

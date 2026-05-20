@@ -154,7 +154,7 @@
                     <div class="subtitle">สรุปผลการตรวจวัดแอลกอฮอล์ของพนักงาน</div>
                 </td>
                 <td class="meta-info">
-                    วันที่ออกรายงาน: {{ now()->format('d/m/Y H:i') }}<br>
+                    วันที่ออกรายงาน: {{ now('Asia/Bangkok')->format('d/m/Y H:i') }}<br>
                     จำนวนรายการทั้งหมด: {{ number_format(count($reports)) }} รายการ
                 </td>
             </tr>

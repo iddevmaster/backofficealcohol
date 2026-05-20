@@ -5,8 +5,9 @@ namespace App\Exports;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class AlcoholReportExport implements FromCollection, WithHeadings
+class AlcoholReportExport implements FromCollection, WithHeadings, WithMapping
 {
     protected $filters;
 
@@ -72,6 +73,21 @@ class AlcoholReportExport implements FromCollection, WithHeadings
         }
 
         return $query->orderByDesc('th.testing_date')->get();
+    }
+
+    public function map($row): array
+    {
+        return [
+            $row->emp_id ?? '-',
+            $row->full_name ?: '-',
+            $row->department ?? '-',
+            $row->branch ?? '-',
+            $row->organization ?? '-',
+            $row->device_sn,
+            number_format((float) $row->alcohol_level, 2),
+            $row->status,
+            $row->testing_date ? \Carbon\Carbon::parse($row->testing_date)->format('d/m/Y H:i') : '-',
+        ];
     }
 
     public function headings(): array

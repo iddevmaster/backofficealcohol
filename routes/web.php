@@ -46,6 +46,8 @@ Route::get('/scan-proxy', function () {
 });
 Route::get('/report/alcohol/export', [ReportController::class, 'export'])
     ->name('report.alcohol.export');
+Route::get('/report/alcohol/pdf', [ReportController::class, 'exportPdf'])
+    ->name('report.alcohol.pdf');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 

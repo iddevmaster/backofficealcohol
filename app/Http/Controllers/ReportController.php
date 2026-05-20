@@ -12,11 +12,55 @@ class ReportController extends Controller
 {
     //
 
-          public function report(Request $request)
+    public function report(Request $request)
     {
+        $reports = $this->buildReportQuery($request)->orderByDesc('th.testing_date')->paginate(15)->withQueryString();
 
+        // summary cards
+        $summaryBase = DB::table('test_histories');
 
-     $query = DB::table('test_histories as th')
+        $user = auth()->user();
+        $isAdmin = $user ? $user->hasRole(['super-admin', 'admin']) : false;
+
+        if (!$user) {
+            $summaryBase->whereRaw('1 = 0');
+        } elseif (!$isAdmin) {
+            $summaryBase->where('org_id', $user->org_id);
+        } elseif ($request->filled('org_id')) {
+            $summaryBase->where('org_id', $request->org_id);
+        }
+        if ($request->filled('date_from')) {
+            $summaryBase->whereDate('testing_date', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $summaryBase->whereDate('testing_date', '<=', $request->date_to);
+        }
+
+        $totalCount = (clone $summaryBase)->count();
+        $passCount  = (clone $summaryBase)->where('alcohol_level', '<=', 0)->count();
+        $failCount  = (clone $summaryBase)->where('alcohol_level', '>', 0)->count();
+        $todayCount = (clone $summaryBase)->whereDate('testing_date', now()->toDateString())->count();
+
+        $organizations = DB::table('organizations')
+            ->select('id', 'name')
+            ->when($user && !$isAdmin, fn($q) => $q->where('id', $user->org_id))
+            ->orderBy('name')
+            ->get();
+
+        return view('report.index', compact(
+            'reports',
+            'organizations',
+            'totalCount',
+            'passCount',
+            'failCount',
+            'todayCount'
+        ));
+
+    }
+
+    private function buildReportQuery(Request $request)
+    {
+        $query = DB::table('test_histories as th')
             ->leftJoin('employees as e', 'th.tester_id', '=', 'e.id')
             ->leftJoin('organizations as org', 'th.org_id', '=', 'org.id')
             ->leftJoin('departments as d', 'e.dpm_id', '=', 'd.id')
@@ -51,10 +95,12 @@ class ReportController extends Controller
         }
 
         $user = auth()->user();
-        $isAdmin = $user->hasRole(['super-admin', 'admin']);
+        $isAdmin = $user ? $user->hasRole(['super-admin', 'admin']) : false;
 
         // filter องค์กร
-        if (!$isAdmin) {
+        if (!$user) {
+            $query->whereRaw('1 = 0');
+        } elseif (!$isAdmin) {
             $query->where('th.org_id', $user->org_id);
         } elseif ($request->filled('org_id')) {
             $query->where('th.org_id', $request->org_id);
@@ -71,9 +117,6 @@ class ReportController extends Controller
         }
 
         // filter สถานะ
-        // ตัวอย่างเกณฑ์:
-        // ผ่าน = alcohol_level <= 0
-        // ไม่ผ่าน = alcohol_level > 0
         if ($request->filled('result_status')) {
             if ($request->result_status === 'pass') {
                 $query->where('th.alcohol_level', '<=', 0);
@@ -82,51 +125,24 @@ class ReportController extends Controller
             }
         }
 
-        $reports = $query->orderByDesc('th.testing_date')->paginate(15)->withQueryString();
-
-        // summary cards
-        $summaryBase = DB::table('test_histories');
-
-        if (!$isAdmin) {
-            $summaryBase->where('org_id', $user->org_id);
-        } elseif ($request->filled('org_id')) {
-            $summaryBase->where('org_id', $request->org_id);
-        }
-        if ($request->filled('date_from')) {
-            $summaryBase->whereDate('testing_date', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $summaryBase->whereDate('testing_date', '<=', $request->date_to);
-        }
-
-        $totalCount = (clone $summaryBase)->count();
-        $passCount  = (clone $summaryBase)->where('alcohol_level', '<=', 0)->count();
-        $failCount  = (clone $summaryBase)->where('alcohol_level', '>', 0)->count();
-        $todayCount = (clone $summaryBase)->whereDate('testing_date', now()->toDateString())->count();
-
-        $organizations = DB::table('organizations')
-            ->select('id', 'name')
-            ->when(!$isAdmin, fn($q) => $q->where('id', $user->org_id))
-            ->orderBy('name')
-            ->get();
-
-        return view('report.index', compact(
-            'reports',
-            'organizations',
-            'totalCount',
-            'passCount',
-            'failCount',
-            'todayCount'
-        ));
-
+        return $query;
     }
 
-
     public function export(Request $request)
-{
-    return Excel::download(
-        new AlcoholReportExport($request->all()),
-        'alcohol_report_' . now()->format('Ymd_His') . '.xlsx'
-    );
-}
+    {
+        return Excel::download(
+            new AlcoholReportExport($request->all()),
+            'alcohol_report_' . now()->format('Ymd_His') . '.xlsx'
+        );
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $reports = $this->buildReportQuery($request)->orderByDesc('th.testing_date')->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('report.pdf', compact('reports'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('alcohol_report_' . now()->format('Ymd_His') . '.pdf');
+    }
 }

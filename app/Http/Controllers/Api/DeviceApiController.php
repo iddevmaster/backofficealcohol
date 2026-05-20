@@ -230,6 +230,7 @@ class DeviceApiController extends Controller
      */
     public function storeScan(StoreScanRequest $request, string $orgId): JsonResponse
     {
+        $imagePath = null;
         $org = Organization::where('org_id', $orgId)->first();
         if (!$org) {
             return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
@@ -246,7 +247,18 @@ class DeviceApiController extends Controller
         $scannedAt = \Carbon\Carbon::parse($request->scanned_at, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString();
 
         if ($request->scan_type === 'alcohol') {
-            $imagePath = null;
+            $existing = TestHistory::where('tester_id', $employee->id)
+                ->where('testing_date', $scannedAt)
+                ->first();
+
+            if ($existing) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Scan result recorded',
+                    'testing_image' => $existing->testing_image,
+                    'id' => $existing->id,
+                ], 200);
+            }
             $fileInput = $request->file('image') ?? $request->file('testing_image');
             $stringInput = $request->input('image') ?? $request->input('testing_image');
 
@@ -276,6 +288,20 @@ class DeviceApiController extends Controller
                 'org_id' => $org->id,
             ]);
         } else {
+            $existing = DeviceScan::where('employee_id', $employee->id)
+                ->where('scan_type', $request->scan_type)
+                ->where('scanned_at', $scannedAt)
+                ->first();
+
+            if ($existing) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Scan result recorded',
+                    'testing_image' => null,
+                    'id' => $existing->id,
+                ], 200);
+            }
+
             $record = DeviceScan::create([
                 'employee_id' => $employee->id,
                 'org_id' => $org->id,

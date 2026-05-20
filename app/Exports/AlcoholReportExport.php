@@ -85,7 +85,7 @@ class AlcoholReportExport implements FromCollection, WithHeadings, WithMapping, 
             $row->branch ?? '-',
             $row->organization ?? '-',
             $row->device_sn,
-            strval(number_format((float) $row->alcohol_level, 2)),
+            (float) $row->alcohol_level,
             $row->status,
             $row->testing_date ? \Carbon\Carbon::parse($row->testing_date)->format('d/m/Y H:i') : '-',
         ];
@@ -109,7 +109,7 @@ class AlcoholReportExport implements FromCollection, WithHeadings, WithMapping, 
     public function columnFormats(): array
     {
         return [
-            'G' => '@', // Column G is 'ระดับแอลกอฮอล์' and we format it as Text (@)
+            'G' => '0.00', // Forces Excel to display exactly 2 decimal places (e.g. 0.00)
         ];
     }
 }

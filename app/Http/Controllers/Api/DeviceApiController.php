@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreScanRequest;
 use App\Http\Requests\Api\StoreTestRequest;
+use App\Http\Requests\Api\RegisterFingerprintRequest;
 use App\Models\DeviceScan;
 use App\Models\Device;
 use App\Models\Employee;
+use App\Models\Fingerprints;
 use App\Models\Organization;
 use App\Models\OrgDevice;
 use App\Models\TestHistory;
@@ -319,4 +321,52 @@ class DeviceApiController extends Controller
             'id' => $record->id,
         ], 201);
     }
+
+    /**
+     * POST /api/device/employee/fingerprint
+     *
+     * Store employee fingerprint data.
+     */
+    public function storeFingerprint(RegisterFingerprintRequest $request): JsonResponse
+    {
+        $employee = Employee::find($request->employee_id);
+
+        if (!$employee) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Employee not found',
+            ], 404);
+        }
+
+        // Use updateOrCreate to avoid duplicating templates for the same finger_no
+        $fingerprint = Fingerprints::updateOrCreate(
+            [
+                'emp_id' => $employee->id,
+                'finger_no' => $request->finger_index,
+            ],
+            [
+                'fingerprint_code' => $request->fingerprint_code,
+                'timestamp' => now(),
+                'note' => $request->note ?? '',
+            ]
+        );
+
+        // Mark fingerprint as registered on the employee
+        if (!$employee->fingerprint_registered) {
+            $employee->update(['fingerprint_registered' => true]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fingerprint registered successfully',
+            'data' => [
+                'id' => $fingerprint->id,
+                'employee_id' => $employee->id,
+                'finger_index' => (int) $fingerprint->finger_no,
+                'fingerprint_code' => $fingerprint->fingerprint_code,
+                'updated_at' => $fingerprint->updated_at->toIso8601String(),
+            ]
+        ], 201);
+    }
 }
+

@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->prefix('device')->group(function () {
     Route::post('/heartbeat', [DeviceApiController::class, 'heartbeat']);
     Route::get('/employee/{org_id}/{emp_id}', [DeviceApiController::class, 'getEmployee']);
     Route::get('/employees/{org_id}',          [DeviceApiController::class, 'getEmployees']);
+    Route::post('/employee/fingerprint',      [DeviceApiController::class, 'storeFingerprint']);
     Route::post('/scans/{org_id}',            [DeviceApiController::class, 'storeScan']);
     Route::post('/test',                      [DeviceApiController::class, 'storeTest']);
 });

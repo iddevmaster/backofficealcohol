@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 
-class AlcoholReportExport implements FromCollection, WithHeadings, WithMapping
+class AlcoholReportExport implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting
 {
     protected $filters;
 
@@ -84,7 +85,7 @@ class AlcoholReportExport implements FromCollection, WithHeadings, WithMapping
             $row->branch ?? '-',
             $row->organization ?? '-',
             $row->device_sn,
-            number_format((float) $row->alcohol_level, 2),
+            strval(number_format((float) $row->alcohol_level, 2)),
             $row->status,
             $row->testing_date ? \Carbon\Carbon::parse($row->testing_date)->format('d/m/Y H:i') : '-',
         ];
@@ -102,6 +103,13 @@ class AlcoholReportExport implements FromCollection, WithHeadings, WithMapping
             'ระดับแอลกอฮอล์ (mg/L)',
             'สถานะ',
             'วันที่ตรวจ'
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'G' => '@', // Column G is 'ระดับแอลกอฮอล์' and we format it as Text (@)
         ];
     }
 }

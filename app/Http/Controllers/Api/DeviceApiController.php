@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreScanRequest;
+use App\Http\Requests\Api\StoreAnonymousScanRequest;
 use App\Http\Requests\Api\StoreTestRequest;
 use App\Http\Requests\Api\RegisterFingerprintRequest;
 use App\Models\DeviceScan;
+use App\Models\AnonymousTest;
 use App\Models\Device;
 use App\Models\Employee;
 use App\Models\Fingerprints;
@@ -365,6 +367,93 @@ class DeviceApiController extends Controller
                 'finger_index' => (int) $fingerprint->finger_no,
                 'fingerprint_code' => $fingerprint->fingerprint_code,
                 'updated_at' => $fingerprint->updated_at->toIso8601String(),
+            ]
+        ], 201);
+    }
+
+    /**
+     * POST /api/device/scans/anonymous/{org_id}
+     *
+     * Store anonymous alcohol breath test scan results.
+     */
+    public function storeAnonymousScan(StoreAnonymousScanRequest $request, string $orgId): JsonResponse
+    {
+        $org = Organization::where('org_id', $orgId)->first();
+
+        if (!$org) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Organization not found'
+            ], 404);
+        }
+
+        $scannedAtUtc = \Carbon\Carbon::parse($request->scanned_at, 'UTC');
+        $scannedAtLocal = $scannedAtUtc->setTimezone('Asia/Bangkok')->toDateTimeString();
+
+        // 1. Prevent duplicate scans by checking if a scan with the same device_id and scanned_at already exists
+        $existing = AnonymousTest::where('device_id', $request->device_id)
+            ->where('scanned_at', $scannedAtLocal)
+            ->first();
+
+        if ($existing) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Anonymous scan record stored successfully',
+                'data' => [
+                    'id' => $existing->id,
+                    'org_id' => $org->org_id,
+                    'device_id' => $existing->device_id,
+                    'user_id' => $existing->user_id,
+                    'scan_type' => $existing->scan_type,
+                    'result' => $existing->result,
+                    'value' => (float) $existing->value,
+                    'scanned_at' => \Carbon\Carbon::parse($existing->scanned_at->toDateTimeString(), 'Asia/Bangkok')->setTimezone('UTC')->format('Y-m-d\TH:i:s.000\Z'),
+                    'image_url' => $existing->image_path ? Storage::disk('public')->url($existing->image_path) : null,
+                ]
+            ], 200);
+        }
+
+        // 2. Process base64 image data (if provided) and store on the public disk
+        $imagePath = null;
+        if ($request->filled('image')) {
+            $data = $request->input('image');
+            if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
+                $data = substr($data, strpos($data, ',') + 1);
+            }
+            $decodedImage = base64_decode($data);
+            if ($decodedImage) {
+                $dateFolder = \Carbon\Carbon::now()->format('Y-m-d');
+                $fileName = 'scans/anonymous/' . $dateFolder . '/' . uniqid() . '.jpg';
+                Storage::disk('public')->put($fileName, $decodedImage);
+                $imagePath = $fileName;
+            }
+        }
+
+        // 3. Create the anonymous scan record
+        $record = AnonymousTest::create([
+            'org_id' => $org->id,
+            'device_id' => $request->device_id,
+            'user_id' => $request->user_id,
+            'scan_type' => $request->scan_type,
+            'result' => $request->result,
+            'value' => $request->value,
+            'scanned_at' => $scannedAtLocal,
+            'image_path' => $imagePath,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Anonymous scan record stored successfully',
+            'data' => [
+                'id' => $record->id,
+                'org_id' => $org->org_id,
+                'device_id' => $record->device_id,
+                'user_id' => $record->user_id,
+                'scan_type' => $record->scan_type,
+                'result' => $record->result,
+                'value' => (float) $record->value,
+                'scanned_at' => \Carbon\Carbon::parse($record->scanned_at->toDateTimeString(), 'Asia/Bangkok')->setTimezone('UTC')->format('Y-m-d\TH:i:s.000\Z'),
+                'image_url' => $imagePath ? Storage::disk('public')->url($imagePath) : null,
             ]
         ], 201);
     }

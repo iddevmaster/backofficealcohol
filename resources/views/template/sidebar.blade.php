@@ -76,6 +76,16 @@
                 <span>Test Histories</span>
             </a>
             @endcan
+            @can('list histories')
+                <a href="{{ url('admin/device-scans') }}"
+                class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11V7a4 4 0 018 0v4c0 .633.088 1.245.253 1.828M8 11a4 4 0 018 0" />
+                </svg>
+                <span>Scan Histories</span>
+            </a>
+            @endcan
             @can('access reports')
                 <a href="{{ url('admin/report') }}"
                     class="flex items-center space-x-3 px-3 py-2 rounded-md text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900 transition-colors">

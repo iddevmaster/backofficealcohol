@@ -26,6 +26,7 @@ use App\Http\Controllers\DeviceslogController;
 use App\Http\Controllers\HistoriesController;
 use App\Http\Controllers\FingerController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DeviceScanController;
 use App\Models\Branches;
 use App\Models\Department;
 use App\Models\Employee;
@@ -210,6 +211,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/employees', EmployeesController::class);
     Route::resource('/admin/deviceslog', DeviceslogController::class);
     Route::resource('/admin/histories', HistoriesController::class);
+    Route::resource('/admin/device-scans', DeviceScanController::class);
     Route::resource('/admin/finger', FingerController::class);
 
 

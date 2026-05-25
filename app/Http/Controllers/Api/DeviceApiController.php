@@ -3,21 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\StoreScanRequest;
-use App\Http\Requests\Api\StoreAnonymousScanRequest;
-use App\Http\Requests\Api\StoreTestRequest;
 use App\Http\Requests\Api\RegisterFingerprintRequest;
-use App\Models\DeviceScan;
+use App\Http\Requests\Api\StoreAnonymousScanRequest;
+use App\Http\Requests\Api\StoreScanRequest;
+use App\Http\Requests\Api\StoreTestRequest;
 use App\Models\AnonymousTest;
 use App\Models\Device;
+use App\Models\DeviceScan;
 use App\Models\Employee;
 use App\Models\Fingerprints;
 use App\Models\Organization;
 use App\Models\OrgDevice;
 use App\Models\TestHistory;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DeviceApiController extends Controller
@@ -37,10 +37,10 @@ class DeviceApiController extends Controller
 
         $device = Device::where('serial_num', $request->serial_num)->first();
 
-        if (!$device) {
+        if (! $device) {
             return response()->json([
                 'success' => false,
-                'message' => 'Device not found'
+                'message' => 'Device not found',
             ], 404);
         }
 
@@ -52,19 +52,19 @@ class DeviceApiController extends Controller
         // Get organization info
         $orgDevice = OrgDevice::where('serial_num', $request->serial_num)->first();
 
-        if (!$orgDevice) {
+        if (! $orgDevice) {
             return response()->json([
                 'success' => false,
-                'message' => 'Device not assigned to any organization'
+                'message' => 'Device not assigned to any organization',
             ], 404);
         }
 
         $org = $orgDevice->organization;
 
-        if (!$org) {
+        if (! $org) {
             return response()->json([
                 'success' => false,
-                'message' => 'Organization not found'
+                'message' => 'Organization not found',
             ], 404);
         }
 
@@ -76,7 +76,7 @@ class DeviceApiController extends Controller
                 'device_id' => $device->serial_num,
                 'status' => 'active',
                 'public_pwd' => $orgDevice->public_pwd,
-            ]
+            ],
         ]);
     }
 
@@ -101,15 +101,16 @@ class DeviceApiController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Heartbeat received'
+                'message' => 'Heartbeat received',
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Device not found'
+                'message' => 'Device not found',
             ], 404);
         }
     }
+
     /**
      * GET /api/device/employee/{org_id}/{emp_id}
      *
@@ -119,20 +120,20 @@ class DeviceApiController extends Controller
     {
         $org = Organization::where('org_id', $orgId)->first();
 
-        if (!$org) {
+        if (! $org) {
             return response()->json([
                 'success' => false,
                 'message' => 'Organization not found',
             ], 404);
         }
 
-        $searchEmpId = $org->org_code . "E" . $empId;
+        $searchEmpId = $org->org_code.'E'.$empId;
 
         $employee = Employee::with(['prefix', 'fingerprints'])
             ->where('emp_id', $searchEmpId)
             ->first();
 
-        if (!$employee) {
+        if (! $employee) {
             return response()->json([
                 'success' => false,
                 'message' => 'Employee not found',
@@ -147,7 +148,7 @@ class DeviceApiController extends Controller
                 'full_name' => $employee->full_name,
                 'status' => $employee->status,
                 'org_id' => $employee->org_id,
-                'fingerprints' => $employee->fingerprints->map(fn($fp) => [
+                'fingerprints' => $employee->fingerprints->map(fn ($fp) => [
                     'id' => $fp->id,
                     'finger_no' => $fp->finger_no,
                     'fingerprint_code' => $fp->fingerprint_code,
@@ -165,7 +166,7 @@ class DeviceApiController extends Controller
     {
         $employee = Employee::where('emp_id', $request->emp_id)->first();
 
-        if (!$employee) {
+        if (! $employee) {
             return response()->json([
                 'success' => false,
                 'message' => 'Employee not found',
@@ -181,7 +182,7 @@ class DeviceApiController extends Controller
             'device_sn' => $request->device_sn,
             'alcohol_level' => $request->alcohol_level,
             'testing_image' => $imagePath,
-            'testing_date' => \Carbon\Carbon::parse($request->testing_date, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString(),
+            'testing_date' => Carbon::parse($request->testing_date, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString(),
             'org_id' => $request->org_id,
         ]);
 
@@ -200,24 +201,24 @@ class DeviceApiController extends Controller
     {
         $org = Organization::where('org_id', $orgId)->first();
 
-        if (!$org) {
+        if (! $org) {
             return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
         }
 
         $query = Employee::with('fingerprints')->where('org_id', $org->id);
 
         if ($request->has('updated_since')) {
-            $updatedSince = \Carbon\Carbon::parse($request->updated_since, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString();
+            $updatedSince = Carbon::parse($request->updated_since, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString();
             $query->where('updated_at', '>', $updatedSince);
         }
 
-        $employees = $query->get()->map(fn($emp) => [
+        $employees = $query->get()->map(fn ($emp) => [
             'id' => $emp->id,
             'emp_id' => $emp->emp_id,
             'full_name' => $emp->full_name,
             'org_id' => $org->org_id,
             'updated_at' => $emp->updated_at->toIso8601String(),
-            'fingerprints' => $emp->fingerprints->map(fn($fp) => [
+            'fingerprints' => $emp->fingerprints->map(fn ($fp) => [
                 'id' => $fp->id,
                 'finger_index' => $fp->finger_no,
                 'fingerprint_code' => $fp->fingerprint_code,
@@ -237,7 +238,7 @@ class DeviceApiController extends Controller
     {
         $imagePath = null;
         $org = Organization::where('org_id', $orgId)->first();
-        if (!$org) {
+        if (! $org) {
             return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
         }
 
@@ -245,11 +246,11 @@ class DeviceApiController extends Controller
             ->where('org_id', $org->id)
             ->first();
 
-        if (!$employee) {
-            return response()->json(['success' => false, 'message' => 'Employee not found'], 404);
+        if (! $employee) {
+            return response()->json(['success' => false, 'message' => 'Employee: '.$request->employee_id.' not found'], 404);
         }
 
-        $scannedAt = \Carbon\Carbon::parse($request->scanned_at, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString();
+        $scannedAt = Carbon::parse($request->scanned_at, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString();
 
         if ($request->scan_type === 'alcohol') {
             $existing = TestHistory::where('tester_id', $employee->id)
@@ -277,8 +278,8 @@ class DeviceApiController extends Controller
                 }
                 $decodedImage = base64_decode($data);
                 if ($decodedImage) {
-                    $fileName = 'test-images/' . uniqid() . '.jpg';
-                    \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $decodedImage);
+                    $fileName = 'test-images/'.uniqid().'.jpg';
+                    Storage::disk('public')->put($fileName, $decodedImage);
                     $imagePath = $fileName;
                 }
             }
@@ -334,7 +335,7 @@ class DeviceApiController extends Controller
     {
         $employee = Employee::find($request->employee_id);
 
-        if (!$employee) {
+        if (! $employee) {
             return response()->json([
                 'success' => false,
                 'message' => 'Employee not found',
@@ -355,7 +356,7 @@ class DeviceApiController extends Controller
         );
 
         // Mark fingerprint as registered on the employee
-        if (!$employee->fingerprint_registered) {
+        if (! $employee->fingerprint_registered) {
             $employee->update(['fingerprint_registered' => true]);
         }
 
@@ -368,7 +369,7 @@ class DeviceApiController extends Controller
                 'finger_index' => (int) $fingerprint->finger_no,
                 'fingerprint_code' => $fingerprint->fingerprint_code,
                 'updated_at' => $fingerprint->updated_at->toIso8601String(),
-            ]
+            ],
         ], 201);
     }
 
@@ -381,14 +382,14 @@ class DeviceApiController extends Controller
     {
         $org = Organization::where('org_id', $orgId)->first();
 
-        if (!$org) {
+        if (! $org) {
             return response()->json([
                 'success' => false,
-                'message' => 'Organization not found'
+                'message' => 'Organization not found',
             ], 404);
         }
 
-        $scannedAtUtc = \Carbon\Carbon::parse($request->scanned_at, 'UTC');
+        $scannedAtUtc = Carbon::parse($request->scanned_at, 'UTC');
         $scannedAtLocal = $scannedAtUtc->setTimezone('Asia/Bangkok')->toDateTimeString();
 
         // 1. Prevent duplicate scans by checking if a scan with the same device_id and scanned_at already exists
@@ -408,9 +409,9 @@ class DeviceApiController extends Controller
                     'scan_type' => $existing->scan_type,
                     'result' => $existing->result,
                     'value' => (float) $existing->value,
-                    'scanned_at' => \Carbon\Carbon::parse($existing->scanned_at->toDateTimeString(), 'Asia/Bangkok')->setTimezone('UTC')->format('Y-m-d\TH:i:s.000\Z'),
+                    'scanned_at' => Carbon::parse($existing->scanned_at->toDateTimeString(), 'Asia/Bangkok')->setTimezone('UTC')->format('Y-m-d\TH:i:s.000\Z'),
                     'image_url' => $existing->image_path ? Storage::disk('public')->url($existing->image_path) : null,
-                ]
+                ],
             ], 200);
         }
 
@@ -423,8 +424,8 @@ class DeviceApiController extends Controller
             }
             $decodedImage = base64_decode($data);
             if ($decodedImage) {
-                $dateFolder = \Carbon\Carbon::now()->format('Y-m-d');
-                $fileName = 'scans/anonymous/' . $dateFolder . '/' . uniqid() . '.jpg';
+                $dateFolder = Carbon::now()->format('Y-m-d');
+                $fileName = 'scans/anonymous/'.$dateFolder.'/'.uniqid().'.jpg';
                 Storage::disk('public')->put($fileName, $decodedImage);
                 $imagePath = $fileName;
             }
@@ -453,10 +454,9 @@ class DeviceApiController extends Controller
                 'scan_type' => $record->scan_type,
                 'result' => $record->result,
                 'value' => (float) $record->value,
-                'scanned_at' => \Carbon\Carbon::parse($record->scanned_at->toDateTimeString(), 'Asia/Bangkok')->setTimezone('UTC')->format('Y-m-d\TH:i:s.000\Z'),
+                'scanned_at' => Carbon::parse($record->scanned_at->toDateTimeString(), 'Asia/Bangkok')->setTimezone('UTC')->format('Y-m-d\TH:i:s.000\Z'),
                 'image_url' => $imagePath ? Storage::disk('public')->url($imagePath) : null,
-            ]
+            ],
         ], 201);
     }
 }
-

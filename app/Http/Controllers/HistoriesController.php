@@ -17,6 +17,7 @@ use App\Models\Employee;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Log;
+use App\Helpers\HashidsHelper;
 
 
 
@@ -28,7 +29,7 @@ class HistoriesController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:list histories', only: ['index']),
+            new Middleware('permission:list histories', only: ['index', 'show']),
         ];
     }
 
@@ -112,16 +113,28 @@ class HistoriesController extends Controller implements HasMiddleware
 
         $device = TestHistory::create($data);
 
-        return redirect()->route('histories.show', $device)
+        return redirect()->route('histories.show', HashidsHelper::encode($device->id))
             ->with('success', 'สร้างอุปกรณ์สำเร็จ');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): View
     {
-        //
+        $decryptedId = HashidsHelper::decode($id);
+        if ($decryptedId === null) {
+            abort(404, 'Invalid history record identifier.');
+        }
+
+        $history = TestHistory::with([
+            'employee.prefix',
+            'employee.department',
+            'employee.organization',
+            'employee.Branches'
+        ])->findOrFail($decryptedId);
+
+        return view('testhistorys.show', compact('history'));
     }
 
     /**

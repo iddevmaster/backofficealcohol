@@ -18,6 +18,7 @@ class OrgDevice extends Model
         'brn_id',
         'org_id',
         'note',
+        'public_pwd',
     ];
 
     /**

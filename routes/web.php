@@ -201,6 +201,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/users', UsersController::class);
     Route::resource('/admin/devices', DeviceController::class)->names('devices');
     Route::resource('/admin/org-devices', OrgDeviceController::class)->names('org-devices');
+    Route::put('/admin/org-devices/{org_device}/set-pwd', [OrgDeviceController::class, 'setPwd'])->name('org-devices.set-pwd');
 
     Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard')
         ->middleware('permission:list permissions');

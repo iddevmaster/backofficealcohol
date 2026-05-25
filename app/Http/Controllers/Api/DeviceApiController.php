@@ -74,7 +74,8 @@ class DeviceApiController extends Controller
                 'org_id' => $org->org_id,
                 'org_code' => $org->org_code,
                 'device_id' => $device->serial_num,
-                'status' => 'active'
+                'status' => 'active',
+                'public_pwd' => $orgDevice->public_pwd,
             ]
         ]);
     }

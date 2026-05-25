@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrgDevice;
-use App\Models\Organization;
-use App\Models\Branches;
 use App\Models\Device;
-use Illuminate\Http\Request;
+use App\Models\Organization;
+use App\Models\OrgDevice;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\View\View;
 
 class OrgDeviceController extends Controller implements HasMiddleware
 {
@@ -34,20 +33,20 @@ class OrgDeviceController extends Controller implements HasMiddleware
         $q = (string) $request->get('q', '');
 
         $devices = OrgDevice::with(['organization', 'branch'])
-            ->when(!$isAdmin, function ($qq) use ($user) {
+            ->when(! $isAdmin, function ($qq) use ($user) {
                 $qq->where('org_id', $user->org_id);
             })
             ->when($q, function ($query) use ($q) {
                 $query->where(function ($w) use ($q) {
                     $w->where('name', 'like', "%{$q}%")
-                      ->orWhere('serial_num', 'like', "%{$q}%")
-                      ->orWhere('note', 'like', "%{$q}%")
-                      ->orWhereHas('organization', function ($orgQuery) use ($q) {
-                          $orgQuery->where('name', 'like', "%{$q}%");
-                      })
-                      ->orWhereHas('branch', function ($brnQuery) use ($q) {
-                          $brnQuery->where('name', 'like', "%{$q}%");
-                      });
+                        ->orWhere('serial_num', 'like', "%{$q}%")
+                        ->orWhere('note', 'like', "%{$q}%")
+                        ->orWhereHas('organization', function ($orgQuery) use ($q) {
+                            $orgQuery->where('name', 'like', "%{$q}%");
+                        })
+                        ->orWhereHas('branch', function ($brnQuery) use ($q) {
+                            $brnQuery->where('name', 'like', "%{$q}%");
+                        });
                 });
             })
             ->orderByDesc('id')
@@ -97,7 +96,7 @@ class OrgDeviceController extends Controller implements HasMiddleware
         $user = auth()->user();
         $isAdmin = $user->hasRole(['super-admin', 'admin']);
 
-        if (!$isAdmin) {
+        if (! $isAdmin) {
             $data = $request->validate([
                 'name' => 'required|string|max:255',
                 'note' => 'nullable|string|max:255',
@@ -112,7 +111,7 @@ class OrgDeviceController extends Controller implements HasMiddleware
         } else {
             $data = $request->validate([
                 'name' => 'required|string|max:255',
-                'serial_num' => 'required|string|max:255|exists:devices,serial_num|unique:org_devices,serial_num,' . $orgDevice->id,
+                'serial_num' => 'required|string|max:255|exists:devices,serial_num|unique:org_devices,serial_num,'.$orgDevice->id,
                 'org_id' => 'required|exists:organizations,id',
                 'brn_id' => 'required|exists:branches,id',
                 'note' => 'nullable|string|max:255',
@@ -143,5 +142,28 @@ class OrgDeviceController extends Controller implements HasMiddleware
 
         return redirect()->route('org-devices.index')
             ->with('success', 'ลบอุปกรณ์ขององค์กรสำเร็จแล้ว');
+    }
+
+    /**
+     * Set the public password for the device.
+     */
+    public function setPwd(Request $request, OrgDevice $orgDevice): RedirectResponse
+    {
+        if (! auth()->user()->can('list org_devices')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $data = $request->validate([
+            'public_pwd' => 'nullable|string|regex:/^[0-9]{6}$/',
+        ], [
+            'public_pwd.regex' => 'รหัสผ่านต้องเป็นตัวเลขความยาว 6 หลักเท่านั้น',
+        ]);
+
+        $orgDevice->update([
+            'public_pwd' => $data['public_pwd'],
+        ]);
+
+        return redirect()->route('org-devices.index')
+            ->with('success', 'ตั้งค่ารหัสผ่านสาธารณะสำเร็จแล้ว');
     }
 }

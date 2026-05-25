@@ -151,13 +151,14 @@
 
                 <td class="px-4 py-3 text-center">
                   <div class="flex justify-center gap-2">
-                    <a href="{{ route('histories.edit', $row->id) }}"
-                      class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition"
-                      title="แก้ไข">
+                    <a href="{{ route('histories.show', \App\Helpers\HashidsHelper::encode($row->id)) }}"
+                      target="_blank" rel="noopener"
+                      class="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition"
+                      title="ใบเสร็จ / E-Receipt">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5M16.243 3.243a2.121 2.121 0 013 3L11.707 15.172a4 4 0 01-1.414.949l-3 .75 1.5-4.5a4 4 0 01.949-1.414l7.07-7.071z" />
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </a>
                     <form action="{{ route('histories.destroy', $row->id) }}" method="POST" class="inline">

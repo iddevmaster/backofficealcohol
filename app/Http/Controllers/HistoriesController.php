@@ -110,6 +110,12 @@ class HistoriesController extends Controller implements HasMiddleware
 
         $data['testing_date'] = Carbon::now();
 
+        if (!empty($data['device_sn'])) {
+            $orgDevice = \App\Models\OrgDevice::where('serial_num', $data['device_sn'])->first();
+            if ($orgDevice) {
+                $data['brn_id'] = $orgDevice->brn_id;
+            }
+        }
 
         $device = TestHistory::create($data);
 
@@ -131,7 +137,9 @@ class HistoriesController extends Controller implements HasMiddleware
             'employee.prefix',
             'employee.department',
             'employee.organization',
-            'employee.Branches'
+            'employee.Branches',
+            'branch',
+            'organization',
         ])->findOrFail($decryptedId);
 
         return view('testhistorys.show', compact('history'));

@@ -19,11 +19,22 @@ class TestHistory extends Model
         'testing_image',
         'testing_date',
         'org_id',
+        'brn_id',
     ];
 
 
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'tester_id', 'id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branches::class, 'brn_id', 'id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'org_id', 'id');
     }
 }

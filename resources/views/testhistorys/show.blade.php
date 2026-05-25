@@ -90,29 +90,52 @@
                 <div style="border-top:1.5px dashed #e2e8f0; margin-bottom:20px;"></div>
 
                 {{-- Employee --}}
-                <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px;">
-                    {{-- Avatar --}}
-                    @if ($employee && $employee->image)
-                        <img src="{{ asset('storage/' . $employee->image) }}" alt="photo"
-                            style="width:48px; height:48px; border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
-                    @else
-                        <div
-                            style="width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,#475569,#1e293b);
-                        display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:16px; flex-shrink:0;">
-                            {{ $employee ? mb_substr($employee->first_name, 0, 1, 'UTF-8') : '?' }}
-                        </div>
-                    @endif
+                <div
+                    style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:20px;">
+                    {{-- Left Column: Avatar & Basic Info --}}
+                    <div style="display:flex; align-items:center; gap:14px; flex:1; min-width:0;">
+                        {{-- Avatar --}}
+                        @if ($employee && $employee->image)
+                            <img src="{{ asset('storage/' . $employee->image) }}" alt="photo"
+                                style="width:48px; height:48px; border-radius:10px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
+                        @else
+                            <div
+                                style="width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,#475569,#1e293b);
+                            display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:16px; flex-shrink:0;">
+                                {{ $employee ? mb_substr($employee->first_name, 0, 1, 'UTF-8') : '?' }}
+                            </div>
+                        @endif
 
-                    <div>
-                        <div
-                            style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; margin-bottom:2px;">
-                            พนักงาน</div>
-                        <div style="font-size:14px; font-weight:700; color:#1e293b; line-height:1.3;">
-                            {{ $employee ? trim(($employee->prefix?->name ?? '') . ' ' . $employee->first_name . ' ' . $employee->last_name) : 'ไม่ทราบชื่อ' }}
+                        <div style="min-width:0;">
+                            <div
+                                style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; margin-bottom:2px;">
+                                พนักงาน</div>
+                            <div style="font-size:14px; font-weight:700; color:#1e293b; ">
+                                {{ $employee ? trim(($employee->prefix?->name ?? '') . ' ' . $employee->first_name . ' ' . $employee->last_name) : 'ไม่ทราบชื่อ' }}
+                            </div>
+                            <div
+                                style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#64748b; margin-top:2px;">
+                                {{ $empCode }}</div>
                         </div>
-                        <div
-                            style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#64748b; margin-top:2px;">
-                            {{ $empCode }}</div>
+                    </div>
+
+                    {{-- Right Column: Employee Org Info --}}
+                    <div
+                        style="flex-shrink:0; text-align:right; font-size:11px; color:#475569; line-height:1.5; max-width:180px;">
+                        @if ($employee)
+                            @if ($employee->department)
+                                <div><span style="color:#94a3b8; font-weight:600;">แผนก:</span>
+                                    {{ $employee->department->name }}</div>
+                            @endif
+                            @if ($employee->Branches)
+                                <div><span style="color:#94a3b8; font-weight:600;">สาขา:</span>
+                                    {{ $employee->Branches->name }}</div>
+                            @endif
+                            @if ($employee->organization)
+                                <div><span style="color:#94a3b8; font-weight:600;">องค์กร:</span>
+                                    {{ $employee->organization->name }}</div>
+                            @endif
+                        @endif
                     </div>
                 </div>
 
@@ -125,16 +148,9 @@
                             'mono' => true,
                         ],
                         ['label' => 'อุปกรณ์ SN', 'value' => $history->device_sn, 'mono' => true, 'badge' => true],
+                        ['label' => 'สาขา', 'value' => $history->branch->name ?? '-', 'mono' => false],
+                        ['label' => 'องค์กร', 'value' => $history->organization->name ?? '-', 'mono' => false],
                     ];
-                    if ($employee?->department) {
-                        $rows[] = ['label' => 'แผนก', 'value' => $employee->department->name, 'mono' => false];
-                    }
-                    if ($employee?->Branches) {
-                        $rows[] = ['label' => 'สาขา', 'value' => $employee->Branches->name, 'mono' => false];
-                    }
-                    if ($employee?->organization) {
-                        $rows[] = ['label' => 'องค์กร', 'value' => $employee->organization->name, 'mono' => false];
-                    }
                 @endphp
 
                 <div style="margin-bottom:20px;">

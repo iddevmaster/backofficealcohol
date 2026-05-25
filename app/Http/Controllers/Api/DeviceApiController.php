@@ -177,6 +177,9 @@ class DeviceApiController extends Controller
             ? $request->file('testing_image')->store('test-images', 'public')
             : null;
 
+        $orgDevice = OrgDevice::where('serial_num', $request->device_sn)->first();
+        $brnId = $orgDevice ? $orgDevice->brn_id : null;
+
         $testHistory = TestHistory::create([
             'tester_id' => $employee->id,
             'device_sn' => $request->device_sn,
@@ -184,6 +187,7 @@ class DeviceApiController extends Controller
             'testing_image' => $imagePath,
             'testing_date' => Carbon::parse($request->testing_date, 'UTC')->setTimezone('Asia/Bangkok')->toDateTimeString(),
             'org_id' => $request->org_id,
+            'brn_id' => $brnId,
         ]);
 
         return response()->json([
@@ -284,6 +288,9 @@ class DeviceApiController extends Controller
                 }
             }
 
+            $orgDevice = OrgDevice::where('serial_num', $request->device_id)->first();
+            $brnId = $orgDevice ? $orgDevice->brn_id : null;
+
             $record = TestHistory::create([
                 'tester_id' => $employee->id,
                 'device_sn' => $request->device_id,
@@ -292,6 +299,7 @@ class DeviceApiController extends Controller
                 'testing_image' => $imagePath,
                 'testing_date' => $scannedAt,
                 'org_id' => $org->id,
+                'brn_id' => $brnId,
             ]);
         } else {
             $existing = DeviceScan::where('employee_id', $employee->id)

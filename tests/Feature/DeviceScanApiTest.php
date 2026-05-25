@@ -211,3 +211,37 @@ it('returns existing record and does not duplicate when posting same fingerprint
     // Ensure only 1 record is in database
     expect(\App\Models\DeviceScan::count())->toBe(1);
 });
+
+it('stores brn_id in test history by finding from org_device', function () {
+    $branch = \App\Models\Branches::create([
+        'brn_id' => 'BRN-123',
+        'name' => 'Test Branch',
+        'address' => '123 Street',
+        'tambon_id' => 1,
+        'amphur_id' => 1,
+        'province_id' => 1,
+        'org_id' => (string) $this->org->id,
+    ]);
+
+    \App\Models\OrgDevice::create([
+        'name' => 'Test Device',
+        'serial_num' => 'DEV-SPECIFIC-SN',
+        'brn_id' => $branch->id,
+        'org_id' => $this->org->id,
+    ]);
+
+    $response = $this->postJson("/api/device/scans/{$this->org->org_id}", [
+        'device_id' => 'DEV-SPECIFIC-SN',
+        'employee_id' => (string) $this->employee->id,
+        'scan_type' => 'alcohol',
+        'result' => 'pass',
+        'value' => 0.02,
+        'scanned_at' => now()->toIso8601String(),
+    ]);
+
+    $response->assertStatus(201);
+
+    $record = \App\Models\TestHistory::where('device_sn', 'DEV-SPECIFIC-SN')->first();
+    expect($record)->not->toBeNull();
+    expect($record->brn_id)->toBe($branch->id);
+});

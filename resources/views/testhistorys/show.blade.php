@@ -17,6 +17,54 @@
         .mono {
             font-family: 'IBM Plex Mono', monospace;
         }
+
+        .receipt-card {
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .receipt-body {
+            padding: 28px 32px 24px;
+        }
+
+        .employee-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive styles (disabled during capturing/downloading to preserve perfect desktop styling) */
+        @media (max-width: 480px) {
+            #receipt-container:not(.capturing) .receipt-body {
+                padding: 20px 16px 16px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            #receipt-container:not(.capturing) .employee-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            #receipt-container:not(.capturing) .employee-info-right {
+                text-align: left !important;
+                max-width: none;
+                border-top: 1px dashed #e2e8f0;
+                padding-top: 10px;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 375px) {
+            #receipt-container:not(.capturing) .result-block {
+                padding: 12px 12px;
+                gap: 8px;
+            }
+        }
     </style>
 </head>
 
@@ -41,34 +89,35 @@
     @endphp
 
     {{-- Web Title & Icon (No bar) --}}
-    <div class="mb-6">
-        <div class="flex items-center justify-center gap-2.5 mb-4">
-            <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-200">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+    <div class="mb-6 text-center px-4">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 mb-3">
+            <div
+                class="w-8 h-8 sm:w-9 sm:h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-200">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
             </div>
-            <span class="text-2xl font-extrabold text-slate-800 tracking-wider">ALT Alcohol Tester System</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-slate-800 tracking-wider">ALT Alcohol Tester
+                System</span>
         </div>
-        <div class="text-xl font-extrabold text-slate-800 tracking-wider text-center">
-            ใบรับรองการตรวจวัดแอลกอฮอล์ (Test Receipt)
+        <div class="text-base sm:text-xl font-extrabold text-slate-800 tracking-wider text-center">
+            ใบรับรองการตรวจวัดแอลกอฮอล์ <br> (Test Receipt)
         </div>
     </div>
 
     {{-- ===== RECEIPT CARD (capture target) ===== --}}
-    <div id="receipt-container" style="padding: 5px;">
-        <div id="receipt-card"
-            style="width:440px; background:#fff; border-radius:16px; overflow:hidden;
-                border:1px solid #5f5f5f;">
+    <div id="receipt-container" class="w-full max-w-[450px]" style="padding: 5px; box-sizing: border-box;">
+        <div id="receipt-card" class="receipt-card"
+            style="background:#fff; border-radius:16px; overflow:hidden; border:1px solid #5f5f5f; box-sizing: border-box;">
 
             {{-- Top color stripe --}}
             <div
                 style="height:6px; background:{{ $isPass ? 'linear-gradient(90deg,#34d399,#14b8a6)' : 'linear-gradient(90deg,#fb7185,#ef4444)' }};">
             </div>
 
-            <div style="padding:28px 32px 24px;">
+            <div class="receipt-body">
 
                 {{-- Header --}}
                 <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px;">
@@ -90,8 +139,7 @@
                 <div style="border-top:1.5px dashed #e2e8f0; margin-bottom:20px;"></div>
 
                 {{-- Employee --}}
-                <div
-                    style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:20px;">
+                <div class="employee-section">
                     {{-- Left Column: Avatar & Basic Info --}}
                     <div style="display:flex; align-items:center; gap:14px; flex:1; min-width:0;">
                         {{-- Avatar --}}
@@ -120,8 +168,8 @@
                     </div>
 
                     {{-- Right Column: Employee Org Info --}}
-                    <div
-                        style="flex-shrink:0; text-align:right; font-size:11px; color:#475569; line-height:1.5; max-width:180px;">
+                    <div class="employee-info-right"
+                        style="flex-shrink:0; text-align:right; font-size:11px; color:#475569; line-height:1.5; max-width:180px; box-sizing: border-box;">
                         @if ($employee)
                             @if ($employee->department)
                                 <div><span style="color:#94a3b8; font-weight:600;">แผนก:</span>
@@ -173,9 +221,9 @@
                 <div style="border-top:1.5px dashed #e2e8f0; margin-bottom:20px;"></div>
 
                 {{-- Result block --}}
-                <div
+                <div class="result-block"
                     style="display:flex; align-items:center; justify-content:space-between;
-                    background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px 20px; margin-bottom:20px;">
+                    background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px 20px; margin-bottom:20px; box-sizing: border-box;">
                     <div>
                         <div
                             style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px;">
@@ -197,7 +245,7 @@
                     <div
                         style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
                       background:{{ $isPass ? '#ecfdf5' : '#fff1f2' }}; border:1.5px solid {{ $isPass ? '#a7f3d0' : '#fecdd3' }};
-                      border-radius:12px; padding:14px 18px; color:{{ $passColor }};">
+                      border-radius:12px; padding:14px 18px; color:{{ $passColor }}; flex-shrink:0;">
                         <span style="font-size:22px; line-height:1;">{{ $passSymbol }}</span>
                         <span style="font-size:11px; font-weight:800; letter-spacing:.04em;">{{ $passLabel }}</span>
                     </div>
@@ -231,9 +279,9 @@
     {{-- ===== END RECEIPT CARD ===== --}}
 
     {{-- Tool bar (outside capture zone) --}}
-    <div class="w-full max-w-sm mt-6 flex items-center justify-center">
+    <div class="w-full max-w-[440px] mt-6 flex items-center justify-center px-4 box-sizing: border-box;">
         <button id="btn-download" onclick="downloadReceipt()"
-            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow transition cursor-pointer">
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow transition cursor-pointer">
             ⬇ ดาวน์โหลด PNG
         </button>
     </div>
@@ -253,10 +301,21 @@
                 allowTaint: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                width: el.offsetWidth,
-                height: el.offsetHeight,
                 scrollX: 0,
-                scrollY: 0
+                scrollY: 0,
+                onclone: (clonedDoc) => {
+                    const clonedContainer = clonedDoc.getElementById('receipt-container');
+                    const clonedCard = clonedDoc.getElementById('receipt-card');
+                    if (clonedContainer) {
+                        clonedContainer.classList.add('capturing');
+                        clonedContainer.style.width = '450px';
+                        clonedContainer.style.maxWidth = 'none';
+                    }
+                    if (clonedCard) {
+                        clonedCard.style.width = '440px';
+                        clonedCard.style.maxWidth = 'none';
+                    }
+                }
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL('image/png');

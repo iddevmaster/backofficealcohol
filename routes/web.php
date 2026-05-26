@@ -1,48 +1,47 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchesController;
 use App\Http\Controllers\BranchesUserController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DepartmentUserController;
 use App\Http\Controllers\DeviceController;
-use App\Http\Controllers\OrgDeviceController;
-use App\Http\Controllers\TambonController;
+use App\Http\Controllers\DeviceScanController;
+use App\Http\Controllers\DeviceslogController;
+use App\Http\Controllers\EmployeesController;
+use App\Http\Controllers\FingerController;
+use App\Http\Controllers\HistoriesController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationUserController;
+use App\Http\Controllers\OrgDeviceController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrefixesController;
 use App\Http\Controllers\PrefixesUserController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\UsersByUsersController;
-use App\Http\Controllers\EmployeesController;
-use App\Http\Controllers\DeviceslogController;
-use App\Http\Controllers\HistoriesController;
-use App\Http\Controllers\FingerController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\DeviceScanController;
+use App\Http\Controllers\UsersController;
 use App\Models\Branches;
 use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Route;
+
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
-
 Route::get('/', [AuthController::class, 'login']);
 
-///อ่านลายนิ้วมือ
+// /อ่านลายนิ้วมือ
 Route::get('/scan-proxy', function () {
     // Laravel เป็นคนไปคุยกับเครื่องสแกนให้ (Server-to-Server ไม่ติด CORS)
     $response = Http::get('http://127.0.0.1:18081/read');
+
     return $response->json();
 });
 Route::get('/report/alcohol/export', [ReportController::class, 'export'])
@@ -52,129 +51,124 @@ Route::get('/report/alcohol/pdf', [ReportController::class, 'exportPdf'])
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::get('/test-receipt/{id}', [HistoriesController::class, 'receipt'])->name('test.receipt');
 
+Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
     // Department แยก route
-    Route::get('/departments', [DepartmentUserController::class,'index'])
-    ->middleware(['auth','permission:list departments'])
-    ->name('departmentsUser.index');
-    Route::get('/departments/create', [DepartmentUserController::class,'create'])
-    ->middleware(['auth','permission:create departments'])
-    ->name('departmentsUser.create');
+    Route::get('/departments', [DepartmentUserController::class, 'index'])
+        ->middleware(['auth', 'permission:list departments'])
+        ->name('departmentsUser.index');
+    Route::get('/departments/create', [DepartmentUserController::class, 'create'])
+        ->middleware(['auth', 'permission:create departments'])
+        ->name('departmentsUser.create');
 
-    Route::POST('/departments', [DepartmentUserController::class,'store'])
-    ->middleware(['auth','permission:store departments'])
-    ->name('departmentsUser.store');
+    Route::POST('/departments', [DepartmentUserController::class, 'store'])
+        ->middleware(['auth', 'permission:store departments'])
+        ->name('departmentsUser.store');
 
-    Route::get('/departments/show', [DepartmentUserController::class,'show'])
-    ->middleware(['auth','permission:show departments'])
-    ->name('departmentsUser.show');
+    Route::get('/departments/show', [DepartmentUserController::class, 'show'])
+        ->middleware(['auth', 'permission:show departments'])
+        ->name('departmentsUser.show');
 
-   Route::get('/departments/{department}/edit', [DepartmentUserController::class,'edit'])
-    ->middleware(['auth','permission:edit departments'])
-    ->name('departmentsUser.edit');
+    Route::get('/departments/{department}/edit', [DepartmentUserController::class, 'edit'])
+        ->middleware(['auth', 'permission:edit departments'])
+        ->name('departmentsUser.edit');
 
-   Route::put('departments/{department}', [DepartmentUserController::class, 'update'])
-    ->middleware(['auth','permission:update departments'])
-    ->name('departmentsUser.update');
+    Route::put('departments/{department}', [DepartmentUserController::class, 'update'])
+        ->middleware(['auth', 'permission:update departments'])
+        ->name('departmentsUser.update');
 
-    Route::DELETE('/departments/{id}', [DepartmentUserController::class,'destroy'])
-    ->middleware(['auth','permission:destroy departments'])
-    ->name('departmentsUser.destroy');
+    Route::DELETE('/departments/{id}', [DepartmentUserController::class, 'destroy'])
+        ->middleware(['auth', 'permission:destroy departments'])
+        ->name('departmentsUser.destroy');
 
-// Branches แยก route
-    Route::get('/branches', [BranchesUserController::class,'index'])
-    ->middleware(['auth','permission:list branches'])
-    ->name('branchesUser.index');
-    Route::get('/branches/create', [BranchesUserController::class,'create'])
-    ->middleware(['auth','permission:create branches'])
-    ->name('branchesUser.create');
+    // Branches แยก route
+    Route::get('/branches', [BranchesUserController::class, 'index'])
+        ->middleware(['auth', 'permission:list branches'])
+        ->name('branchesUser.index');
+    Route::get('/branches/create', [BranchesUserController::class, 'create'])
+        ->middleware(['auth', 'permission:create branches'])
+        ->name('branchesUser.create');
 
-    Route::POST('/branches', [BranchesUserController::class,'store'])
-    ->middleware(['auth','permission:store branches'])
-    ->name('branchesUser.store');
+    Route::POST('/branches', [BranchesUserController::class, 'store'])
+        ->middleware(['auth', 'permission:store branches'])
+        ->name('branchesUser.store');
 
-    Route::get('/branches/show', [BranchesUserController::class,'show'])
-    ->middleware(['auth','permission:show branches'])
-    ->name('branchesUser.show');
+    Route::get('/branches/show', [BranchesUserController::class, 'show'])
+        ->middleware(['auth', 'permission:show branches'])
+        ->name('branchesUser.show');
 
-   Route::get('/branches/{branch}/edit', [BranchesUserController::class,'edit'])
-    ->middleware(['auth','permission:edit branches'])
-    ->name('branchesUser.edit');
+    Route::get('/branches/{branch}/edit', [BranchesUserController::class, 'edit'])
+        ->middleware(['auth', 'permission:edit branches'])
+        ->name('branchesUser.edit');
 
-   Route::put('branches/{department}', [BranchesUserController::class, 'update'])
-    ->middleware(['auth','permission:update branches'])
-    ->name('branchesUser.update');
+    Route::put('branches/{department}', [BranchesUserController::class, 'update'])
+        ->middleware(['auth', 'permission:update branches'])
+        ->name('branchesUser.update');
 
-    Route::DELETE('/branches/{id}', [BranchesUserController::class,'destroy'])
-    ->middleware(['auth','permission:destroy branches'])
-    ->name('branchesUser.destroy');
-
+    Route::DELETE('/branches/{id}', [BranchesUserController::class, 'destroy'])
+        ->middleware(['auth', 'permission:destroy branches'])
+        ->name('branchesUser.destroy');
 
     //   Route::resource('/roles', RoleUserController::class)->names('roles');
 
+    Route::get('/roles', [RoleUserController::class, 'index'])
+        ->middleware(['auth', 'permission:list roles'])
+        ->name('rolesUser.index');
+    Route::get('/roles/create', [RoleUserController::class, 'create'])
+        ->name('rolesUser.create');
 
+    Route::POST('/roles', [RoleUserController::class, 'store'])
+        ->middleware(['auth', 'permission:store roles'])
+        ->name('rolesUser.store');
 
-    Route::get('/roles', [RoleUserController::class,'index'])
-    ->middleware(['auth','permission:list roles'])
-    ->name('rolesUser.index');
-    Route::get('/roles/create', [RoleUserController::class,'create'])
-    ->name('rolesUser.create');
+    Route::get('/roles/show/{role}', [RoleUserController::class, 'show'])
+        ->middleware(['auth', 'permission:show roles'])
+        ->name('rolesUser.show');
 
-    Route::POST('/roles', [RoleUserController::class,'store'])
-    ->middleware(['auth','permission:store roles'])
-    ->name('rolesUser.store');
+    Route::get('/roles/{role}/edit', [RoleUserController::class, 'edit'])
+        ->middleware(['auth', 'permission:edit roles'])
+        ->name('rolesUser.edit');
 
-    Route::get('/roles/show/{role}', [RoleUserController::class,'show'])
-    ->middleware(['auth','permission:show roles'])
-    ->name('rolesUser.show');
+    Route::put('roles/{role}', [RoleUserController::class, 'update'])
+        ->middleware(['auth', 'permission:update roles'])
+        ->name('rolesUser.update');
 
-   Route::get('/roles/{role}/edit', [RoleUserController::class,'edit'])
-    ->middleware(['auth','permission:edit roles'])
-    ->name('rolesUser.edit');
+    Route::DELETE('/roles/{id}', [RoleUserController::class, 'destroy'])
+        ->middleware(['auth', 'permission:delete roles'])
+        ->name('rolesUser.destroy');
 
-   Route::put('roles/{role}', [RoleUserController::class, 'update'])
-    ->middleware(['auth','permission:update roles'])
-    ->name('rolesUser.update');
+    Route::get('/usersUser', [UsersByUsersController::class, 'index'])
+        ->middleware(['auth', 'permission:list users'])
+        ->name('usersUser.index');
+    Route::get('/usersUser/create', [UsersByUsersController::class, 'create'])
+        ->middleware(['auth', 'permission:create users'])
+        ->name('usersUser.create');
 
-    Route::DELETE('/roles/{id}', [RoleUserController::class,'destroy'])
-    ->middleware(['auth','permission:delete roles'])
-    ->name('rolesUser.destroy');
+    Route::POST('/usersUser', [UsersByUsersController::class, 'store'])
+        ->middleware(['auth', 'permission:store users'])
+        ->name('usersUser.store');
 
+    Route::get('/usersUser/show', [UsersByUsersController::class, 'show'])
+        ->middleware(['auth', 'permission:show users'])
+        ->name('usersUser.show');
 
+    Route::get('/usersUser/{user}/edit', [UsersByUsersController::class, 'edit'])
+        ->middleware(['auth', 'permission:edit users'])
+        ->name('usersUser.edit');
 
-        Route::get('/usersUser', [UsersByUsersController::class,'index'])
-    ->middleware(['auth','permission:list users'])
-    ->name('usersUser.index');
-    Route::get('/usersUser/create', [UsersByUsersController::class,'create'])
-    ->middleware(['auth','permission:create users'])
-    ->name('usersUser.create');
+    Route::put('usersUser/{user}', [UsersByUsersController::class, 'update'])
+        ->middleware(['auth', 'permission:update users'])
+        ->name('usersUser.update');
 
-    Route::POST('/usersUser', [UsersByUsersController::class,'store'])
-    ->middleware(['auth','permission:store users'])
-    ->name('usersUser.store');
-
-    Route::get('/usersUser/show', [UsersByUsersController::class,'show'])
-    ->middleware(['auth','permission:show users'])
-    ->name('usersUser.show');
-
-   Route::get('/usersUser/{user}/edit', [UsersByUsersController::class,'edit'])
-    ->middleware(['auth','permission:edit users'])
-    ->name('usersUser.edit');
-
-   Route::put('usersUser/{user}', [UsersByUsersController::class, 'update'])
-    ->middleware(['auth','permission:update users'])
-    ->name('usersUser.update');
-
-    Route::DELETE('/usersUser/{id}', [UsersByUsersController::class,'destroy'])
-    ->middleware(['auth','permission:delete users'])
-    ->name('usersUser.destroy');
+    Route::DELETE('/usersUser/{id}', [UsersByUsersController::class, 'destroy'])
+        ->middleware(['auth', 'permission:delete users'])
+        ->name('usersUser.destroy');
 
     // Route::resource('/branches', BranchesUserController::class);
     // Route::resource('/organizations', OrganizationUserController::class);
@@ -182,19 +176,14 @@ Route::middleware('auth')->group(function () {
 
 });
 
-
-
 Route::get('/locations/amphurs/{province}', [LocationController::class, 'amphurs']);
-Route::get('/locations/tambons/{amphur}',   [LocationController::class, 'tambons']);
-
-
+Route::get('/locations/tambons/{amphur}', [LocationController::class, 'tambons']);
 
 Route::middleware('auth')->group(function () {
 
-       Route::resource('/admin/departments', DepartmentController::class);
+    Route::resource('/admin/departments', DepartmentController::class);
 
-
-            Route::resource('/admin/branches', BranchesController::class);
+    Route::resource('/admin/branches', BranchesController::class);
     Route::resource('/admin/organizations', OrganizationController::class);
     Route::resource('/admin/prefixes', PrefixesController::class);
 
@@ -203,9 +192,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/org-devices', OrgDeviceController::class)->names('org-devices');
     Route::put('/admin/org-devices/{org_device}/set-pwd', [OrgDeviceController::class, 'setPwd'])->name('org-devices.set-pwd');
 
-    Route::get('/admin/access', [RoleController::class,'dashboard'])->name('access.dashboard')
+    Route::get('/admin/access', [RoleController::class, 'dashboard'])->name('access.dashboard')
         ->middleware('permission:list permissions');
-    Route::get('/admin/report', [ReportController::class,'report'])->name('report.report')
+    Route::get('/admin/report', [ReportController::class, 'report'])->name('report.report')
         ->middleware('permission:access reports');
     Route::resource('/admin/roles', RoleController::class)->names('admin.roles');
     Route::resource('/admin/permissions', PermissionController::class);
@@ -216,26 +205,18 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/device-scans', DeviceScanController::class);
     Route::resource('/admin/finger', FingerController::class);
 
+    Route::get('/api/orgs/{org}/branches', fn ($org) => Branches::where('org_id', $org)->orderBy('name')->get(['id', 'name'])
+    )->middleware(['web', 'auth'])->name('api.org.branches');
 
-Route::get('/api/orgs/{org}/branches', fn($org) =>
-    Branches::where('org_id',$org)->orderBy('name')->get(['id','name'])
-)->middleware(['web','auth'])->name('api.org.branches');
+    Route::get('/api/branches/{brn}/departments', function ($brn) {
+        // กรองให้ชัด: dept ต้องอยู่ใต้ branch นี้
+        return Department::where('brn_id', $brn)->orderBy('name')->get(['id', 'name']);
+    })->middleware(['web', 'auth'])->name('api.branch.departments');
 
-Route::get('/api/branches/{brn}/departments', function ($brn) {
-    // กรองให้ชัด: dept ต้องอยู่ใต้ branch นี้
-    return Department::where('brn_id',$brn)->orderBy('name')->get(['id','name']);
-})->middleware(['web','auth'])->name('api.branch.departments');
-
-
- //
-Route::get('/api/orgs/{org}/employee', fn($org) =>
-    Employee::where('org_id',$org)->orderBy('first_name')->get(['id','first_name','last_name'])
-)->middleware(['web','auth'])->name('api.org.employee');
-
-
+    //
+    Route::get('/api/orgs/{org}/employee', fn ($org) => Employee::where('org_id', $org)->orderBy('first_name')->get(['id', 'first_name', 'last_name'])
+    )->middleware(['web', 'auth'])->name('api.org.employee');
 
 });
-
-
 
 require __DIR__.'/auth.php';

@@ -182,10 +182,17 @@
                             ระดับแอลกอฮอล์</div>
                         <div
                             style="font-family:'IBM Plex Mono',monospace; font-size:32px; font-weight:800; color:{{ $passColor }}; line-height:1;">
-                            {{ number_format($history->alcohol_level, 2) }}<span
-                                style="font-size:14px; color:#94a3b8; font-weight:600; margin-left:4px;">mg/L</span>
+                            @if ($history->alcohol_level > 0)
+                                {{ number_format($history->alcohol_level * 1000, 2) }}<span
+                                    style="font-size:14px; color:#94a3b8; font-weight:600; margin-left:4px;">mg%</span>
+                            @elseif ($history->alcohol_level == 0)
+                                0<span
+                                    style="font-size:14px; color:#94a3b8; font-weight:600; margin-left:4px;">mg%</span>
+                            @else
+                                ERROR
+                            @endif
                         </div>
-                        <div style="font-size:10px; color:#94a3b8; margin-top:6px;">เกณฑ์มาตรฐาน: ≤ 0.00 mg/L</div>
+                        <div style="font-size:10px; color:#94a3b8; margin-top:6px;">เกณฑ์มาตรฐาน: ≤ 0 mg%</div>
                     </div>
                     <div
                         style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;

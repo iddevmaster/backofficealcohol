@@ -74,6 +74,8 @@ class DeviceApiController extends Controller
             'data' => [
                 'org_id' => $org->org_id,
                 'org_code' => $org->org_code,
+                'org_name' => $org->name,
+                'branch_name' => $orgDevice->branch ? $orgDevice->branch->name : null,
                 'device_id' => $device->serial_num,
                 'status' => 'active',
                 'public_pwd' => $orgDevice->public_pwd,

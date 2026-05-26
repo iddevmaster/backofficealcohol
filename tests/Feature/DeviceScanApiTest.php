@@ -156,6 +156,9 @@ it('returns existing record and does not duplicate when posting same alcohol sca
     $response1->assertStatus(201);
     $id1 = $response1->json('id');
 
+    $record = \App\Models\TestHistory::first();
+    expect($id1)->toBe(\App\Helpers\HashidsHelper::encode($record->id));
+
     // 2nd request (duplicate)
     $response2 = $this->postJson("/api/device/scans/{$this->org->org_id}", [
         'device_id' => 'DEV123',
@@ -191,6 +194,9 @@ it('returns existing record and does not duplicate when posting same fingerprint
 
     $response1->assertStatus(201);
     $id1 = $response1->json('id');
+
+    $record = \App\Models\DeviceScan::first();
+    expect($id1)->toBe(\App\Helpers\HashidsHelper::encode($record->id));
 
     // 2nd request (duplicate)
     $response2 = $this->postJson("/api/device/scans/{$this->org->org_id}", [

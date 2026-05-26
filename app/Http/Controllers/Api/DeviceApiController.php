@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\HashidsHelper;
 
 class DeviceApiController extends Controller
 {
@@ -266,7 +267,7 @@ class DeviceApiController extends Controller
                     'success' => true,
                     'message' => 'Scan result recorded',
                     'testing_image' => $existing->testing_image,
-                    'id' => $existing->id,
+                    'id' => HashidsHelper::encode($existing->id),
                 ], 200);
             }
             $fileInput = $request->file('image') ?? $request->file('testing_image');
@@ -312,7 +313,7 @@ class DeviceApiController extends Controller
                     'success' => true,
                     'message' => 'Scan result recorded',
                     'testing_image' => null,
-                    'id' => $existing->id,
+                    'id' => HashidsHelper::encode($existing->id),
                 ], 200);
             }
 
@@ -329,7 +330,7 @@ class DeviceApiController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Scan result recorded',
-            'id' => $record->id,
+            'id' => HashidsHelper::encode($record->id),
         ], 201);
     }
 

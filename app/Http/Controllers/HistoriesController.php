@@ -146,6 +146,28 @@ class HistoriesController extends Controller implements HasMiddleware
     }
 
     /**
+     * Display the receipt page for a history record (route: history/receipt/{id}).
+     */
+    public function receipt(string $id): View
+    {
+        $decryptedId = HashidsHelper::decode($id);
+        if ($decryptedId === null) {
+            abort(404, 'Invalid history record identifier.');
+        }
+
+        $history = TestHistory::with([
+            'employee.prefix',
+            'employee.department',
+            'employee.organization',
+            'employee.Branches',
+            'branch',
+            'organization',
+        ])->findOrFail($decryptedId);
+
+        return view('testhistorys.show', compact('history'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)

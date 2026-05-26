@@ -212,6 +212,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/employees', EmployeesController::class);
     Route::resource('/admin/deviceslog', DeviceslogController::class);
     Route::resource('/admin/histories', HistoriesController::class);
+    Route::get('/history/receipt/{id}', [HistoriesController::class, 'receipt'])->name('history.receipt');
     Route::resource('/admin/device-scans', DeviceScanController::class);
     Route::resource('/admin/finger', FingerController::class);
 

@@ -151,7 +151,7 @@
 
                 <td class="px-4 py-3 text-center">
                   <div class="flex justify-center gap-2">
-                    <a href="{{ route('histories.show', \App\Helpers\HashidsHelper::encode($row->id)) }}"
+                    <a href="{{ route('history.receipt', \App\Helpers\HashidsHelper::encode($row->id)) }}"
                       target="_blank" rel="noopener"
                       class="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition"
                       title="ใบเสร็จ / E-Receipt">

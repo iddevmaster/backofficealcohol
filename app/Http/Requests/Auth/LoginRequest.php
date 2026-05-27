@@ -41,6 +41,14 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        $user = \App\Models\User::where('username', $this->input('username'))->first();
+
+        if ($user && $user->status == 0) {
+            throw ValidationException::withMessages([
+                'username' => 'บัญชีผู้ใช้นี้ถูกระงับการใช้งาน หรือยังไม่ได้รับอนุญาตให้เข้าสู่ระบบ',
+            ]);
+        }
+
         if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 

@@ -189,6 +189,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/prefixes', PrefixesController::class);
 
     Route::resource('/admin/users', UsersController::class);
+    Route::patch('/admin/users/{user}/toggle-status', [UsersController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::resource('/admin/devices', DeviceController::class)->names('devices');
     Route::resource('/admin/org-devices', OrgDeviceController::class)->names('org-devices');
     Route::put('/admin/org-devices/{org_device}/set-pwd', [OrgDeviceController::class, 'setPwd'])->name('org-devices.set-pwd');

@@ -56,7 +56,7 @@ $users = User::query()
     public function store(UserRequest $request)
     {
         $data = $request->validated();
-        $data['status'] = $request->boolean('status');
+        $data['status'] = 1;
 
         User::create($data);
 

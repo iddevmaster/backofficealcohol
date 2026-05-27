@@ -22,7 +22,7 @@ class UsersController extends Controller implements HasMiddleware
             new Middleware('permission:create users', only: ['create']),
             new Middleware('permission:store users', only: ['store']),
             new Middleware('permission:edit users', only: ['edit']),
-            new Middleware('permission:update users', only: ['update']),
+            new Middleware('permission:update users', only: ['update', 'toggleStatus']),
             new Middleware('permission:show users', only: ['show']),
             new Middleware('permission:delete users', only: ['destroy']),
         ];
@@ -82,7 +82,7 @@ class UsersController extends Controller implements HasMiddleware
     public function store(UserRequest $request)
     {
         $data = $request->validated();
-        $data['status'] = $request->boolean('status');
+        $data['status'] = 1;
 
         $newuser = User::create($data);
 
@@ -132,5 +132,16 @@ class UsersController extends Controller implements HasMiddleware
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'ลบผู้ใช้สำเร็จ');
+    }
+
+    /**
+     * Toggle the user's active status.
+     */
+    public function toggleStatus(User $user)
+    {
+        $user->status = !$user->status;
+        $user->save();
+
+        return redirect()->back()->with('success', 'เปลี่ยนสถานะผู้ใช้สำเร็จ');
     }
 }

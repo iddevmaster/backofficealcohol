@@ -49,6 +49,12 @@
             </td>
             <td class="px-4 py-2">{{ $u->updated_at->format('Y-m-d H:i') }}</td>
             <td class="px-4 py-2 text-right">
+              <form action="{{ route('users.toggle-status', $u) }}" method="post" class="inline">
+                @csrf @method('PATCH')
+                <button type="submit" class="inline-flex rounded-md px-3 py-1.5 text-white {{ $u->status ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700' }}">
+                  {{ $u->status ? 'ปิดใช้งาน' : 'เปิดใช้งาน' }}
+                </button>
+              </form>
               <a href="{{ route('users.show', $u) }}" class="inline-flex rounded-md border px-3 py-1.5 hover:bg-gray-50">ดู</a>
               <a href="{{ route('users.edit', $u) }}" class="inline-flex rounded-md border px-3 py-1.5 hover:bg-gray-50">แก้ไข</a>
               <form action="{{ route('users.destroy', $u) }}" method="post" class="inline" onsubmit="return confirm('ลบรายการนี้หรือไม่?');">

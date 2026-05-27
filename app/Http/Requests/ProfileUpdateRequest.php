@@ -16,15 +16,30 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
+            'username'   => [
                 'required',
                 'string',
-                'lowercase',
-                'email',
-                'max:255',
+                'max:100',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'prefix_id'  => ['required', 'exists:prefixes,id'],
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name'  => ['required', 'string', 'max:100'],
+            'phone'      => ['nullable', 'string', 'max:30'],
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     */
+    public function attributes(): array
+    {
+        return [
+            'username'   => 'ชื่อผู้ใช้',
+            'prefix_id'  => 'คำนำหน้า',
+            'first_name' => 'ชื่อจริง',
+            'last_name'  => 'นามสกุล',
+            'phone'      => 'เบอร์โทรศัพท์',
         ];
     }
 }

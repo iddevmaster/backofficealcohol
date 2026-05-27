@@ -41,24 +41,12 @@
     <!-- JavaScript -->
     <script>
 
-    // Check authentication
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-    if (!currentUser) {
-        // window.location.href = 'login.html';
-    } else {
-        // Update user info in header
-        document.getElementById('userName').textContent = currentUser.name;
-        document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Administrator' : 
-                                                        currentUser.role === 'manager' ? 'Manager' : 'User';
-    }
-
     // DOM Elements
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
     const userMenuButton = document.getElementById('userMenuButton');
     const userDropdown = document.getElementById('userDropdown');
-    const logoutButton = document.getElementById('logoutButton');
 
     // Sidebar Toggle (Mobile)
     sidebarToggle.addEventListener('click', function() {
@@ -85,11 +73,6 @@
         }
     });
 
-    // Logout functionality
-    logoutButton.addEventListener('click', function() {
-        localStorage.removeItem('currentUser');
-        window.location.href = 'login.html';
-    });
 
     // Close sidebar on window resize (desktop)
     window.addEventListener('resize', function() {

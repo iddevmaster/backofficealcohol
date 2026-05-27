@@ -29,6 +29,6 @@ class AnonymousTest extends Model
 
     public function device()
     {
-        return $this->belongsTo(Device::class, 'device_id', 'id');
+        return $this->belongsTo(Device::class, 'device_id', 'serial_num');
     }
 }

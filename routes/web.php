@@ -12,6 +12,7 @@ use App\Http\Controllers\DeviceslogController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\FingerController;
 use App\Http\Controllers\HistoriesController;
+use App\Http\Controllers\AnonymousTestController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationUserController;
@@ -202,6 +203,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/deviceslog', DeviceslogController::class);
     Route::resource('/admin/histories', HistoriesController::class);
     Route::get('/history/receipt/{id}', [HistoriesController::class, 'receipt'])->name('history.receipt');
+    Route::resource('/admin/anonymous-tests', AnonymousTestController::class)->names('anonymous-tests');
+    Route::get('/anonymous-test/receipt/{id}', [AnonymousTestController::class, 'receipt'])->name('anonymous-test.receipt');
     Route::resource('/admin/device-scans', DeviceScanController::class);
     Route::resource('/admin/finger', FingerController::class);
 

@@ -57,6 +57,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'reports' => ['access'],
             'histories' => ['list'],
             'finger' => ['list'],
+            'anonymous-tests' => ['list'],
         ];
 
 

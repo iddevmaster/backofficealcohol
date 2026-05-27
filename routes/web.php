@@ -196,18 +196,18 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/access', [RoleController::class, 'dashboard'])->name('access.dashboard')
         ->middleware('permission:list permissions');
-    Route::get('/admin/report', [ReportController::class, 'report'])->name('report.report')
+    Route::get('/report', [ReportController::class, 'report'])->name('report.report')
         ->middleware('permission:access reports');
     Route::resource('/admin/roles', RoleController::class)->names('admin.roles');
     Route::resource('/admin/permissions', PermissionController::class);
-    Route::resource('/admin/employees', EmployeesController::class);
+    Route::resource('/employees', EmployeesController::class);
     Route::resource('/admin/deviceslog', DeviceslogController::class);
-    Route::resource('/admin/histories', HistoriesController::class);
+    Route::resource('/histories', HistoriesController::class);
     Route::get('/history/receipt/{id}', [HistoriesController::class, 'receipt'])->name('history.receipt');
-    Route::resource('/admin/anonymous-tests', AnonymousTestController::class)->names('anonymous-tests');
+    Route::resource('/anonymous-tests', AnonymousTestController::class)->names('anonymous-tests');
     Route::get('/anonymous-test/receipt/{id}', [AnonymousTestController::class, 'receipt'])->name('anonymous-test.receipt');
-    Route::resource('/admin/device-scans', DeviceScanController::class);
-    Route::resource('/admin/finger', FingerController::class);
+    Route::resource('/device-scans', DeviceScanController::class);
+    Route::resource('/finger', FingerController::class);
 
     Route::get('/api/orgs/{org}/branches', fn ($org) => Branches::where('org_id', $org)->orderBy('name')->get(['id', 'name'])
     )->middleware(['web', 'auth'])->name('api.org.branches');

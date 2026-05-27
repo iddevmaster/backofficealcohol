@@ -47,7 +47,7 @@ beforeEach(function () {
 });
 
 it('prevents guests from accessing the scan histories page', function () {
-    $response = $this->get('/admin/device-scans');
+    $response = $this->get('/device-scans');
     $response->assertRedirect('/login');
 });
 
@@ -63,7 +63,7 @@ it('prevents users without list histories permission from accessing the scan his
         'role_id' => '2',
     ]);
 
-    $response = $this->actingAs($unprivilegedUser)->get('/admin/device-scans');
+    $response = $this->actingAs($unprivilegedUser)->get('/device-scans');
     $response->assertStatus(403);
 });
 
@@ -77,7 +77,7 @@ it('allows authorized users to access the scan histories page', function () {
         'scanned_at' => now(),
     ]);
 
-    $response = $this->actingAs($this->user)->get('/admin/device-scans');
+    $response = $this->actingAs($this->user)->get('/device-scans');
     $response->assertStatus(200);
     $response->assertSee('John Doe');
     $response->assertSee('DEV123');
@@ -104,13 +104,13 @@ it('filters scan histories by search query and type', function () {
     ]);
 
     // Search query matching finger device
-    $response = $this->actingAs($this->user)->get('/admin/device-scans?q=DEV_FINGER');
+    $response = $this->actingAs($this->user)->get('/device-scans?q=DEV_FINGER');
     $response->assertStatus(200);
     $response->assertSee('DEV_FINGER');
     $response->assertDontSee('DEV_ID');
 
     // Filter by type "identification"
-    $response = $this->actingAs($this->user)->get('/admin/device-scans?scan_type=identification');
+    $response = $this->actingAs($this->user)->get('/device-scans?scan_type=identification');
     $response->assertStatus(200);
     $response->assertSee('DEV_ID');
     $response->assertDontSee('DEV_FINGER');
